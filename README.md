@@ -19,7 +19,7 @@ One-click installer for [Langflow](https://github.com/langflow-ai/langflow) **1.
 
 That's it. The script will:
 - Install `uv` (self-bootstrapping package manager)
-- Download Python 3.13
+- Download Python 3.12
 - Create a virtual environment in `%USERPROFILE%\langflow\`
 - Install Langflow 1.9.6
 - Create a desktop shortcut (`Langflow.lnk`)
@@ -39,7 +39,7 @@ powershell -ExecutionPolicy Bypass -File install-langflow.ps1
 Re-run the script and select **Uninstall**. This removes:
 - `%USERPROFILE%\langflow\` (venv + Langflow)
 - Desktop shortcut
-- Optionally Python 3.13
+- Optionally Python 3.12
 
 `uv` is kept — it may be useful for other projects.
 

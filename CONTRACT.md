@@ -47,11 +47,11 @@ Run when the user selects `[I]`.
 3. Refresh the in-session `$env:PATH` to include the new entry immediately.
 4. Verify `uv --version` succeeds. If it fails, print a clear error and abort install.
 
-### 4.2 Python 3.13
+### 4.2 Python 3.12
 
-1. Run `uv python install 3.13` (downloads prebuilt CPython, no admin needed).
-2. Run `uv python pin 3.13` inside the working directory (see 4.3).
-3. If 3.13 is already installed, the command is a no-op (uv handles this).
+1. Run `uv python install 3.12` (downloads prebuilt CPython, no admin needed).
+2. Run `uv python pin 3.12` inside the working directory (see 4.3).
+3. If 3.12 is already installed, the command is a no-op (uv handles this).
 
 ### 4.3 Virtual Environment & Langflow
 
@@ -91,8 +91,8 @@ Run when the user selects `[U]`.
    - Defaults to `N` on empty input.
 2. Remove `%USERPROFILE%\langflow\` (recursive, if it exists).
 3. Remove `%USERPROFILE%\Desktop\Langflow.lnk` (if it exists).
-4. Ask: `Remove Python 3.13 installed by uv? [y/N]`
-   - If `Y`, run `uv python uninstall 3.13`.
+4. Ask: `Remove Python 3.12 installed by uv? [y/N]`
+   - If `Y`, run `uv python uninstall 3.12`.
 5. **Do not** remove `uv` or `%USERPROFILE%\.local\bin\` — uv may be used for other projects.
 6. Print: `✓ Langflow uninstalled`
 

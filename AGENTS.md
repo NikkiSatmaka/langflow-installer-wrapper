@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository provides a PowerShell wrapper script (`install-langflow.ps1`) and companion batch launcher (`install-langflow.bat`) to install Langflow on Windows using `uv` as the package manager. Python 3.13 is pinned. Langflow is pinned to version **1.9.6**.
+This repository provides a PowerShell wrapper script (`install-langflow.ps1`) and companion batch launcher (`install-langflow.bat`) to install Langflow on Windows using `uv` as the package manager. Python 3.12 is pinned. Langflow is pinned to version **1.9.6**.
 
 **Author**: Nikki Satmaka
 - GitHub: https://github.com/NikkiSatmaka/
@@ -24,7 +24,7 @@ This repository provides a PowerShell wrapper script (`install-langflow.ps1`) an
 - **User-prompted** — script asks Install / Uninstall / Quit at startup
 - **Credits banner** — GitHub + LinkedIn displayed on every run (Chris Titus style)
 - **Version pinned** — Langflow `==1.9.6`; do not change without updating CONTRACT.md
-- **Python pinned** — 3.13 via `uv python install 3.13`
+- **Python pinned** — 3.12 via `uv python install 3.12`
 
 ## Key Design Decisions
 

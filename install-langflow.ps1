@@ -2,7 +2,7 @@
 .SYNOPSIS
     Install or uninstall Langflow on Windows using uv.
 .DESCRIPTION
-    Bootstraps uv, installs Python 3.13, creates a virtual environment,
+    Bootstraps uv, installs Python 3.12, creates a virtual environment,
     installs Langflow 1.9.6, and creates a desktop shortcut.
     Also supports clean uninstall of all components.
 .NOTES
@@ -98,12 +98,12 @@ function Install-Uv {
 # ── Python ─────────────────────────────────────────────────────────────────
 
 function Install-Python {
-    Write-Info "Installing Python 3.13..."
+    Write-Info "Installing Python 3.12..."
     try {
-        uv python install 3.13 2>&1 | Out-Null
+        uv python install 3.12 2>&1 | Out-Null
     }
     catch {
-        Write-Fail "Failed to install Python 3.13: $_"
+        Write-Fail "Failed to install Python 3.12: $_"
         return $false
     }
 
@@ -113,13 +113,13 @@ function Install-Python {
 
     Push-Location "$LangflowDir"
     try {
-        uv python pin 3.13 2>&1 | Out-Null
+        uv python pin 3.12 2>&1 | Out-Null
     }
     finally {
         Pop-Location
     }
 
-    Write-Ok "Python 3.13 ready"
+    Write-Ok "Python 3.12 ready"
     return $true
 }
 
@@ -247,14 +247,14 @@ function Start-Uninstall {
         }
     }
 
-    $removePy = Read-Host "Remove Python 3.13 installed by uv? [y/N]"
+    $removePy = Read-Host "Remove Python 3.12 installed by uv? [y/N]"
     if ($removePy.ToUpper() -eq 'Y') {
         try {
-            uv python uninstall 3.13 2>&1 | Out-Null
-            Write-Ok "Python 3.13 removed"
+            uv python uninstall 3.12 2>&1 | Out-Null
+            Write-Ok "Python 3.12 removed"
         }
         catch {
-            Write-Warn "Could not remove Python 3.13: $_"
+            Write-Warn "Could not remove Python 3.12: $_"
         }
     }
 
