@@ -106,7 +106,8 @@ Run when the user selects `[U]`.
 | Progress visibility | Long operations (`uv pip install langflow`) should print stdout so user sees download progress |
 | PATH persistence | The `%USERPROFILE%\.local\bin` PATH entry persists across reboots via `[Environment]::SetEnvironmentVariable` |
 | Portability | All operations use `%USERPROFILE%` — works on Windows 10 and 11 regardless of drive letter |
-| Minimal release assets | GitHub release `.zip` must contain exactly three files: `install-langflow.ps1`, `install-langflow.bat`, `LICENSE`. No other files from the repository root. |
+| File encoding | `install-langflow.ps1` must be saved as **UTF-8 with BOM** to ensure Windows PowerShell correctly parses non-ASCII characters (box-drawing, em dashes, check marks, etc.) |
+| Minimal release assets | GitHub release `.zip` must contain exactly three files: `install-langflow.ps1` (UTF-8 with BOM), `install-langflow.bat`, `LICENSE`. No other files from the repository root. |
 
 ## 7. Known Risks & Mitigations
 
