@@ -175,7 +175,7 @@ function New-DesktopShortcut {
 cd /d "%~dp0"
 start "Langflow Server" "$uvPath" run langflow run
 echo Waiting for Langflow to start...
-timeout /t 10 /nobreak >nul
+timeout /t 30 /nobreak >nul
 start "" "http://127.0.0.1:7860"
 "@
     try {

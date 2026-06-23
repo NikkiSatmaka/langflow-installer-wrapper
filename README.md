@@ -24,7 +24,12 @@ That's it. The script will:
 - Install Langflow 1.9.6
 - Create a desktop shortcut (`Langflow.lnk`)
 
-After install, double-click the desktop shortcut and open `http://127.0.0.1:7860`.
+After install, double-click the desktop shortcut. A terminal window will open, and after ~30 seconds your browser will launch at `http://127.0.0.1:7860`.
+
+## Usage Notes
+
+- **Keep the terminal window open** — The Langflow server runs inside the terminal window that opens when you double-click the desktop shortcut. Closing it will stop the server and the browser page will stop working.
+- **Wait and refresh** — The browser opens ~30 seconds after launching. If the page doesn't load right away, wait a few more seconds and refresh the page — Langflow is still starting up.
 
 ## Running manually
 
@@ -50,6 +55,7 @@ Re-run the script and select **Uninstall**. This removes:
 | `install-langflow.ps1` | Main installer/uninstaller script |
 | `install-langflow.bat` | Double-click launcher (bypasses execution policy) |
 | `CONTRACT.md` | Formal requirements specification |
+| `README.md` | This file |
 
 ## Prerequisites
 
