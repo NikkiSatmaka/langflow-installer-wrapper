@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Install or uninstall Langflow on Windows using uv.
 .DESCRIPTION
