@@ -35,6 +35,7 @@ This repository provides a PowerShell wrapper script (`install-langflow.ps1`) an
 | `WScript.Shell` COM for shortcut | Standard Windows method, no external deps |
 | Desktop shortcut targets `uv run langflow run` | Works regardless of active venv state |
 | Uninstall keeps `uv` | uv may be used for other projects |
+| Release zip contains only 3 files | `install-langflow.ps1`, `install-langflow.bat`, `LICENSE` — no other repo files |
 
 ## Conventions
 
