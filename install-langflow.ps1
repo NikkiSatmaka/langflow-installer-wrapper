@@ -162,6 +162,7 @@ function Install-LangflowPackage {
 function New-DesktopShortcut {
     $DesktopPath = [Environment]::GetFolderPath('Desktop')
     $ShortcutPath = "$DesktopPath\$ShortcutName"
+    $LauncherPath = "$LangflowDir\run-langflow.bat"
 
     $uvPath = (Get-Command uv).Source
     if (-not $uvPath) {
@@ -169,11 +170,25 @@ function New-DesktopShortcut {
         return $false
     }
 
+    $launcherContent = @"
+@echo off
+cd /d "%~dp0"
+start "Langflow Server" "$uvPath" run langflow run
+echo Waiting for Langflow to start...
+timeout /t 10 /nobreak >nul
+start "" "http://127.0.0.1:7860"
+"@
+    try {
+        Set-Content -Path $LauncherPath -Value $launcherContent -Encoding Ascii
+    }
+    catch {
+        Write-Warn "Could not create launcher script: $_"
+    }
+
     try {
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut($ShortcutPath)
-        $Shortcut.TargetPath = $uvPath
-        $Shortcut.Arguments = "run langflow run"
+        $Shortcut.TargetPath = $LauncherPath
         $Shortcut.WorkingDirectory = $LangflowDir
         $Shortcut.Description = "Langflow AI Platform (http://127.0.0.1:7860)"
         $Shortcut.Save()
@@ -182,8 +197,7 @@ function New-DesktopShortcut {
     }
     catch {
         Write-Warn "Could not create desktop shortcut (COM unavailable)."
-        Write-Info "  Create manually: ""$uvPath"" run langflow run"
-        Write-Info "  Working dir:     $LangflowDir"
+        Write-Info "  Run manually: ""$LauncherPath"""
         return $false
     }
     return $true
@@ -205,7 +219,7 @@ function Start-Install {
     Write-Ok "Langflow $LangflowVersion installed"
     Write-Ok "Desktop shortcut created"
     Write-Host " ➜  Double-click the Langflow desktop shortcut to start" -ForegroundColor Cyan
-    Write-Host " ➜  Open http://127.0.0.1:7860 in your browser" -ForegroundColor Cyan
+    Write-Host " ➜  Browser will open automatically at http://127.0.0.1:7860" -ForegroundColor Cyan
     Write-Host "══════════════════════════════════════════════════" -ForegroundColor Green
     Write-Host ""
     pause
