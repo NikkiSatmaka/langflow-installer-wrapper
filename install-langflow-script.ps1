@@ -172,14 +172,37 @@ function New-DesktopShortcut {
 
     $launcherContent = @"
 @echo off
+title Langflow Server Launcher
+
+echo.
+echo  ╔══════════════════════════════════════════════════╗
+echo  ║            Langflow Server Launcher              ║
+echo  ║──────────────────────────────────────────────────║
+echo  ║  GitHub:  https://github.com/NikkiSatmaka/       ║
+echo  ║  LinkedIn: https://linkedin.com/in/nikkisatmaka/ ║
+echo  ╚══════════════════════════════════════════════════╝
+echo.
+
 cd /d "%~dp0"
+echo Starting Langflow server...
 start "Langflow Server" "$uvPath" run langflow run
-echo Waiting for Langflow to start...
+echo Waiting for Langflow to start (up to 30 seconds)...
 timeout /t 30 /nobreak >nul
+echo Opening browser...
 start "" "http://127.0.0.1:7860"
+
+echo.
+echo  ╔══════════════════════════════════════════════════╗
+echo  ║  IMPORTANT: Do NOT close the "Langflow Server"  ║
+echo  ║  terminal window — that is where Langflow runs. ║
+echo  ║  Closing it will stop the server.               ║
+echo  ╚══════════════════════════════════════════════════╝
+echo.
+echo Press any key to close this launcher...
+pause >nul
 "@
     try {
-        Set-Content -Path $LauncherPath -Value $launcherContent -Encoding Ascii
+        Set-Content -Path $LauncherPath -Value $launcherContent -Encoding UTF8
     }
     catch {
         Write-Warn "Could not create launcher script: $_"
