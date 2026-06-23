@@ -63,7 +63,7 @@ function Install-Uv {
     if (-not $uv) {
         Write-Info "Installing uv..."
         try {
-            irm https://astral.sh/uv/install.ps1 | iex
+            & "$PSScriptRoot\uv-install.ps1"
         }
         catch {
             Write-Fail "Failed to install uv: $_"

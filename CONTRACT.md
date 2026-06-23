@@ -42,7 +42,7 @@ Run when the user selects `[I]`.
 
 1. Check if `uv` is on `$env:PATH`.
 2. If not found:
-   - Run `irm https://astral.sh/uv/install.ps1 | iex` (standalone installer).
+   - Run the bundled `uv-install.ps1` via `& "$PSScriptRoot\uv-install.ps1"`.
    - After the installer completes, add `%USERPROFILE%\.local\bin` to the **permanent user PATH** via `[Environment]::SetEnvironmentVariable('Path', ..., 'User')`.
 3. Refresh the in-session `$env:PATH` to include the new entry immediately.
 4. Verify `uv --version` succeeds. If it fails, print a clear error and abort install.
@@ -65,8 +65,8 @@ Run when the user selects `[I]`.
 
 1. Resolve the desktop path via `[Environment]::GetFolderPath('Desktop')`.
 2. Create a `.lnk` file named `Langflow.lnk` using `WScript.Shell` COM:
-   - **Target**: `uv run langflow run`
-   - **Target (actual)**: Fully resolve `uv.exe` from PATH, set `TargetPath` to that exe, set `Arguments` to `run langflow run`.
+   - **Target**: The `run-langflow.bat` launcher created in `%USERPROFILE%\langflow\`.
+   - **Target (actual)**: `TargetPath` points to `%USERPROFILE%\langflow\run-langflow.bat`, which runs `uv run langflow run` and opens the browser.
    - **Working directory**: `%USERPROFILE%\langflow`
    - **Window style**: Normal (1)
    - **Description**: `Langflow AI Platform (http://127.0.0.1:7860)`
@@ -80,7 +80,7 @@ Print a success summary:
 ✓ Langflow 1.9.6 installed
 ✓ Desktop shortcut created: %USERPROFILE%\Desktop\Langflow.lnk
 ➜ Double-click the shortcut to start Langflow
-➜ Open http://127.0.0.1:7860 in your browser
+➜ Browser opens automatically at http://127.0.0.1:7860
 ```
 
 ## 5. Uninstall Flow
@@ -106,20 +106,21 @@ Run when the user selects `[U]`.
 | Progress visibility | Long operations (`uv pip install langflow`) should print stdout so user sees download progress |
 | PATH persistence | The `%USERPROFILE%\.local\bin` PATH entry persists across reboots via `[Environment]::SetEnvironmentVariable` |
 | Portability | All operations use `%USERPROFILE%` — works on Windows 10 and 11 regardless of drive letter |
-| File encoding | `install-langflow.ps1` must be saved as **UTF-8 with BOM** to ensure Windows PowerShell correctly parses non-ASCII characters (box-drawing, em dashes, check marks, etc.) |
-| Minimal release assets | GitHub release `.zip` must contain exactly three files: `install-langflow.ps1` (UTF-8 with BOM), `install-langflow.bat`, `LICENSE`. No other files from the repository root. |
+| File encoding | `install-langflow-script.ps1` must be saved as **UTF-8 with BOM** to ensure Windows PowerShell correctly parses non-ASCII characters (box-drawing, em dashes, check marks, etc.) |
+| Bundled uv installer | `uv-install.ps1` is shipped in the release zip; the script references it via `$PSScriptRoot` instead of using `irm \| iex` |
+| Minimal release assets | GitHub release `.zip` must contain exactly four files: `Install Langflow.bat`, `install-langflow-script.ps1` (UTF-8 with BOM), `uv-install.ps1`, `LICENSE`. No other files from the repository root. |
 
 ## 7. Known Risks & Mitigations
 
 | Risk | Mitigation |
 |------|------------|
-| PowerShell execution policy blocks `.ps1` | Ship `install-langflow.bat` that calls the script with `-ExecutionPolicy Bypass` |
+| PowerShell execution policy blocks `.ps1` | Ship `Install Langflow.bat` that calls the script with `-ExecutionPolicy Bypass` |
 | PATH not refreshed after uv install | Read permanent PATH from registry into current session explicitly |
 | Langflow download is large (~300MB) | Stream uv pip output; print "This may take a few minutes..." beforehand |
 | Port 7860 conflict | Document in completion message; user can configure via `.env` |
 | langflow==1.9.6 yanked on PyPI | Catch the pip error and suggest removing the version pin |
 | WScript.Shell missing on N/KN editions | Catch COM error and print manual shortcut instructions |
-| Antivirus flags `irm \| iex` pattern | Use the known-good `astral.sh` URL; document in AGENTS.md |
+| Antivirus flags `irm \| iex` pattern | Bundle `uv-install.ps1` in the release zip; invoke via `& "$PSScriptRoot\uv-install.ps1"` instead of downloading at runtime |
 | uv binary not on PATH after install | Explicitly add `%USERPROFILE%\.local\bin` to permanent PATH in script |
 
 ## 8. Out of Scope

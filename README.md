@@ -15,7 +15,7 @@ One-click installer for [Langflow](https://github.com/langflow-ai/langflow) **1.
 
 1. [Download the latest release](https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest)
 2. Extract the zip anywhere
-3. Double-click **`install-langflow.bat`**
+3. Double-click **`Install Langflow.bat`**
 
 That's it. The script will:
 - Install `uv` (self-bootstrapping package manager)
@@ -36,7 +36,7 @@ After install, double-click the desktop shortcut. A terminal window will open, a
 If you prefer PowerShell directly:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File install-langflow.ps1
+powershell -ExecutionPolicy Bypass -File install-langflow-script.ps1
 ```
 
 ## Uninstall
@@ -52,8 +52,9 @@ Re-run the script and select **Uninstall**. This removes:
 
 | File | Purpose |
 |------|---------|
-| `install-langflow.ps1` | Main installer/uninstaller script |
-| `install-langflow.bat` | Double-click launcher (bypasses execution policy) |
+| `Install Langflow.bat` | Double-click launcher (bypasses execution policy) |
+| `install-langflow-script.ps1` | Main installer/uninstaller script |
+| `uv-install.ps1` | Bundled uv bootstrapper (from astral.sh) |
 | `CONTRACT.md` | Formal requirements specification |
 | `README.md` | This file |
 

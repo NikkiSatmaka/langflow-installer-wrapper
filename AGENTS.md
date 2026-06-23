@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository provides a PowerShell wrapper script (`install-langflow.ps1`) and companion batch launcher (`install-langflow.bat`) to install Langflow on Windows using `uv` as the package manager. Python 3.12 is pinned. Langflow is pinned to version **1.9.6**.
+This repository provides a PowerShell wrapper script (`install-langflow-script.ps1`) and companion batch launcher (`Install Langflow.bat`) to install Langflow on Windows using `uv` as the package manager. Python 3.12 is pinned. Langflow is pinned to version **1.9.6**.
 
 **Author**: Nikki Satmaka
 - GitHub: https://github.com/NikkiSatmaka/
@@ -14,8 +14,9 @@ This repository provides a PowerShell wrapper script (`install-langflow.ps1`) an
 |------|---------|
 | `AGENTS.md` | This file — agent guidance |
 | `CONTRACT.md` | Formal requirements specification |
-| `install-langflow.ps1` | Main PowerShell installer/uninstaller script |
-| `install-langflow.bat` | Double-click launcher that bypasses execution policy |
+| `install-langflow-script.ps1` | Main PowerShell installer/uninstaller script |
+| `Install Langflow.bat` | Double-click launcher that bypasses execution policy |
+| `uv-install.ps1` | Bundled uv bootstrapper (official script from astral.sh) — eliminates `irm \| iex` AV trigger |
 
 ## Design Constraints
 
@@ -36,7 +37,8 @@ This repository provides a PowerShell wrapper script (`install-langflow.ps1`) an
 | Desktop shortcut targets `uv run langflow run` | Works regardless of active venv state |
 | Uninstall keeps `uv` | uv may be used for other projects |
 | UTF-8 BOM required on `.ps1` | Windows PowerShell requires UTF-8 with BOM; without it, non-ASCII characters cause parser errors |
-| Release zip contains only 3 files | `install-langflow.ps1` (UTF-8 with BOM), `install-langflow.bat`, `LICENSE` — no other repo files |
+| Bundled `uv-install.ps1` | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
+| Release zip contains only 4 files | `Install Langflow.bat`, `install-langflow-script.ps1` (UTF-8 with BOM), `uv-install.ps1`, `LICENSE` — no other repo files |
 
 ## Conventions
 
@@ -49,7 +51,7 @@ This repository provides a PowerShell wrapper script (`install-langflow.ps1`) an
 
 - Never hardcode API keys, tokens, or secrets
 - Avoid `Invoke-Expression` on user-controlled or untrusted input
-- The `irm ... | iex` pattern is only used for the official `astral.sh/uv/install.ps1` script
+- The `irm ... | iex` pattern is **not used** — the uv bootstrapper is bundled as `uv-install.ps1` and invoked via `& "$PSScriptRoot\uv-install.ps1"`
 
 ## Commit Rules
 
