@@ -142,13 +142,26 @@ function Install-LangflowPackage {
         }
 
         Write-Info "Installing Langflow $LangflowVersion (this may take a few minutes)..."
-        try {
-            uv pip install "langflow==$LangflowVersion" 2>&1 | ForEach-Object { Write-Host "   $_" }
+
+        $installOk = $false
+
+        uv pip install "langflow==$LangflowVersion" 2>&1 | ForEach-Object { Write-Host "   $_" }
+        if ($LASTEXITCODE -eq 0) {
+            $installOk = $true
         }
-        catch {
-            Write-Warn "Version $LangflowVersion failed — trying latest..."
+        else {
+            Write-Warn "Version $LangflowVersion failed -- trying latest..."
             uv pip install langflow 2>&1 | ForEach-Object { Write-Host "   $_" }
+            if ($LASTEXITCODE -eq 0) {
+                $installOk = $true
+            }
         }
+
+        if (-not $installOk) {
+            Write-Fail "Langflow installation failed. Check your internet connection and try again."
+            return $false
+        }
+
         Write-Ok "Langflow installed"
     }
     finally {
