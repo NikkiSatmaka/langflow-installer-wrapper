@@ -56,5 +56,10 @@ This repository provides a PowerShell wrapper script (`install-langflow-script.p
 ## Commit Rules
 
 - Use conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`
-- Keep commits scoped to one logical change
+- **Atomic commits**: Each commit must represent one logical change. Do not bundle unrelated changes together.
 - Reference CONTRACT.md sections when implementing requirements
+
+## Git Workflow
+
+- Do **not push** to remote until explicitly instructed by the user
+- Do **not create a release** or tag until explicitly instructed by the user
