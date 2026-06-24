@@ -1,7 +1,13 @@
 # Changelog
 
+## v1.1.10 (2026-06-24)
+- fix: replace pipe `|` with `+` in launcher box borders to avoid batch parse error
+
+## v1.1.9 (2026-06-24)
+- fix: replace Unicode box-drawing with ASCII-compatible `+-|` characters in launcher
+
 ## v1.1.8 (2026-06-24)
-- fix: add `chcp 65001` to launcher so box-drawing characters render correctly on all systems
+- fix: add `chcp 65001` and restore box-drawing characters in launcher (reverted in v1.1.9)
 
 ## v1.1.7 (2026-06-24)
 - fix: detect `uv pip install` failure via `$LASTEXITCODE` instead of broken `try/catch`
