@@ -189,10 +189,10 @@ title Langflow Server Launcher
 
 echo.
 echo  +==================================================+
-echo  |            Langflow Server Launcher              |
-echo  |--------------------------------------------------|
-echo  |  GitHub:  https://github.com/NikkiSatmaka/       |
-echo  |  LinkedIn: https://linkedin.com/in/nikkisatmaka/ |
+echo  +            Langflow Server Launcher              +
+echo  +--------------------------------------------------+
+echo  +  GitHub:  https://github.com/NikkiSatmaka/       +
+echo  +  LinkedIn: https://linkedin.com/in/nikkisatmaka/ +
 echo  +==================================================+
 echo.
 
@@ -206,9 +206,9 @@ start "" "http://127.0.0.1:7860"
 
 echo.
 echo  +==================================================+
-echo  |  IMPORTANT: Do NOT close the "Langflow Server"   |
-echo  |  terminal window -- that is where Langflow runs. |
-echo  |  Closing it will stop the server.                |
+echo  +  IMPORTANT: Do NOT close the "Langflow Server"   +
+echo  +  terminal window -- that is where Langflow runs. +
+echo  +  Closing it will stop the server.                +
 echo  +==================================================+
 echo.
 echo Press any key to close this launcher...
