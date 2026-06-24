@@ -17,6 +17,7 @@ This repository provides a PowerShell wrapper script (`install-langflow-script.p
 | `install-langflow-script.ps1` | Main PowerShell installer/uninstaller script |
 | `Install Langflow.bat` | Double-click launcher that bypasses execution policy |
 | `uv-install.ps1` | Bundled uv bootstrapper (official script from astral.sh) — eliminates `irm \| iex` AV trigger |
+| `CHANGELOG.md` | Release history |
 
 ## Design Constraints
 
@@ -63,3 +64,21 @@ This repository provides a PowerShell wrapper script (`install-langflow-script.p
 
 - Do **not push** to remote until explicitly instructed by the user
 - Do **not create a release** or tag until explicitly instructed by the user
+
+## Version Bumping
+
+| Commit type | Version bump |
+|-------------|-------------|
+| `fix:` | patch (v1.1.8 → v1.1.9) |
+| `feat:` | minor (v1.1.8 → v1.2.0) |
+| `docs:` / `chore:` | no release |
+| `fix!:` or `feat!:` | major (v1.1.8 → v2.0.0) |
+
+## Verification
+
+Before committing, run these checks:
+- **Braces balanced**: `rg -F '{' install-langflow-script.ps1 | wc -l` equals `rg -F '}' install-langflow-script.ps1 | wc -l`
+- **No irm | iex**: confirm the pattern does not exist in the .ps1 file
+- **Docs up to date**: AGENTS.md and CONTRACT.md reflect any behavior changes
+- **No secrets or absolute paths** in the diff
+- **Encoding correct**: batch files use ASCII; .ps1 files are UTF-8 with BOM
