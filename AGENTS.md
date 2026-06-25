@@ -29,7 +29,7 @@ This repository provides a PowerShell wrapper script (`install-langflow-script.p
 - **User-prompted** — script asks Install / Uninstall / Quit at startup
 - **Credits banner** — GitHub + LinkedIn displayed on every run (Chris Titus style)
 - **Version pinned** — Langflow `==1.10.1`; do not change without updating CONTRACT.md
-- **Python pinned** — 3.12 via `uv python install 3.12`
+- **Python pinned** — 3.12 via `uv python install 3.12` (only version with pre-built wheels for all C-extensions on Windows; 3.13+ requires MSVC not available to most users)
 
 ## Key Design Decisions
 

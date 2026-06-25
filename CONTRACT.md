@@ -110,6 +110,7 @@ Run when the user selects `[U]`.
 | Bundled uv installer | `uv-install.ps1` is shipped in the release zip; the script references it via `$PSScriptRoot` instead of using `irm \| iex` |
 | Minimal release assets | GitHub release `.zip` must contain exactly `Install Langflow.bat` and `LICENSE` at zip root, with `install-langflow-script.ps1` and `uv-install.ps1` under a `src/` subdirectory. No other repository files. |
 | Landing page download | Each release also uploads `langflow-installer-win.zip` (same contents as versioned zip, consistent name). Download link on the landing page never needs updating across versions. |
+| Python version rationale | Pin 3.12 — the latest version with pre-built wheels for all C-extension dependencies (e.g., fastparquet). 3.13/3.14 require building from source via MSVC, which most Windows users lack. |
 
 ## 7. Known Risks & Mitigations
 
