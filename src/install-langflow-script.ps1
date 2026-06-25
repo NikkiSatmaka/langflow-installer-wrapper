@@ -210,9 +210,25 @@ echo  +==================================================+
 echo.
 echo Starting Langflow server...
 start /MIN "Langflow Server" "$uvPath" run langflow run
-echo Waiting for Langflow to start (up to 30 seconds)...
-timeout /t 30 /nobreak >nul
-echo Opening browser...
+echo.
+echo Waiting for Langflow to start...
+echo The browser will open automatically when the server is ready.
+echo You can also manually visit http://127.0.0.1:7860 at any time.
+echo.
+
+:waitloop
+powershell -NoProfile -Command "try { $r = Invoke-WebRequest -Uri 'http://127.0.0.1:7860' -UseBasicParsing -TimeoutSec 3; if ($r.StatusCode -eq 200) { exit 0 } else { exit 1 } } catch { exit 1 }"
+if %errorlevel% equ 0 goto serverready
+timeout /t 5 /nobreak >nul
+echo Still waiting... check http://127.0.0.1:7860 in your browser
+goto waitloop
+
+:serverready
+echo.
+echo  +==================================================+
+echo  +  Langflow server is ready!                       +
+echo  +  Opening browser...                              +
+echo  +==================================================+
 start "" "http://127.0.0.1:7860"
 
 echo.

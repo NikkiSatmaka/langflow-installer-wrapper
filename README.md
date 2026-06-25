@@ -24,7 +24,7 @@ That's it. The script will:
 - Install Langflow 1.9.6
 - Create a desktop shortcut (`Langflow.lnk`)
 
-After install, double-click the desktop shortcut. A terminal window will open, and after ~30 seconds your browser will launch at `http://127.0.0.1:7860`.
+After install, double-click the desktop shortcut. A terminal window will open, and your browser will launch automatically once the Langflow server is ready at `http://127.0.0.1:7860`.
 
 > **Having trouble?** See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for Smart App Control and antivirus help.
 
