@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.4.0 (2026-06-25)
+- feat: update Langflow from 1.9.6 to 1.10.1
+- docs: replace ASCII banner with badges in README, update docs for v1.4.0
+
 ## v1.3.0 (2026-06-25)
 - feat: add GitHub Pages landing page (`docs/index.html`) for non-technical users
 - feat: replace fixed 30s timeout with server-ready polling in launcher
