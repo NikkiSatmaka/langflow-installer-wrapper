@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-Provide a single-click (or double-click) solution for Windows users to install, run, and uninstall Langflow (`==1.9.6`) using `uv` as the package manager, with no administrative privileges required.
+Provide a single-click (or double-click) solution for Windows users to install, run, and uninstall Langflow (`==1.10.1`) using `uv` as the package manager, with no administrative privileges required.
 
 ## 2. Credits & Attribution
 
@@ -58,7 +58,7 @@ Run when the user selects `[I]`.
 1. Create `%USERPROFILE%\langflow\` directory if it does not exist.
 2. `cd %USERPROFILE%\langflow`
 3. Create venv: `uv venv` (creates `.venv`).
-4. Install Langflow: `uv pip install langflow==1.9.6`.
+4. Install Langflow: `uv pip install langflow==1.10.1`.
    - If the pin fails (e.g., version yanked), catch the error and suggest `uv pip install langflow` without the pin as a fallback.
 
 ### 4.4 Desktop Shortcut
@@ -77,7 +77,7 @@ Run when the user selects `[I]`.
 Print a success summary:
 
 ```
-✓ Langflow 1.9.6 installed
+✓ Langflow 1.10.1 installed
 ✓ Desktop shortcut created: %USERPROFILE%\Desktop\Langflow.lnk
 ➜ Double-click the shortcut to start Langflow
 ➜ Browser opens automatically at http://127.0.0.1:7860
@@ -119,7 +119,7 @@ Run when the user selects `[U]`.
 | PATH not refreshed after uv install | Read permanent PATH from registry into current session explicitly |
 | Langflow download is large (~300MB) | Stream uv pip output; print "This may take a few minutes..." beforehand |
 | Port 7860 conflict | Document in completion message; user can configure via `.env` |
-| langflow==1.9.6 yanked on PyPI | Catch the pip error and suggest removing the version pin |
+| langflow==1.10.1 yanked on PyPI | Catch the pip error and suggest removing the version pin |
 | WScript.Shell missing on N/KN editions | Catch COM error and print manual shortcut instructions |
 | Antivirus flags `irm \| iex` pattern | Bundle `uv-install.ps1` in the release zip; invoke via `& "$PSScriptRoot\uv-install.ps1"` instead of downloading at runtime |
 | uv binary not on PATH after install | Explicitly add `%USERPROFILE%\.local\bin` to permanent PATH in script |

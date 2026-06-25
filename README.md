@@ -1,6 +1,6 @@
 # Langflow Installer for Windows
 
-One-click installer for [Langflow](https://github.com/langflow-ai/langflow) **1.9.6** on Windows 10/11 — no admin rights required.
+One-click installer for [Langflow](https://github.com/langflow-ai/langflow) **1.10.1** on Windows 10/11 — no admin rights required.
 
 ```
 ╔══════════════════════════════════════════════════╗
@@ -21,7 +21,7 @@ That's it. The script will:
 - Install `uv` (self-bootstrapping package manager)
 - Download Python 3.12
 - Create a virtual environment in `%USERPROFILE%\langflow\`
-- Install Langflow 1.9.6
+- Install Langflow 1.10.1
 - Create a desktop shortcut (`Langflow.lnk`)
 
 After install, double-click the desktop shortcut. A terminal window will open, and your browser will launch automatically once the Langflow server is ready at `http://127.0.0.1:7860`.
