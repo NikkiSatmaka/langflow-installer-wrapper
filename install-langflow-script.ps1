@@ -51,7 +51,7 @@ function Show-Menu {
     Write-Host " [U] Uninstall Langflow" -ForegroundColor Yellow
     Write-Host " [Q] Quit" -ForegroundColor Yellow
     Write-Host ""
-    $choice = Read-Host "Select an option"
+    $choice = Read-Host "Type I, U, or Q and press Enter"
     Write-Host ""
     return $choice.ToUpper()
 }
@@ -197,19 +197,24 @@ echo  +==================================================+
 echo.
 
 cd /d "%~dp0"
+
+echo.
+echo  +==================================================+
+echo  +  A new minimized terminal window will open with  +
+echo  +  the Langflow server logs.                       +
+echo  +                                                  +
+echo  +  IMPORTANT: Do NOT close that window.            +
+echo  +  Closing it will stop the server and the         +
+echo  +  browser will no longer work.                    +
+echo  +==================================================+
+echo.
 echo Starting Langflow server...
-start "Langflow Server" "$uvPath" run langflow run
+start /MIN "Langflow Server" "$uvPath" run langflow run
 echo Waiting for Langflow to start (up to 30 seconds)...
 timeout /t 30 /nobreak >nul
 echo Opening browser...
 start "" "http://127.0.0.1:7860"
 
-echo.
-echo  +==================================================+
-echo  +  IMPORTANT: Do NOT close the "Langflow Server"   +
-echo  +  terminal window -- that is where Langflow runs. +
-echo  +  Closing it will stop the server.                +
-echo  +==================================================+
 echo.
 echo Press any key to close this launcher...
 pause >nul
