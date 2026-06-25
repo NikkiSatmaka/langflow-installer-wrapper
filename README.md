@@ -35,7 +35,7 @@ None. The script works on a fresh Windows 10/11 install with no pre-installed Py
 ## Usage Notes
 
 - **Keep the terminal window open** — The Langflow server runs inside the terminal window that opens when you double-click the desktop shortcut. Closing it will stop the server and the browser page will stop working.
-- **Wait and refresh** — The browser opens ~30 seconds after launching. If the page doesn't load right away, wait a few more seconds and refresh the page — Langflow is still starting up.
+- **Auto-detection** — The launcher automatically polls the Langflow server and opens your browser as soon as it's ready. No need to wait a fixed time or manually refresh.
 
 ## Running manually
 

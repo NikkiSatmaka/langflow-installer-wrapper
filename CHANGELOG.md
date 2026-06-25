@@ -4,6 +4,8 @@
 - feat: add GitHub Pages landing page (`docs/index.html`) for non-technical users
 - feat: replace fixed 30s timeout with server-ready polling in launcher
 - feat: redesign credits banner to match landing page theme
+- fix: use `/health_check` endpoint with variable-free PowerShell command (fixes server detection bug)
+- fix: replace upload arrow with download arrow in landing page button
 - docs: add landing page, consistent zip name, and launcher changes to docs
 - chore: push and release v1.3.0
 
