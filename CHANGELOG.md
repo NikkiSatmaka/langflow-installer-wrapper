@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.2.0 (2026-06-25)
+- refactor: reorganize repo into `src/` and `docs/` directories
+- chore: move `CHANGELOG.md` back to repo root
+- docs: fix release zip structure to mirror repo layout (`src/` subdirectory)
+
 ## v1.1.11 (2026-06-24)
 - feat: make menu prompt explicitly say to type I/U/Q and press Enter
 - feat: add pre-launch notice about new minimized terminal window in launcher
