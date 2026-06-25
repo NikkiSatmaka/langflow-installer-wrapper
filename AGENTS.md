@@ -41,7 +41,7 @@ This repository provides a PowerShell wrapper script (`install-langflow-script.p
 | Uninstall keeps `uv` | uv may be used for other projects |
 | UTF-8 BOM required on `.ps1` | Windows PowerShell requires UTF-8 with BOM; without it, non-ASCII characters cause parser errors |
 | Bundled `uv-install.ps1` | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
-| Release zip contains only 4 files | `Install Langflow.bat`, `install-langflow-script.ps1` (UTF-8 with BOM), `uv-install.ps1`, `LICENSE` — no other repo files |
+| Release zip structure | `Install Langflow.bat` and `LICENSE` at zip root; `install-langflow-script.ps1` and `uv-install.ps1` under `src/` — mirrors repo layout |
 
 ## Conventions
 

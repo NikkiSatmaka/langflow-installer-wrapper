@@ -108,7 +108,7 @@ Run when the user selects `[U]`.
 | Portability | All operations use `%USERPROFILE%` — works on Windows 10 and 11 regardless of drive letter |
 | File encoding | `install-langflow-script.ps1` must be saved as **UTF-8 with BOM** to ensure Windows PowerShell correctly parses non-ASCII characters (box-drawing, em dashes, check marks, etc.) |
 | Bundled uv installer | `uv-install.ps1` is shipped in the release zip; the script references it via `$PSScriptRoot` instead of using `irm \| iex` |
-| Minimal release assets | GitHub release `.zip` must contain exactly four files: `Install Langflow.bat`, `install-langflow-script.ps1` (UTF-8 with BOM), `uv-install.ps1`, `LICENSE`. No other files from the repository root. |
+| Minimal release assets | GitHub release `.zip` must contain exactly `Install Langflow.bat` and `LICENSE` at zip root, with `install-langflow-script.ps1` and `uv-install.ps1` under a `src/` subdirectory. No other repository files. |
 
 ## 7. Known Risks & Mitigations
 
