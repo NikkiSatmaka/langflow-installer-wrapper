@@ -20,7 +20,7 @@ This repository provides a PowerShell wrapper script (`install-langflow-script.p
 | `src/install-langflow-script.ps1` | Main PowerShell installer/uninstaller script |
 | `src/uv-install.ps1` | Bundled uv bootstrapper (official script from astral.sh) — eliminates `irm \| iex` AV trigger |
 | `docs/TROUBLESHOOTING.md` | Common issues and fixes |
-| `docs/index.html` | Landing page for non-GitHub users (GitHub Pages) |
+| `docs/index.html` | Landing page for non-GitHub users (GitHub Pages) — published at `https://nikkisatmaka.github.io/langflow-installer-wrapper/` |
 
 ## Design Constraints
 

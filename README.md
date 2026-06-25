@@ -13,7 +13,7 @@ One-click installer for [Langflow](https://github.com/langflow-ai/langflow) **1.
 
 ## Quick Start
 
-1. [Download the latest release](https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-win.zip) (or visit the [landing page](https://nikkiSatmaka.github.io/langflow-installer-wrapper/) for a simpler experience)
+1. [Download the latest release](https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-win.zip) (or visit the [landing page](https://nikkisatmaka.github.io/langflow-installer-wrapper/) for a simpler experience)
 2. Extract the zip anywhere
 3. Double-click **`Install Langflow.bat`**
 
