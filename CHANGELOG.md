@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1.11 (2026-06-24)
+- feat: make menu prompt explicitly say to type I/U/Q and press Enter
+- feat: add pre-launch notice about new minimized terminal window in launcher
+- feat: start Langflow Server window minimized to avoid accidental close
+
 ## v1.1.10 (2026-06-24)
 - fix: replace pipe `|` with `+` in launcher box borders to avoid batch parse error
 
