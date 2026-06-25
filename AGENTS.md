@@ -20,6 +20,7 @@ This repository provides a PowerShell wrapper script (`install-langflow-script.p
 | `src/install-langflow-script.ps1` | Main PowerShell installer/uninstaller script |
 | `src/uv-install.ps1` | Bundled uv bootstrapper (official script from astral.sh) — eliminates `irm \| iex` AV trigger |
 | `docs/TROUBLESHOOTING.md` | Common issues and fixes |
+| `docs/index.html` | Landing page for non-GitHub users (GitHub Pages) |
 
 ## Design Constraints
 
@@ -42,6 +43,7 @@ This repository provides a PowerShell wrapper script (`install-langflow-script.p
 | UTF-8 BOM required on `.ps1` | Windows PowerShell requires UTF-8 with BOM; without it, non-ASCII characters cause parser errors |
 | Bundled `uv-install.ps1` | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
 | Release zip structure | `Install Langflow.bat` and `LICENSE` at zip root; `install-langflow-script.ps1` and `uv-install.ps1` under `src/` — mirrors repo layout |
+| Consistent zip name for landing page | `langflow-installer-win.zip` uploaded alongside each versioned zip; landing page download link never needs updating |
 
 ## Conventions
 
@@ -67,6 +69,15 @@ This repository provides a PowerShell wrapper script (`install-langflow-script.p
 - Do **not push** to remote until explicitly instructed by the user
 - Do **not create a release** or tag until explicitly instructed by the user
 
+## Release Process
+
+Each release must upload **two** zips:
+1. `langflow-installer-vX.Y.Z.zip` — versioned, for release history
+2. `langflow-installer-win.zip` — consistent name (replaces previous), used by the landing page download link
+
+Both zips contain identical contents. The landing page download URL is:
+`https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-win.zip`
+
 ## Version Bumping
 
 | Commit type | Version bump |
@@ -83,4 +94,5 @@ Before committing, run these checks:
 - **No irm | iex**: confirm the pattern does not exist in `src/install-langflow-script.ps1`
 - **Docs up to date**: AGENTS.md and CONTRACT.md reflect any behavior changes
 - **No secrets or absolute paths** in the diff
+- **Consistent zip uploaded**: confirm `langflow-installer-win.zip` is attached to the release alongside the versioned zip
 - **Encoding correct**: batch files use ASCII; .ps1 files are UTF-8 with BOM
