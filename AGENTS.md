@@ -14,11 +14,12 @@ This repository provides a PowerShell wrapper script (`install-langflow-script.p
 |------|---------|
 | `AGENTS.md` | This file — agent guidance |
 | `CONTRACT.md` | Formal requirements specification |
-| `install-langflow-script.ps1` | Main PowerShell installer/uninstaller script |
 | `Install Langflow.bat` | Double-click launcher that bypasses execution policy |
-| `uv-install.ps1` | Bundled uv bootstrapper (official script from astral.sh) — eliminates `irm \| iex` AV trigger |
-| `CHANGELOG.md` | Release history |
-| `TROUBLESHOOTING.md` | Common issues and fixes |
+| `README.md` | This file — for humans |
+| `src/install-langflow-script.ps1` | Main PowerShell installer/uninstaller script |
+| `src/uv-install.ps1` | Bundled uv bootstrapper (official script from astral.sh) — eliminates `irm \| iex` AV trigger |
+| `docs/CHANGELOG.md` | Release history |
+| `docs/TROUBLESHOOTING.md` | Common issues and fixes |
 
 ## Design Constraints
 

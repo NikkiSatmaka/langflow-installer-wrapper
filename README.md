@@ -26,7 +26,7 @@ That's it. The script will:
 
 After install, double-click the desktop shortcut. A terminal window will open, and after ~30 seconds your browser will launch at `http://127.0.0.1:7860`.
 
-> **Having trouble?** See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for Smart App Control and antivirus help.
+> **Having trouble?** See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for Smart App Control and antivirus help.
 
 ## Prerequisites
 
@@ -42,7 +42,7 @@ None. The script works on a fresh Windows 10/11 install with no pre-installed Py
 If you prefer PowerShell directly:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File install-langflow-script.ps1
+powershell -ExecutionPolicy Bypass -File src\install-langflow-script.ps1
 ```
 
 ## Uninstall
@@ -59,11 +59,11 @@ Re-run the script and select **Uninstall**. This removes:
 | File | Purpose |
 |------|---------|
 | `Install Langflow.bat` | Double-click launcher (bypasses execution policy) |
-| `install-langflow-script.ps1` | Main installer/uninstaller script |
-| `uv-install.ps1` | Bundled uv bootstrapper (from astral.sh) |
+| `src/install-langflow-script.ps1` | Main installer/uninstaller script |
+| `src/uv-install.ps1` | Bundled uv bootstrapper (from astral.sh) |
 | `CONTRACT.md` | Formal requirements specification |
 | `README.md` | This file |
-| `TROUBLESHOOTING.md` | Common issues and fixes |
+| `docs/TROUBLESHOOTING.md` | Common issues and fixes |
 
 ## Author
 
