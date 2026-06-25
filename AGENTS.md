@@ -96,3 +96,4 @@ Before committing, run these checks:
 - **No secrets or absolute paths** in the diff
 - **Consistent zip uploaded**: confirm `langflow-installer-win.zip` is attached to the release alongside the versioned zip
 - **Encoding correct**: batch files use ASCII; .ps1 files are UTF-8 with BOM
+- **No stale version refs**: `rg -F '1.9.6' . --include '*.ps1' --include '*.md' --include '*.html'` returns 0 (CHANGELOG history excluded)

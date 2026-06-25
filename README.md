@@ -2,14 +2,8 @@
 
 One-click installer for [Langflow](https://github.com/langflow-ai/langflow) **1.10.1** on Windows 10/11 — no admin rights required.
 
-```
-╔══════════════════════════════════════════════════╗
-║            Langflow Installer for Windows        ║
-║──────────────────────────────────────────────────║
-║  GitHub:  https://github.com/NikkiSatmaka/       ║
-║  LinkedIn: https://linkedin.com/in/nikkisatmaka/ ║
-╚══════════════════════════════════════════════════╝
-```
+[![GitHub](https://img.shields.io/badge/GitHub-NikkiSatmaka-181717?style=for-the-badge&logo=github)](https://github.com/NikkiSatmaka/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-nikkisatmaka-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/nikkisatmaka/)
 
 ## Quick Start
 
@@ -64,12 +58,6 @@ Re-run the script and select **Uninstall**. This removes:
 | `CONTRACT.md` | Formal requirements specification |
 | `README.md` | This file |
 | `docs/TROUBLESHOOTING.md` | Common issues and fixes |
-
-## Author
-
-**Nikki Satmaka**
-- GitHub: https://github.com/NikkiSatmaka/
-- LinkedIn: https://linkedin.com/in/nikkisatmaka/
 
 ## License
 
