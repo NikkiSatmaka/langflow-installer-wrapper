@@ -217,7 +217,7 @@ echo You can also manually visit http://127.0.0.1:7860 at any time.
 echo.
 
 :waitloop
-powershell -NoProfile -Command "try { $r = Invoke-WebRequest -Uri 'http://127.0.0.1:7860' -UseBasicParsing -TimeoutSec 3; if ($r.StatusCode -eq 200) { exit 0 } else { exit 1 } } catch { exit 1 }"
+powershell -NoProfile -Command "try { Invoke-WebRequest -Uri 'http://127.0.0.1:7860/health_check' -UseBasicParsing -TimeoutSec 3 | Out-Null; exit 0 } catch { exit 1 }"
 if %errorlevel% equ 0 goto serverready
 timeout /t 5 /nobreak >nul
 echo Still waiting... check http://127.0.0.1:7860 in your browser
