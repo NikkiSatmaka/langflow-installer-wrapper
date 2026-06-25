@@ -79,8 +79,8 @@ This repository provides a PowerShell wrapper script (`install-langflow-script.p
 ## Verification
 
 Before committing, run these checks:
-- **Braces balanced**: `rg -F '{' install-langflow-script.ps1 | wc -l` equals `rg -F '}' install-langflow-script.ps1 | wc -l`
-- **No irm | iex**: confirm the pattern does not exist in the .ps1 file
+- **Braces balanced**: `rg -F '{' src/install-langflow-script.ps1 | wc -l` equals `rg -F '}' src/install-langflow-script.ps1 | wc -l`
+- **No irm | iex**: confirm the pattern does not exist in `src/install-langflow-script.ps1`
 - **Docs up to date**: AGENTS.md and CONTRACT.md reflect any behavior changes
 - **No secrets or absolute paths** in the diff
 - **Encoding correct**: batch files use ASCII; .ps1 files are UTF-8 with BOM
