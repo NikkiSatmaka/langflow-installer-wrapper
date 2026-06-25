@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.3.0 (2026-06-25)
+- feat: add GitHub Pages landing page (`docs/index.html`) for non-technical users
+- feat: replace fixed 30s timeout with server-ready polling in launcher
+- feat: redesign credits banner to match landing page theme
+- docs: add landing page, consistent zip name, and launcher changes to docs
+- chore: push and release v1.3.0
+
 ## v1.2.0 (2026-06-25)
 - refactor: reorganize repo into `src/` and `docs/` directories
 - chore: move `CHANGELOG.md` back to repo root
