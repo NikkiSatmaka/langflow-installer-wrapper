@@ -18,6 +18,7 @@ This repository provides a PowerShell wrapper script (`install-langflow-script.p
 | `Install Langflow.bat` | Double-click launcher that bypasses execution policy |
 | `uv-install.ps1` | Bundled uv bootstrapper (official script from astral.sh) — eliminates `irm \| iex` AV trigger |
 | `CHANGELOG.md` | Release history |
+| `TROUBLESHOOTING.md` | Common issues and fixes |
 
 ## Design Constraints
 
