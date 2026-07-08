@@ -3,7 +3,7 @@
     Install or uninstall Langflow on Windows using uv.
 .DESCRIPTION
     Bootstraps uv, installs Python 3.12, creates a virtual environment,
-    installs Langflow 1.10.1, and creates a desktop shortcut.
+    installs Langflow 1.10.2, and creates a desktop shortcut.
     Also supports clean uninstall of all components.
 .NOTES
     Author: Nikki Satmaka
@@ -13,8 +13,8 @@
 
 #Requires -Version 5.1
 
-$ScriptVersion   = "1.0.0"
-$LangflowVersion = "1.10.1"
+$ScriptVersion   = "1.5.0"
+$LangflowVersion = "1.10.2"
 $LangflowDir     = "$env:USERPROFILE\langflow"
 $UvBinDir        = "$env:USERPROFILE\.local\bin"
 $ShortcutName    = "Langflow.lnk"
