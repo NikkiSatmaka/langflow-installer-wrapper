@@ -38,7 +38,7 @@ warn()  { printf "${Y} ⚠ %s${N}\n" "$*"; }
 show_banner() {
     clear 2>/dev/null || printf "\033c"
     printf "${G}╔══════════════════════════════════════════════════╗${N}\n"
-    printf "${G}║${C}${B}           Langflow Installer for Unix           ${G}║${N}\n"
+    printf "${G}║${C}${B}           Langflow Installer for Unix            ${G}║${N}\n"
     printf "${G}║──────────────────────────────────────────────────║${N}\n"
     printf "${G}║${N}  GitHub:  https://github.com/NikkiSatmaka/       ${G}║${N}\n"
     printf "${G}║${N}  LinkedIn: https://linkedin.com/in/nikkisatmaka/ ${G}║${N}\n"
@@ -49,12 +49,11 @@ show_banner() {
 # ── Menu ────────────────────────────────────────────────────────────────────
 
 show_menu() {
-    printf "${Y} [I] Install Langflow ${LANGFLOW_VERSION}${N}\n"
-    printf "${Y} [U] Uninstall Langflow${N}\n"
-    printf "${Y} [Q] Quit${N}\n"
-    printf "\n"
+    printf "${Y} [I] Install Langflow ${LANGFLOW_VERSION}${N}\n" >&2
+    printf "${Y} [U] Uninstall Langflow${N}\n" >&2
+    printf "${Y} [Q] Quit${N}\n" >&2
+    printf "\n" >&2
     read -r -p "$(printf "${C}Type I, U, or Q and press Enter: ${N}")" choice
-    printf "\n"
     printf "%s" "$choice" | tr '[:lower:]' '[:upper:]'
 }
 
