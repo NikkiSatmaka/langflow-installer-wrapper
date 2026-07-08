@@ -2,8 +2,11 @@
 #
 # Package the Langflow installer into platform-specific zips.
 # Usage:  bash scripts/package.sh [tag]
-#   If tag is given, zips are named langflow-installer-{platform}-{tag}.zip
-#   Otherwise, langflow-installer-{platform}.zip
+#   If tag is given, both versioned and unversioned zips are produced:
+#     langflow-installer-{platform}-{tag}.zip
+#     langflow-installer-{platform}.zip
+#   Otherwise, only unversioned zips:
+#     langflow-installer-{platform}.zip
 #
 # Output goes to dist/
 set -euo pipefail
@@ -12,63 +15,57 @@ TAG="${1:-}"
 DIST="dist"
 mkdir -p "$DIST"
 
-package_win() {
+# Build a zip for a given platform.
+# Arguments:
+#   $1: platform name (win|macos|linux)
+#   all remaining args: files to include (with their relative paths)
+package_platform() {
+    local platform="$1"
+    shift
     local tmpdir
     tmpdir=$(mktemp -d)
-    local prefix="langflow-installer-win"
-    [ -n "$TAG" ] && prefix="${prefix}-${TAG}"
 
-    cp "Install Langflow.bat" "$tmpdir/"
-    cp "Stop Langflow.bat" "$tmpdir/"
-    cp LICENSE "$tmpdir/"
     mkdir -p "$tmpdir/src"
-    cp src/install-langflow-script.ps1 "$tmpdir/src/"
-    cp src/stop-langflow-script.ps1 "$tmpdir/src/"
-    cp src/uv-install.ps1 "$tmpdir/src/"
 
-    (cd "$tmpdir" && zip -rq "$OLDPWD/$DIST/${prefix}.zip" .)
+    # Copy each listed file, placing src/ items under tmpdir/src/
+    for f in "$@"; do
+        case "$f" in
+            src/*)
+                cp "$f" "$tmpdir/src/"
+                ;;
+            *)
+                cp "$f" "$tmpdir/"
+                ;;
+        esac
+    done
+
+    # Build the zip in dist/
+    local zip_name="langflow-installer-${platform}.zip"
+    (cd "$tmpdir" && zip -rq "$OLDPWD/$DIST/$zip_name" .)
+    echo "  $zip_name"
+
+    # If a tag was given, also produce a versioned copy
+    if [ -n "$TAG" ]; then
+        local tagged_name="langflow-installer-${platform}-${TAG}.zip"
+        cp "$DIST/$zip_name" "$DIST/$tagged_name"
+        echo "  $tagged_name"
+    fi
+
     rm -rf "$tmpdir"
-    echo "  ${prefix}.zip"
-}
-
-package_macos() {
-    local tmpdir
-    tmpdir=$(mktemp -d)
-    local prefix="langflow-installer-macos"
-    [ -n "$TAG" ] && prefix="${prefix}-${TAG}"
-
-    cp "Install Langflow.command" "$tmpdir/"
-    cp "Stop Langflow.command" "$tmpdir/"
-    cp LICENSE "$tmpdir/"
-    mkdir -p "$tmpdir/src"
-    cp src/install-langflow.sh "$tmpdir/src/"
-    cp src/stop-langflow.sh "$tmpdir/src/"
-
-    (cd "$tmpdir" && zip -rq "$OLDPWD/$DIST/${prefix}.zip" .)
-    rm -rf "$tmpdir"
-    echo "  ${prefix}.zip"
-}
-
-package_linux() {
-    local tmpdir
-    tmpdir=$(mktemp -d)
-    local prefix="langflow-installer-linux"
-    [ -n "$TAG" ] && prefix="${prefix}-${TAG}"
-
-    cp "Install Langflow.sh" "$tmpdir/"
-    cp "Stop Langflow.sh" "$tmpdir/"
-    cp LICENSE "$tmpdir/"
-    mkdir -p "$tmpdir/src"
-    cp src/install-langflow.sh "$tmpdir/src/"
-    cp src/stop-langflow.sh "$tmpdir/src/"
-
-    (cd "$tmpdir" && zip -rq "$OLDPWD/$DIST/${prefix}.zip" .)
-    rm -rf "$tmpdir"
-    echo "  ${prefix}.zip"
 }
 
 echo "Packaging..."
-package_win
-package_macos
-package_linux
+
+package_platform "win" \
+    "Install Langflow.bat" "Stop Langflow.bat" LICENSE \
+    "src/install-langflow-script.ps1" "src/stop-langflow-script.ps1" "src/uv-install.ps1"
+
+package_platform "macos" \
+    "Install Langflow.command" "Stop Langflow.command" LICENSE \
+    "src/install-langflow.sh" "src/stop-langflow.sh"
+
+package_platform "linux" \
+    "Install Langflow.sh" "Stop Langflow.sh" LICENSE \
+    "src/install-langflow.sh" "src/stop-langflow.sh"
+
 echo "Done. All zips in $DIST/"
