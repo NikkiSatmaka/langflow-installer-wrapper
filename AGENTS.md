@@ -63,20 +63,108 @@ This repository provides a PowerShell wrapper script (`install-langflow-script.p
 - Use conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`
 - **Atomic commits**: Each commit must represent one logical change. Do not bundle unrelated changes together.
 - Reference CONTRACT.md sections when implementing requirements
+- PR titles follow the same `<type>: <description>` format as commits
 
 ## Git Workflow
 
-- Do **not push** to remote until explicitly instructed by the user
-- Do **not create a release** or tag until explicitly instructed by the user
+This project uses **GitHub Flow**:
+
+- `main` — always deployable, reflects the latest released state
+- Feature branches off `main` — short-lived, deleted after merge
+- All changes land via Pull Request — no direct commits to `main`
+- The agent may push feature branches and open (draft) PRs freely
+- The user reviews, approves, and squash-merges the PR
+- The agent must never push to `main` or create releases/tags without explicit instruction
+
+## Branch Naming
+
+Use semantic prefixes with kebab-case descriptions:
+
+| Prefix | Purpose | Example |
+|--------|---------|---------|
+| `feat/` | New feature or upgrade | `feat/upgrade-langflow-1-10-2` |
+| `fix/` | Bug fix | `fix/utf8-bom-regression` |
+| `docs/` | Documentation only | `docs/add-troubleshooting-section` |
+| `refactor/` | Code restructuring | `refactor/extract-shortcut-logic` |
+| `chore/` | Maintenance, tooling | `chore/update-verification-commands` |
+
+Branch from `main`, open a PR, squash merge, delete branch. Keep branches short-lived (days, not weeks).
+
+## Pull Request Workflow
+
+1. Create a feature branch from `main` with a semantic name.
+2. Make atomic commits with conventional commit messages.
+3. Open a PR against `main`. Use a draft PR if the work is in progress.
+4. PR title format: `<type>: <short description>` (e.g., `feat: upgrade Langflow to 1.10.2`).
+5. PR description should explain **what** and **why**, not **how**.
+6. Self-review the diff before marking the PR ready.
+7. The user reviews, approves, and **squash merges** into `main` — this keeps main history linear and atomic.
+8. Delete the feature branch after merge.
+9. Update `CHANGELOG.md` as part of the PR (not a separate commit).
 
 ## Release Process
 
-Each release must upload **two** zips:
-1. `langflow-installer-vX.Y.Z.zip` — versioned, for release history
-2. `langflow-installer-win.zip` — consistent name (replaces previous), used by the landing page download link
+### Step-by-step
 
-Both zips contain identical contents. The landing page download URL is:
+1. Ensure `main` has the changes merged and verified.
+2. Update `$ScriptVersion` in `src/install-langflow-script.ps1` if the script itself changed.
+3. Update `CHANGELOG.md` with the new version, date, and entries.
+4. Update `README.md` and `docs/index.html` if the hero message or version number changed.
+5. Run all verification checks (see Verification section).
+6. Commit with message: `docs: update changelog for vX.Y.Z`.
+7. Tag the commit: `git tag vX.Y.Z`.
+8. Push tag and main: `git push origin main --tags`.
+9. Create a GitHub Release from the tag.
+10. Upload **two** zips to the release:
+    - `langflow-installer-vX.Y.Z.zip` — versioned, for release history
+    - `langflow-installer-win.zip` — consistent name (replaces previous), used by the landing page download link
+11. Confirm `langflow-installer-win.zip` is attached (landing page download link).
+
+### Zip contents
+
+Both zips contain identical contents:
+- `Install Langflow.bat` (root)
+- `LICENSE` (root)
+- `src/install-langflow-script.ps1`
+- `src/uv-install.ps1`
+
+Landing page download URL (never changes across versions):
 `https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-win.zip`
+
+## How to Bump Langflow Version
+
+Update files in this order:
+
+1. **Single source of truth**: change `$LangflowVersion` in `src/install-langflow-script.ps1`.
+2. Update plain-text references in these files to match:
+   - `README.md` (hero line + what-it-does list)
+   - `CONTRACT.md` (purpose + install step)
+   - `AGENTS.md` (project overview + design constraints)
+   - `docs/index.html` (hero + what-it-does list)
+3. Run verification checks to confirm all references are consistent.
+4. If the new Langflow version has pre-built wheels for Python 3.12, no Python version change needed. Otherwise reassess the Python pin in `CONTRACT.md` section 6.
+
+## Smoke Testing
+
+This project has no automated tests. Before releasing, manually verify:
+
+- Run the script in a Windows VM or clean environment (no pre-installed Python).
+- Test all 3 menu paths: Install, Uninstall, Quit.
+- Confirm Install is idempotent (re-running detects existing components).
+- Confirm the desktop shortcut launches Langflow and the browser opens.
+- Confirm `uv pip install langflow==<new version>` succeeds on the pinned Python 3.12.
+- Confirm Uninstall removes `%USERPROFILE%\langflow\` and the shortcut, and optionally Python 3.12.
+
+## Skills
+
+These existing skills are useful for this project. Load them via the `skill()` tool when the task matches:
+
+| Skill | When to use |
+|-------|-------------|
+| `code-review` | Before merging a PR — reviews changes against AGENTS.md conventions and CONTRACT.md spec |
+| `research` | Investigating platform porting (macOS/Linux), Langflow dependency changes, or uv behaviour |
+| `implement` | Building the macOS/Linux installer port |
+| `diagnosing-bugs` | Investigating user-reported issues, AV false positives, or runtime failures |
 
 ## Version Bumping
 
@@ -89,11 +177,13 @@ Both zips contain identical contents. The landing page download URL is:
 
 ## Verification
 
-Before committing, run these checks:
+Before committing (or before merging a PR), run these checks:
+
 - **Braces balanced**: `rg -F '{' src/install-langflow-script.ps1 | wc -l` equals `rg -F '}' src/install-langflow-script.ps1 | wc -l`
 - **No irm | iex**: confirm the pattern does not exist in `src/install-langflow-script.ps1`
 - **Docs up to date**: AGENTS.md and CONTRACT.md reflect any behavior changes
 - **No secrets or absolute paths** in the diff
 - **Consistent zip uploaded**: confirm `langflow-installer-win.zip` is attached to the release alongside the versioned zip
 - **Encoding correct**: batch files use ASCII; .ps1 files are UTF-8 with BOM
-- **No stale version refs**: `rg -F '1.9.6' . --include '*.ps1' --include '*.md' --include '*.html'` returns 0 (CHANGELOG history excluded)
+- **Version consistency**: extract `$LangflowVersion` from `src/install-langflow-script.ps1` and confirm it appears in `README.md`, `CONTRACT.md`, `AGENTS.md`, and `docs/index.html`. Run: `rg -F "$(rg '^\$LangflowVersion\s*=\s*"([^"]+)"' src/install-langflow-script.ps1 -r '$1')" README.md CONTRACT.md AGENTS.md docs/index.html`
+- **No stale version refs**: after bumping, confirm no outdated version strings remain: `rg '\d+\.\d+\.\d+' . --include '*.ps1' --include '*.md' --include '*.html'` and check each match is intentional (CHANGELOG history excluded)
