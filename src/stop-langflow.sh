@@ -53,12 +53,7 @@ stop_server() {
 
     if [ -n "$pid" ]; then
         info "Found Langflow process (PID: $pid). Stopping..."
-        kill "$pid" 2>/dev/null || true
-        sleep 1
-        if kill -0 "$pid" 2>/dev/null; then
-            warn "Process did not respond. Forcing termination..."
-            kill -9 "$pid" 2>/dev/null || true
-        fi
+        kill -9 "$pid" 2>/dev/null || true
         ok "Langflow server stopped."
     else
         warn "No running Langflow server found."
