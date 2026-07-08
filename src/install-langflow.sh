@@ -38,7 +38,7 @@ warn()  { printf "${Y} ⚠ %s${N}\n" "$*"; }
 show_banner() {
     clear 2>/dev/null || printf "\033c"
     printf "${G}╔══════════════════════════════════════════════════╗${N}\n"
-    printf "${G}║${C}${B}           Langflow Installer for Unix            ${G}║${N}\n"
+    printf "${G}║${C}${B}                Langflow Installer                ${G}║${N}\n"
     printf "${G}║──────────────────────────────────────────────────║${N}\n"
     printf "${G}║${N}  GitHub:  https://github.com/NikkiSatmaka/       ${G}║${N}\n"
     printf "${G}║${N}  LinkedIn: https://linkedin.com/in/nikkisatmaka/ ${G}║${N}\n"

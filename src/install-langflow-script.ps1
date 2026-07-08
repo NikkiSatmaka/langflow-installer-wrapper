@@ -37,7 +37,7 @@ function Show-Banner {
     $B = "$([char]0x1b)[1m"
 
     Write-Host "${G}╔══════════════════════════════════════════════════╗${R}"
-    Write-Host "${G}║${C}${B}            Langflow Installer for Windows        ${G}║${R}"
+    Write-Host "${G}║${C}${B}                Langflow Installer                ${G}║${R}"
     Write-Host "${G}║──────────────────────────────────────────────────║${R}"
     Write-Host "${G}║${R}  GitHub:  https://github.com/NikkiSatmaka/       ${G}║${R}"
     Write-Host "${G}║${R}  LinkedIn: https://linkedin.com/in/nikkisatmaka/ ${G}║${R}"

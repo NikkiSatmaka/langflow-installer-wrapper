@@ -27,7 +27,15 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `src/stop-langflow-script.ps1` | PowerShell stop script (Windows) |
 | `src/stop-langflow.sh` | Bash stop script (macOS/Linux) |
 | `src/uv-install.ps1` | Bundled uv bootstrapper (official script from astral.sh) — eliminates `irm \| iex` AV trigger (Windows only) |
+| `src/stop-langflow-script.ps1` | PowerShell stop script (Windows) |
+| `src/stop-langflow.sh` | Bash stop script (macOS/Linux) |
+| `scripts/verify.sh` | Pre-commit verification checks (10 checks, POSIX-safe for CI) |
+| `scripts/package.sh` | Cross-platform zip packaging (bash) |
+| `scripts/package.ps1` | Cross-platform zip packaging (PowerShell) |
+| `.github/workflows/verify.yml` | CI: PR verification (runs `scripts/verify.sh`) |
+| `.github/workflows/release.yml` | CI: Automated release on tag push (verify + package + publish) |
 | `docs/TROUBLESHOOTING.md` | Common issues and fixes |
+| `docs/GATEKEEPER.md` | macOS Gatekeeper bypass guide |
 | `docs/index.html` | Landing page for non-GitHub users (GitHub Pages) — published at `https://nikkisatmaka.github.io/langflow-installer-wrapper/` |
 
 ## Design Constraints
@@ -112,25 +120,36 @@ Branch from `main`, open a PR, squash merge, delete branch. Keep branches short-
 8. Delete the feature branch after merge.
 9. Update `CHANGELOG.md` as part of the PR (not a separate commit).
 
+## Version Bumping
+
+| Commit type | Version bump |
+|-------------|-------------|
+| `fix:` | patch (v1.1.8 → v1.1.9) |
+| `feat:` | minor (v1.1.8 → v1.2.0) |
+| `docs:` / `chore:` | no release |
+| `fix!:` or `feat!:` | major (v1.1.8 → v2.0.0) |
+
 ## Release Process
 
-### Step-by-step
+### Automated (CI/CD)
+
+Tagging triggers the release workflow automatically:
 
 1. Ensure `main` has the changes merged and verified.
-2. Update `$ScriptVersion` in `src/install-langflow-script.ps1` if the script itself changed.
+2. Update `$ScriptVersion` / `SCRIPT_VERSION` in the install scripts if they changed.
 3. Update `CHANGELOG.md` with the new version, date, and entries.
 4. Update `README.md` and `docs/index.html` if the hero message or version number changed.
-5. Run all verification checks (see Verification section).
+5. Run `bash scripts/verify.sh` to confirm everything passes.
 6. Commit with message: `docs: update changelog for vX.Y.Z`.
 7. Tag the commit: `git tag vX.Y.Z`.
-8. Push tag and main: `git push origin main --tags`.
-9. Create a GitHub Release from the tag.
-10. Upload **three** zips to the release:
-    - `langflow-installer-vX.Y.Z.zip` — versioned, for release history (contains all three platform zips, or pick one representative zip)
-    - `langflow-installer-win.zip` — consistent name (replaces previous), used by the landing page download link
-    - `langflow-installer-macos.zip` — macOS installer
-    - `langflow-installer-linux.zip` — Linux installer
-11. Confirm `langflow-installer-win.zip` is attached (landing page download link).
+8. Push tag: `git push origin vX.Y.Z`.
+9. The CI workflow (`.github/workflows/release.yml`):
+   - Runs verify checks
+   - Packages all 3 platform zips (both versioned and unversioned names)
+   - Creates a GitHub Release with auto-generated notes
+   - Uploads all 6 zips to the release
+
+**Do not delete and re-push the same tag name** — the CI workflow will create a new release or fail. If you need to fix a release, bump the version.
 
 ### Zip contents
 
@@ -200,25 +219,18 @@ These existing skills are useful for this project. Load them via the `skill()` t
 | `implement` | Building the macOS/Linux installer port |
 | `diagnosing-bugs` | Investigating user-reported issues, AV false positives, or runtime failures |
 
-## Version Bumping
-
-| Commit type | Version bump |
-|-------------|-------------|
-| `fix:` | patch (v1.1.8 → v1.1.9) |
-| `feat:` | minor (v1.1.8 → v1.2.0) |
-| `docs:` / `chore:` | no release |
-| `fix!:` or `feat!:` | major (v1.1.8 → v2.0.0) |
-
 ## Verification
 
-Before committing (or before merging a PR), run these checks:
+Before committing (or before merging a PR), run `bash scripts/verify.sh` — it checks all the following automatically:
 
-- **Braces balanced**: `rg -F '{' src/install-langflow-script.ps1 | wc -l` equals `rg -F '}' src/install-langflow-script.ps1 | wc -l`
-- **No irm | iex**: confirm the pattern does not exist in `src/install-langflow-script.ps1`
+- **Braces balanced**: confirm `{` and `}` counts match in the PowerShell script (AVOID: `irm | iex` injection via unbalanced blocks)
+- **No irm | iex**: the pattern must not exist in `src/install-langflow-script.ps1`
 - **Docs up to date**: AGENTS.md and CONTRACT.md reflect any behavior changes
 - **No secrets or absolute paths** in the diff
 - **Consistent zip uploaded**: confirm `langflow-installer-win.zip` is attached to the release alongside the versioned zip
 - **Encoding correct**: batch files use ASCII; .ps1 files are UTF-8 with BOM
-- **Version consistency**: extract `$LangflowVersion` from `src/install-langflow-script.ps1` and confirm it appears in `README.md`, `CONTRACT.md`, `AGENTS.md`, and `docs/index.html`. Run: `rg -F "$(rg '^\$LangflowVersion\s*=\s*"([^"]+)"' src/install-langflow-script.ps1 -r '$1')" README.md CONTRACT.md AGENTS.md docs/index.html`
-- **No stale version refs**: after bumping, confirm no outdated version strings remain: `rg '\d+\.\d+\.\d+' . --include '*.ps1' --include '*.sh' --include '*.md' --include '*.html'` and check each match is intentional (CHANGELOG history excluded)
-- **Bash script**: confirm `src/install-langflow.sh` has `set -euo pipefail` and uses POSIX-friendly syntax
+- **Version consistency**: all files reference the same `$LangflowVersion`
+- **No stale version refs**: after bumping, confirm no outdated version strings remain (CHANGELOG history excluded)
+- **Bash script**: has `set -euo pipefail` and POSIX-friendly syntax
+
+The CI workflow (`.github/workflows/verify.yml`) runs `scripts/verify.sh` on every PR to `main`.

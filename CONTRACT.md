@@ -10,16 +10,14 @@ Every script invocation **must** display a banner with the author's handles befo
 
 ```
 ╔══════════════════════════════════════════════════╗
-║           Langflow Installer for Windows         ║
+║                Langflow Installer                ║
 ║──────────────────────────────────────────────────║
 ║  GitHub:  https://github.com/NikkiSatmaka/       ║
 ║  LinkedIn: https://linkedin.com/in/nikkisatmaka/ ║
 ╚══════════════════════════════════════════════════╝
 ```
 
-The banner text changes per platform:
-- **Windows**: `Langflow Installer for Windows`
-- **macOS/Linux**: `Langflow Installer for Unix`
+The banner text is the same across all platforms: `Langflow Installer`.
 
 - ANSI color support is optional but preferred for terminals that support it.
 - The banner must use box-drawing characters (Unicode U+2554–255D) as shown.
@@ -75,13 +73,19 @@ Run when the user selects `[I]`.
 4. Install Langflow: `uv pip install langflow==1.10.2`.
    - If the pin fails (e.g., version yanked), catch the error and suggest `uv pip install langflow` without the pin as a fallback.
 
-### 5.4 Desktop Shortcut
+### 5.4 Desktop Shortcuts
 
-Platform-specific:
+Two shortcuts are created: one to start Langflow, one to stop it.
 
-- **Windows**: Create a `.lnk` file named `Langflow.lnk` using `WScript.Shell` COM pointing to `run-langflow.bat`. If COM is unavailable, print the shortcut path for manual creation.
+**Start shortcut:**
+- **Windows**: Create `Langflow.lnk` using `WScript.Shell` COM pointing to `run-langflow.bat`. If COM is unavailable, print the shortcut path for manual creation.
 - **macOS**: Create `~/Desktop/Langflow.command` that executes the launcher script. Make it executable with `chmod +x`.
-- **Linux**: Create a `.desktop` file at `~/.local/share/applications/langflow.desktop` and copy to `~/Desktop/langflow.desktop`. On GNOME, mark as trusted via `gio set metadata::trusted true`.
+- **Linux**: Create `langflow.desktop` at `~/.local/share/applications/` and copy to `~/Desktop/`. On GNOME, mark as trusted via `gio set metadata::trusted true`.
+
+**Stop shortcut:**
+- **Windows**: Create `Stop Langflow.lnk` pointing to `stop-langflow-script.ps1`.
+- **macOS**: Create `~/Desktop/Stop Langflow.command` that executes the stop script. Make it executable with `chmod +x`.
+- **Linux**: Create `stop-langflow.desktop` at `~/.local/share/applications/` and copy to `~/Desktop/`. Mark as trusted on GNOME.
 
 All platforms also create a launcher script in the langflow directory:
 - **Windows**: `%USERPROFILE%\langflow\run-langflow.bat`
@@ -107,10 +111,10 @@ Run when the user selects `[U]`.
 2. Remove the langflow directory:
    - **Windows**: `%USERPROFILE%\langflow\` (recursive)
    - **macOS/Linux**: `~/langflow/` (recursive)
-3. Remove the desktop shortcut:
-   - **Windows**: `%USERPROFILE%\Desktop\Langflow.lnk`
-   - **macOS**: `~/Desktop/Langflow.command`
-   - **Linux**: `~/.local/share/applications/langflow.desktop` and `~/Desktop/langflow.desktop`
+3. Remove desktop shortcuts (start and stop):
+   - **Windows**: `%USERPROFILE%\Desktop\Langflow.lnk` and `%USERPROFILE%\Desktop\Stop Langflow.lnk`
+   - **macOS**: `~/Desktop/Langflow.command` and `~/Desktop/Stop Langflow.command`
+   - **Linux**: `~/.local/share/applications/langflow.desktop`, `~/Desktop/langflow.desktop`, `~/.local/share/applications/stop-langflow.desktop`, and `~/Desktop/stop-langflow.desktop`
 4. Ask: `Remove Python 3.12 installed by uv? [y/N]`
    - If `Y`, run `uv python uninstall 3.12`.
 5. **Do not** remove `uv` or its bin directory — uv may be used for other projects.
@@ -144,7 +148,7 @@ Run when the user selects `[U]`.
 | WScript.Shell missing on N/KN editions (Windows) | Catch COM error and print manual shortcut instructions |
 | Antivirus flags `irm \| iex` pattern (Windows) | Bundle `uv-install.ps1` in the release zip; invoke via `& "$PSScriptRoot\uv-install.ps1"` instead of downloading at runtime |
 | uv binary not on PATH after install | Explicitly add to PATH in script |
-| macOS quarantine warning for `.command` files | Document right-click > Open workaround |
+| macOS quarantine warning for `.command` files | Document System Settings > Privacy & Security > Open Anyway flow, with a dedicated guide at `docs/GATEKEEPER.md` |
 | Linux desktop shortcut not trusted | Use `gio set metadata::trusted true` for GNOME |
 
 ## 9. Out of Scope
