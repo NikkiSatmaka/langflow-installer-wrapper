@@ -232,48 +232,28 @@ EOF
     fi
 }
 
-create_stop_launcher() {
+create_stop_shortcut() {
     local launcher_path="$LANGFLOW_DIR/stop-langflow.sh"
+    local script_dir
+    script_dir=$(cd "$(dirname "$0")" && pwd)
 
-    cat > "$launcher_path" << 'LAUNCHER'
-#!/usr/bin/env bash
-set -euo pipefail
-PORT=7860
-pid=""
-if command -v lsof &>/dev/null; then pid=$(lsof -ti:"$PORT" 2>/dev/null || true); fi
-if [ -z "$pid" ]; then pid=$(pgrep -f "uv run langflow run" 2>/dev/null || true); fi
-if [ -z "$pid" ]; then pid=$(pgrep -f "langflow run" 2>/dev/null || true); fi
-if [ -n "$pid" ]; then
-    echo "Stopping Langflow server (PID: $pid)..."
-    kill "$pid" 2>/dev/null || true; sleep 1
-    if kill -0 "$pid" 2>/dev/null; then kill -9 "$pid" 2>/dev/null || true; fi
-    echo "Langflow server stopped."
-else
-    echo "No running Langflow server found."
-fi
-echo ""
-read -r -p "Press Enter to close this window..."
-LAUNCHER
+    cp "$script_dir/stop-langflow.sh" "$launcher_path"
     chmod +x "$launcher_path"
-    echo "$launcher_path"
-}
 
-create_macos_stop_shortcut() {
-    local launcher_path="$1"
-    local shortcut_path="$HOME/Desktop/Stop Langflow.command"
-    cat > "$shortcut_path" << EOF
+    local shortcut_path
+    case "$OS" in
+        Darwin)
+            shortcut_path="$HOME/Desktop/Stop Langflow.command"
+            cat > "$shortcut_path" << EOF
 #!/usr/bin/env bash
 exec "${launcher_path}"
 EOF
-    chmod +x "$shortcut_path"
-    printf "%s\n" "$shortcut_path"
-}
-
-create_linux_stop_shortcut() {
-    local launcher_path="$1"
-    local desktop_path="$HOME/.local/share/applications/stop-langflow.desktop"
-    mkdir -p "$HOME/.local/share/applications"
-    cat > "$desktop_path" << EOF
+            chmod +x "$shortcut_path"
+            ;;
+        *)
+            local desktop_path="$HOME/.local/share/applications/stop-langflow.desktop"
+            mkdir -p "$HOME/.local/share/applications"
+            cat > "$desktop_path" << EOF
 [Desktop Entry]
 Name=Stop Langflow
 Comment=Stop the Langflow server
@@ -282,31 +262,17 @@ Terminal=true
 Type=Application
 Categories=Development;
 EOF
-    chmod +x "$desktop_path"
-    if [ -d "$HOME/Desktop" ]; then
-        local desktop_shortcut="$HOME/Desktop/stop-langflow.desktop"
-        cp "$desktop_path" "$desktop_shortcut"
-        chmod +x "$desktop_shortcut"
-        if command -v gio &>/dev/null; then
-            gio set "$desktop_shortcut" metadata::trusted true 2>/dev/null || true
-        fi
-        printf "%s\n" "$desktop_shortcut"
-    else
-        printf "%s\n" "$desktop_path (no Desktop directory found)"
-    fi
-}
-
-create_stop_shortcut() {
-    local launcher_path
-    launcher_path=$(create_stop_launcher)
-    local shortcut_path
-
-    case "$OS" in
-        Darwin)
-            shortcut_path=$(create_macos_stop_shortcut "$launcher_path")
-            ;;
-        *)
-            shortcut_path=$(create_linux_stop_shortcut "$launcher_path")
+            chmod +x "$desktop_path"
+            if [ -d "$HOME/Desktop" ]; then
+                shortcut_path="$HOME/Desktop/stop-langflow.desktop"
+                cp "$desktop_path" "$shortcut_path"
+                chmod +x "$shortcut_path"
+                if command -v gio &>/dev/null; then
+                    gio set "$shortcut_path" metadata::trusted true 2>/dev/null || true
+                fi
+            else
+                shortcut_path="$desktop_path (no Desktop directory found)"
+            fi
             ;;
     esac
 

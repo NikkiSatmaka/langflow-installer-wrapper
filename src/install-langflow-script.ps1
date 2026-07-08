@@ -266,26 +266,19 @@ function New-DesktopStopShortcut {
     $DesktopPath = [Environment]::GetFolderPath('Desktop')
     $StopShortcutPath = "$DesktopPath\Stop Langflow.lnk"
     $StopLauncherPath = "$LangflowDir\stop-langflow.ps1"
+    $SourceStopScript = "$PSScriptRoot\stop-langflow-script.ps1"
 
-    $stopContent = @'
-$Port = 7860; $found = $false
-try {
-    $connections = netstat -ano | Select-String ":$Port "
-    if ($connections) {
-        $connections | ForEach-Object { ($_ -split '\s+')[-1] } | Select-Object -Unique | ForEach-Object {
-            Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue; $found = $true
+    if (Test-Path $SourceStopScript) {
+        try {
+            Copy-Item -Path $SourceStopScript -Destination $StopLauncherPath -Force
+        }
+        catch {
+            Write-Warn "Could not copy stop launcher script: $_"
+            return $false
         }
     }
-} catch {}
-if ($found) { Write-Host " Langflow server stopped." -ForegroundColor Green }
-else { Write-Host " No running Langflow server found." -ForegroundColor Yellow }
-Write-Host ""; pause
-'@
-    try {
-        Set-Content -Path $StopLauncherPath -Value $stopContent -Encoding Ascii
-    }
-    catch {
-        Write-Warn "Could not create stop launcher script: $_"
+    else {
+        Write-Warn "Stop script not found at $SourceStopScript"
         return $false
     }
 
