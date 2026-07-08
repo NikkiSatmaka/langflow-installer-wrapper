@@ -13,6 +13,7 @@ set -euo pipefail
 OS="$(uname -s)"
 SCRIPT_VERSION="1.6.0-beta.1"
 LANGFLOW_VERSION="1.10.2"
+PYTHON_VERSION="3.12"
 LANGFLOW_DIR="$HOME/langflow"
 UV_BIN_DIR="$HOME/.local/bin"
 
@@ -91,18 +92,18 @@ install_uv() {
 # ── Python ──────────────────────────────────────────────────────────────────
 
 install_python() {
-    info "Installing Python 3.12..."
-    if ! uv python install 3.12 >/dev/null 2>&1; then
-        fail "Failed to install Python 3.12."
+    info "Installing Python ${PYTHON_VERSION}..."
+    if ! uv python install "${PYTHON_VERSION}" >/dev/null 2>&1; then
+        fail "Failed to install Python ${PYTHON_VERSION}."
         return 1
     fi
 
     mkdir -p "$LANGFLOW_DIR"
     pushd "$LANGFLOW_DIR" >/dev/null || return 1
-    uv python pin 3.12 >/dev/null 2>&1
+    uv python pin "${PYTHON_VERSION}" >/dev/null 2>&1
     popd >/dev/null || true
 
-    ok "Python 3.12 ready"
+    ok "Python ${PYTHON_VERSION} ready"
     return 0
 }
 
@@ -369,11 +370,11 @@ start_uninstall() {
             ;;
     esac
 
-    read -r -p "Remove Python 3.12 installed by uv? [y/N] " remove_py
+    read -r -p "Remove Python ${PYTHON_VERSION} installed by uv? [y/N] " remove_py
     remove_py=$(printf "%s" "$remove_py" | tr '[:lower:]' '[:upper:]')
     if [ "$remove_py" = "Y" ]; then
-        uv python uninstall 3.12 2>/dev/null || true
-        ok "Python 3.12 removed"
+        uv python uninstall "${PYTHON_VERSION}" 2>/dev/null || true
+        ok "Python ${PYTHON_VERSION} removed"
     fi
 
     printf "\n"

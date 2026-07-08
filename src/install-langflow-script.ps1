@@ -15,6 +15,7 @@
 
 $ScriptVersion   = "1.6.0-beta.1"
 $LangflowVersion = "1.10.2"
+$PythonVersion   = "3.12"
 $LangflowDir     = "$env:USERPROFILE\langflow"
 $UvBinDir        = "$env:USERPROFILE\.local\bin"
 $ShortcutName    = "Langflow.lnk"
@@ -98,12 +99,12 @@ function Install-Uv {
 # ── Python ─────────────────────────────────────────────────────────────────
 
 function Install-Python {
-    Write-Info "Installing Python 3.12..."
+    Write-Info "Installing Python $PythonVersion..."
     try {
-        uv python install 3.12 2>&1 | Out-Null
+        uv python install $PythonVersion 2>&1 | Out-Null
     }
     catch {
-        Write-Fail "Failed to install Python 3.12: $_"
+        Write-Fail "Failed to install Python $PythonVersion: $_"
         return $false
     }
 
@@ -113,13 +114,13 @@ function Install-Python {
 
     Push-Location "$LangflowDir"
     try {
-        uv python pin 3.12 2>&1 | Out-Null
+        uv python pin $PythonVersion 2>&1 | Out-Null
     }
     finally {
         Pop-Location
     }
 
-    Write-Ok "Python 3.12 ready"
+    Write-Ok "Python $PythonVersion ready"
     return $true
 }
 
@@ -371,14 +372,14 @@ function Start-Uninstall {
         }
     }
 
-    $removePy = Read-Host "Remove Python 3.12 installed by uv? [y/N]"
+    $removePy = Read-Host "Remove Python $PythonVersion installed by uv? [y/N]"
     if ($removePy.ToUpper() -eq 'Y') {
         try {
-            uv python uninstall 3.12 2>&1 | Out-Null
-            Write-Ok "Python 3.12 removed"
+            uv python uninstall $PythonVersion 2>&1 | Out-Null
+            Write-Ok "Python $PythonVersion removed"
         }
         catch {
-            Write-Warn "Could not remove Python 3.12: $_"
+            Write-Warn "Could not remove Python $PythonVersion: $_"
         }
     }
 
