@@ -11,7 +11,7 @@
 set -euo pipefail
 
 OS="$(uname -s)"
-SCRIPT_VERSION="1.0.0"
+SCRIPT_VERSION="1.6.0-beta.1"
 LANGFLOW_VERSION="1.10.2"
 LANGFLOW_DIR="$HOME/langflow"
 UV_BIN_DIR="$HOME/.local/bin"

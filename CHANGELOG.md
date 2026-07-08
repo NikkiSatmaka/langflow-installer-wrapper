@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.6.0-beta.1 (2026-07-08)
+
+- feat: macOS and Linux installer beta (beta)
+- feat: cross-platform landing page with OS tabs
+- feat: double-click stop launchers for all platforms
+- feat: desktop stop shortcut created during installation
+- chore: update bundled uv from 0.11.23 to 0.11.28
+- chore: add CI/CD workflows (verify + release automation)
+- chore: add packaging scripts under scripts/
+
 ## v1.5.0 (2026-07-08)
 - feat: update Langflow from 1.10.1 to 1.10.2
 

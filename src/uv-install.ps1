@@ -6,12 +6,12 @@
 <#
 .SYNOPSIS
 
-The installer for uv 0.11.23
+The installer for uv 0.11.28
 
 .DESCRIPTION
 
 This script detects what platform you're on and fetches an appropriate archive from
-https://releases.astral.sh/github/uv/releases/download/0.11.23
+https://releases.astral.sh/github/uv/releases/download/0.11.28
 then unpacks the binaries and installs them to the first of the following locations
 
     $env:XDG_BIN_HOME
@@ -36,25 +36,25 @@ param (
 )
 
 $app_name = 'uv'
-$app_version = '0.11.23'
+$app_version = '0.11.28'
 if ($env:UV_DOWNLOAD_URL) {
   $ArtifactDownloadUrls = @($env:UV_DOWNLOAD_URL)
 } elseif ($env:INSTALLER_DOWNLOAD_URL) {
   $ArtifactDownloadUrls = @($env:INSTALLER_DOWNLOAD_URL)
 } elseif ($env:UV_INSTALLER_GHE_BASE_URL) {
   $installer_base_url = $env:UV_INSTALLER_GHE_BASE_URL
-  $ArtifactDownloadUrls = @("$installer_base_url/astral-sh/uv/releases/download/0.11.23")
+  $ArtifactDownloadUrls = @("$installer_base_url/astral-sh/uv/releases/download/0.11.28")
 } elseif ($env:UV_INSTALLER_GITHUB_BASE_URL) {
   $installer_base_url = $env:UV_INSTALLER_GITHUB_BASE_URL
-  $ArtifactDownloadUrls = @("$installer_base_url/astral-sh/uv/releases/download/0.11.23")
+  $ArtifactDownloadUrls = @("$installer_base_url/astral-sh/uv/releases/download/0.11.28")
 } else {
-  $ArtifactDownloadUrls = @("https://releases.astral.sh/github/uv/releases/download/0.11.23", "https://github.com/astral-sh/uv/releases/download/0.11.23")
+  $ArtifactDownloadUrls = @("https://releases.astral.sh/github/uv/releases/download/0.11.28", "https://github.com/astral-sh/uv/releases/download/0.11.28")
 }
 
 $auth_token = $env:UV_GITHUB_TOKEN
 
 $receipt = @"
-{"binaries":["CARGO_DIST_BINS"],"binary_aliases":{},"cdylibs":["CARGO_DIST_DYLIBS"],"cstaticlibs":["CARGO_DIST_STATICLIBS"],"install_layout":"unspecified","install_prefix":"AXO_INSTALL_PREFIX","modify_path":true,"provider":{"source":"cargo-dist","version":"0.31.0"},"source":{"app_name":"uv","name":"uv","owner":"astral-sh","release_type":"github"},"version":"0.11.23"}
+{"binaries":["CARGO_DIST_BINS"],"binary_aliases":{},"cdylibs":["CARGO_DIST_DYLIBS"],"cstaticlibs":["CARGO_DIST_STATICLIBS"],"install_layout":"unspecified","install_prefix":"AXO_INSTALL_PREFIX","modify_path":true,"provider":{"source":"cargo-dist","version":"0.31.0"},"source":{"app_name":"uv","name":"uv","owner":"astral-sh","release_type":"github"},"version":"0.11.28"}
 "@
 if ($env:XDG_CONFIG_HOME) {
   $receipt_home = "${env:XDG_CONFIG_HOME}\uv"

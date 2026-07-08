@@ -13,7 +13,7 @@
 
 #Requires -Version 5.1
 
-$ScriptVersion   = "1.5.0"
+$ScriptVersion   = "1.6.0-beta.1"
 $LangflowVersion = "1.10.2"
 $LangflowDir     = "$env:USERPROFILE\langflow"
 $UvBinDir        = "$env:USERPROFILE\.local\bin"
