@@ -17,10 +17,15 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `Install Langflow.bat` | Double-click launcher that bypasses execution policy (Windows) |
 | `Install Langflow.command` | Double-click launcher (macOS) |
 | `Install Langflow.sh` | Launcher (Linux) |
+| `Stop Langflow.bat` | Double-click to stop the running Langflow server (Windows) |
+| `Stop Langflow.command` | Double-click to stop the running Langflow server (macOS) |
+| `Stop Langflow.sh` | Double-click to stop the running Langflow server (Linux) |
 | `README.md` | This file — for humans |
 | `CHANGELOG.md` | Release history |
 | `src/install-langflow-script.ps1` | Main PowerShell installer/uninstaller script (Windows) |
 | `src/install-langflow.sh` | Main bash installer/uninstaller script (macOS/Linux) |
+| `src/stop-langflow-script.ps1` | PowerShell stop script (Windows) |
+| `src/stop-langflow.sh` | Bash stop script (macOS/Linux) |
 | `src/uv-install.ps1` | Bundled uv bootstrapper (official script from astral.sh) — eliminates `irm \| iex` AV trigger (Windows only) |
 | `docs/TROUBLESHOOTING.md` | Common issues and fixes |
 | `docs/index.html` | Landing page for non-GitHub users (GitHub Pages) — published at `https://nikkisatmaka.github.io/langflow-installer-wrapper/` |
@@ -133,19 +138,25 @@ Each zip contains platform-specific files only:
 
 **`langflow-installer-win.zip` / `langflow-installer-vX.Y.Z.zip`:**
 - `Install Langflow.bat` (root)
+- `Stop Langflow.bat` (root)
 - `LICENSE` (root)
 - `src/install-langflow-script.ps1`
+- `src/stop-langflow-script.ps1`
 - `src/uv-install.ps1`
 
 **`langflow-installer-macos.zip`:**
 - `Install Langflow.command` (root)
+- `Stop Langflow.command` (root)
 - `LICENSE` (root)
 - `src/install-langflow.sh`
+- `src/stop-langflow.sh`
 
 **`langflow-installer-linux.zip`:**
 - `Install Langflow.sh` (root)
+- `Stop Langflow.sh` (root)
 - `LICENSE` (root)
 - `src/install-langflow.sh`
+- `src/stop-langflow.sh`
 
 Landing page download URLs (never changes across versions):
 - Windows: `https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-win.zip`

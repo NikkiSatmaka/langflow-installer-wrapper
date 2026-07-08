@@ -260,6 +260,54 @@ pause >nul
     return $true
 }
 
+# ── Stop Shortcut ─────────────────────────────────────────────────────────
+
+function New-DesktopStopShortcut {
+    $DesktopPath = [Environment]::GetFolderPath('Desktop')
+    $StopShortcutPath = "$DesktopPath\Stop Langflow.lnk"
+    $StopLauncherPath = "$LangflowDir\stop-langflow.ps1"
+
+    $stopContent = @'
+$Port = 7860; $found = $false
+try {
+    $connections = netstat -ano | Select-String ":$Port "
+    if ($connections) {
+        $connections | ForEach-Object { ($_ -split '\s+')[-1] } | Select-Object -Unique | ForEach-Object {
+            Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue; $found = $true
+        }
+    }
+} catch {}
+if ($found) { Write-Host " Langflow server stopped." -ForegroundColor Green }
+else { Write-Host " No running Langflow server found." -ForegroundColor Yellow }
+Write-Host ""; pause
+'@
+    try {
+        Set-Content -Path $StopLauncherPath -Value $stopContent -Encoding Ascii
+    }
+    catch {
+        Write-Warn "Could not create stop launcher script: $_"
+        return $false
+    }
+
+    try {
+        $WshShell = New-Object -ComObject WScript.Shell
+        $Shortcut = $WshShell.CreateShortcut($StopShortcutPath)
+        $Shortcut.TargetPath = "powershell.exe"
+        $Shortcut.Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$StopLauncherPath`""
+        $Shortcut.WorkingDirectory = $LangflowDir
+        $Shortcut.Description = "Stop the Langflow server"
+        $Shortcut.Save()
+
+        Write-Ok "Stop shortcut created: $StopShortcutPath"
+    }
+    catch {
+        Write-Warn "Could not create stop desktop shortcut (COM unavailable)."
+        Write-Info "  Run manually: powershell -File ""$StopLauncherPath"""
+        return $false
+    }
+    return $true
+}
+
 # ── Install ────────────────────────────────────────────────────────────────
 
 function Start-Install {
@@ -270,11 +318,12 @@ function Start-Install {
     if (-not (Install-Python)) { return }
     if (-not (Install-LangflowPackage)) { return }
     New-DesktopShortcut | Out-Null
+    New-DesktopStopShortcut | Out-Null
 
     Write-Host ""
     Write-Host "══════════════════════════════════════════════════" -ForegroundColor Green
     Write-Ok "Langflow $LangflowVersion installed"
-    Write-Ok "Desktop shortcut created"
+    Write-Ok "Desktop shortcuts created"
     Write-Host " ➜  Double-click the Langflow desktop shortcut to start" -ForegroundColor Cyan
     Write-Host " ➜  Browser will open automatically at http://127.0.0.1:7860" -ForegroundColor Cyan
     Write-Host "══════════════════════════════════════════════════" -ForegroundColor Green
@@ -315,6 +364,17 @@ function Start-Uninstall {
         }
         catch {
             Write-Warn "Could not remove shortcut: $_"
+        }
+    }
+
+    $StopShortcutPath = "$DesktopPath\Stop Langflow.lnk"
+    if (Test-Path $StopShortcutPath) {
+        try {
+            Remove-Item -Path $StopShortcutPath -Force
+            Write-Ok "Stop shortcut removed"
+        }
+        catch {
+            Write-Warn "Could not remove stop shortcut: $_"
         }
     }
 
