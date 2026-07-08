@@ -172,7 +172,8 @@ while true; do
     if curl -s -o /dev/null --max-time 2 "http://127.0.0.1:7860/health_check" 2>/dev/null; then
         break
     fi
-    sleep 3
+    echo "Still waiting... check http://127.0.0.1:7860 in your browser"
+    sleep 5
 done
 echo ""
 echo " +==================================================+"
