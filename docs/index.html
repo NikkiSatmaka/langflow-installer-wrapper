@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Langflow Installer for Windows</title>
+  <title>Langflow Installer for Windows, macOS, and Linux</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -23,8 +23,31 @@
       border-radius: 999px; margin-bottom: 1rem;
     }
 
+    /* Tabs */
+    input[name="os"] { display: none; }
+    .tabs {
+      display: flex; gap: 0.5rem; justify-content: center; margin: 0 0 2rem;
+    }
+    .tab-label {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.6rem 1.25rem; border-radius: 10px; cursor: pointer;
+      font-size: 0.9rem; font-weight: 600; transition: background 0.15s, color 0.15s;
+      background: #1e293b; color: #64748b; border: 1px solid transparent;
+    }
+    .tab-label:hover { background: #334155; color: #cbd5e1; }
+    .tab-label svg { width: 18px; height: 18px; fill: currentColor; }
+    #os-win:checked ~ .tabs .tab-win,
+    #os-mac:checked ~ .tabs .tab-mac,
+    #os-linux:checked ~ .tabs .tab-linux {
+      background: #1e293b; color: #fff; border-color: #3b82f6;
+    }
+    .tab-content { display: none; }
+    #os-win:checked ~ #content-win,
+    #os-mac:checked ~ #content-mac,
+    #os-linux:checked ~ #content-linux { display: block; }
+
     /* Download button */
-    .download-wrap { text-align: center; margin: 2rem 0 2.5rem; }
+    .download-wrap { text-align: center; margin: 0 0 2.5rem; }
     .download-btn {
       display: inline-flex; align-items: center; gap: 0.5rem;
       background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff;
@@ -49,6 +72,7 @@
     }
     .step p { font-size: 0.95rem; color: #cbd5e1; margin-top: 0.15rem; }
     .step strong { color: #f8fafc; }
+    .step code { color: #38bdf8; font-size: 0.9rem; }
 
     /* Section headers */
     h2 { font-size: 1.25rem; font-weight: 600; color: #f1f5f9; margin: 2rem 0 1rem; }
@@ -101,6 +125,7 @@
       .container { padding: 1.25rem 1rem; }
       .hero h1 { font-size: 1.5rem; }
       .download-btn { font-size: 1rem; padding: 0.85rem 2rem; width: 100%; justify-content: center; }
+      .tabs { flex-direction: column; align-items: center; }
     }
   </style>
 </head>
@@ -109,68 +134,214 @@
     <!-- Hero -->
     <div class="hero">
       <span class="badge">No admin rights required</span>
-      <h1>Langflow for Windows</h1>
+      <h1>Langflow for Windows, macOS, and Linux</h1>
       <p>Install Langflow 1.10.2 with one click. No Python or package manager needed.</p>
     </div>
 
-    <!-- Download -->
-    <div class="download-wrap">
-      <a href="https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-win.zip" class="download-btn">
-        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-        Download Installer
-      </a>
-      <div class="download-sub">~37 KB &middot; Windows 10 / 11</div>
+    <!-- Radio inputs for tabs -->
+    <input type="radio" name="os" id="os-win" checked>
+    <input type="radio" name="os" id="os-mac">
+    <input type="radio" name="os" id="os-linux">
+
+    <!-- Tab bar -->
+    <div class="tabs">
+      <label for="os-win" class="tab-label tab-win">
+        <svg viewBox="0 0 16 16"><path d="M0 0h6.5v6.5H0V0zm9.5 0H16v6.5H9.5V0zM0 9.5h6.5V16H0V9.5zm9.5 0H16V16H9.5V9.5z"/></svg>
+        Windows
+      </label>
+      <label for="os-mac" class="tab-label tab-mac">
+        <svg viewBox="0 0 16 16"><path d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.148-.764 2.681-.694 2.97.07.288.805 2.543 2.573 2.543 1.768 0 2.926-1.574 2.926-1.574.723-1.18.971-2.094.971-2.094.182-.607.162-1.226-.026-1.745-.19-.53-.502-.897-.777-.929z"/><path d="M11.997 4.313s-.984.823-.984 1.94c0 1.117.984 1.813.984 1.813.329.246.824.154 1.127-.144.3-.298.367-.789.203-1.163-.163-.375-.806-.949-.806-.949z"/><path d="M5.77 0C4.132.168 2.247 1.113.9 3.05c-1.408 2.03-1.043 5.077.08 6.799 1.124 1.721 1.953 2.72 2.555 2.72.601 0 .51-.446.176-1.046-.334-.6-1.007-1.594-1.007-2.646 0-1.723 1.267-3.563 2.91-3.563.833 0 1.406.364 1.788.688.289.245.575.026.56-.27 0-.072-.024-.442-.024-.442 0-.666-.166-1.434-.433-2.05-.268-.617-.717-1.152-1.17-1.385C5.926.074 5.592.016 5.77 0z"/></svg>
+        macOS
+      </label>
+      <label for="os-linux" class="tab-label tab-linux">
+        <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Linux
+      </label>
     </div>
 
-    <!-- Steps -->
-    <h2>How to install</h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div><strong>Download the zip</strong><p>Click the button above to get the installer.</p></div>
+    <!-- ═══════════════ Windows ═══════════════ -->
+
+    <div class="tab-content" id="content-win">
+      <div class="download-wrap">
+        <a href="https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-win.zip" class="download-btn">
+          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          Download for Windows
+        </a>
+        <div class="download-sub">~12 KB &middot; Windows 10 / 11</div>
       </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div><strong>Extract the zip</strong><p>Right-click and select <em>Extract All</em>, or open it in File Explorer and drag the files out.</p></div>
+
+      <h2>How to install</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div><strong>Download the zip</strong><p>Click the button above to get the installer.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div><strong>Extract the zip</strong><p>Right-click and select <em>Extract All</em>, or open it in File Explorer and drag the files out.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div><strong>Double-click <em>Install Langflow.bat</em></strong><p>A menu will appear. Press <kbd>I</kbd> and hit Enter. The script handles everything.</p></div>
+        </div>
       </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div><strong>Double-click <em>Install Langflow.bat</em></strong><p>A menu will appear. Press <kbd>I</kbd> and hit Enter. The script handles everything.</p></div>
+
+      <h2>What the script does</h2>
+      <ul>
+        <li>Installs <strong>uv</strong> (a fast Python package manager)</li>
+        <li>Downloads <strong>Python 3.12</strong></li>
+        <li>Creates a virtual environment in <code>%USERPROFILE%\langflow\</code></li>
+        <li>Installs <strong>Langflow 1.10.2</strong></li>
+        <li>Creates a <strong>desktop shortcut</strong> (<em>Langflow.lnk</em>)</li>
+      </ul>
+
+      <h2>How to run</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div><strong>Find the Langflow shortcut</strong><p>Look for <em>Langflow.lnk</em> on your desktop. The installer created it for you.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div><strong>Double-click the shortcut</strong><p>A minimized terminal window will open with the server logs. A second window will guide you through startup.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div><strong>Wait for your browser</strong><p>The launcher opens your browser at <code>http://127.0.0.1:7860</code> automatically once Langflow is ready.</p></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <strong>&#9888;&#65039; Keep the minimized terminal window open</strong> &mdash;
+        The Langflow server runs in that window. Closing it will stop the server
+        and the browser page will stop working.
       </div>
     </div>
 
-    <!-- What it does -->
-    <h2>What the script does</h2>
-    <ul>
-      <li>Installs <strong>uv</strong> (a fast Python package manager)</li>
-      <li>Downloads <strong>Python 3.12</strong></li>
-      <li>Creates a virtual environment in <code>%USERPROFILE%\langflow\</code></li>
-      <li>Installs <strong>Langflow 1.10.2</strong></li>
-      <li>Creates a <strong>desktop shortcut</strong> (<em>Langflow.lnk</em>)</li>
-    </ul>
+    <!-- ═══════════════ macOS ═══════════════ -->
 
-    <!-- How to run -->
-    <h2>How to run</h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div><strong>Find the Langflow shortcut</strong><p>Look for <em>Langflow.lnk</em> on your desktop. The installer created it for you.</p></div>
+    <div class="tab-content" id="content-mac">
+      <div class="download-wrap">
+        <a href="https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-macos.zip" class="download-btn">
+          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          Download for macOS
+        </a>
+        <div class="download-sub">~32 KB &middot; macOS 12+ (Intel &amp; Apple Silicon)</div>
       </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div><strong>Double-click the shortcut</strong><p>A terminal window will open with the server logs. <em>Do not close it.</em></p></div>
+
+      <h2>How to install</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div><strong>Download the zip</strong><p>Click the button above to get the installer.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div><strong>Extract the zip</strong><p>Double-click the zip in Finder to extract the files.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div><strong>Double-click <em>Install Langflow.command</em></strong><p>Terminal will open and show the menu. Press <kbd>I</kbd> and hit Enter. The script handles everything.</p></div>
+        </div>
       </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div><strong>Wait for your browser</strong><p>The launcher opens your browser at <code style="color:#38bdf8">http://127.0.0.1:7860</code> automatically once Langflow is ready.</p></div>
+
+      <h2>What the script does</h2>
+      <ul>
+        <li>Installs <strong>uv</strong> (a fast Python package manager)</li>
+        <li>Downloads <strong>Python 3.12</strong></li>
+        <li>Creates a virtual environment in <code>~/langflow/</code></li>
+        <li>Installs <strong>Langflow 1.10.2</strong></li>
+        <li>Creates a <strong>desktop shortcut</strong> (<em>Langflow.command</em>)</li>
+      </ul>
+
+      <h2>How to run</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div><strong>Find the Langflow shortcut</strong><p>Look for <em>Langflow.command</em> on your desktop. The installer created it for you.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div><strong>Double-click the shortcut</strong><p>Terminal will open, start the server, and automatically open your browser once Langflow is ready at <code>http://127.0.0.1:7860</code>.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div><strong>Press Enter to dismiss</strong><p>After the browser opens, press Enter in Terminal to close the launcher. The server keeps running in the background.</p></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <strong>&#9888;&#65039; First time opening a .command file?</strong> &mdash;
+        macOS may show a security warning. Right-click the file and select <em>Open</em>, then click <em>Open</em> in the dialog. This is a one-time step.
+      </div>
+
+      <div class="tip">
+        <strong>&#128161; Stop the server</strong> &mdash;
+        To stop Langflow, run <code>pkill -f &quot;langflow run&quot;</code> in a terminal. Or restart your Mac.
       </div>
     </div>
 
-    <!-- Tip -->
-    <div class="tip">
-      <strong>&#9888;&#65039; Keep the terminal window open</strong> &mdash;
-      The Langflow server runs in that terminal. Closing it will stop the server
-      and the browser page will stop working.
+    <!-- ═══════════════ Linux ═══════════════ -->
+
+    <div class="tab-content" id="content-linux">
+      <div class="download-wrap">
+        <a href="https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-linux.zip" class="download-btn">
+          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          Download for Linux
+        </a>
+        <div class="download-sub">~32 KB &middot; Any modern Linux distribution</div>
+      </div>
+
+      <h2>How to install</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div><strong>Download the zip</strong><p>Click the button above to get the installer.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div><strong>Extract the zip</strong><p>Right-click and select <em>Extract Here</em>, or run <code>unzip langflow-installer-linux.zip</code> in a terminal.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div><strong>Run <em>Install Langflow.sh</em></strong><p>If your file manager lets you, double-click and choose <em>Run in Terminal</em>. Otherwise, open a terminal in the folder and run <code>bash Install\ Langflow.sh</code>. Press <kbd>I</kbd> and hit Enter.</p></div>
+        </div>
+      </div>
+
+      <h2>What the script does</h2>
+      <ul>
+        <li>Installs <strong>uv</strong> (a fast Python package manager)</li>
+        <li>Downloads <strong>Python 3.12</strong></li>
+        <li>Creates a virtual environment in <code>~/langflow/</code></li>
+        <li>Installs <strong>Langflow 1.10.2</strong></li>
+        <li>Creates a <strong>desktop shortcut</strong> in your app menu and on your desktop</li>
+      </ul>
+
+      <h2>How to run</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div><strong>Find Langflow in your app menu</strong><p>Look for <em>Langflow</em> in your application menu under <em>Development</em>. Or find <em>langflow.desktop</em> on your desktop.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div><strong>Launch Langflow</strong><p>Click the app menu entry or double-click the desktop shortcut. A terminal will open, start the server, and automatically open your browser at <code>http://127.0.0.1:7860</code>.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div><strong>Press Enter to dismiss</strong><p>After the browser opens, press Enter in the terminal to close it. The server keeps running in the background.</p></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <strong>&#9888;&#65039; If double-click opens the file in a text editor</strong> &mdash;
+        Right-click the file, go to <em>Properties</em> &gt; <em>Permissions</em>, and check <em>Allow executing as program</em>. Then double-click again and choose <em>Run in Terminal</em>.
+      </div>
+
+      <div class="tip">
+        <strong>&#128161; Stop the server</strong> &mdash;
+        To stop Langflow, run <code>pkill -f &quot;langflow run&quot;</code> in a terminal.
+      </div>
     </div>
 
     <!-- Help -->
