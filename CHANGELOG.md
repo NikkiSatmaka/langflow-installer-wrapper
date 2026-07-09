@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.6.0-beta.3 (2026-07-08)
+## v1.6.0 (2026-07-08)
 
 - fix: redirect menu display to stderr so choice capture works
 - fix: banner alignment (off-by-1 on the title line)
