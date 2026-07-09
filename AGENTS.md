@@ -146,10 +146,25 @@ Tagging triggers the release workflow automatically:
 9. The CI workflow (`.github/workflows/release.yml`):
    - Runs verify checks
    - Packages all 3 platform zips (both versioned and unversioned names)
-   - Creates a GitHub Release with auto-generated notes
+   - Generates release notes from `CHANGELOG.md` via `scripts/release-notes.sh`
+   - Creates a GitHub Release with grouped notes (Features, Bug Fixes, Documentation, Maintenance)
    - Uploads all 6 zips to the release
+   - Tags containing `beta`, `rc`, or `alpha` are automatically marked as pre-release
 
 **Do not delete and re-push the same tag name** — the CI workflow will create a new release or fail. If you need to fix a release, bump the version.
+
+### Release Notes Standard
+
+Release notes are auto-generated from `CHANGELOG.md` — it is the single source of truth for every release.
+
+- Exactly one `## vX.Y.Z (YYYY-MM-DD)` heading per release.
+- Each bullet must use conventional-commit format: `- type: description`.
+- `scripts/release-notes.sh` groups bullets by type into headings:
+  - `feat` -> **Features**
+  - `fix` -> **Bug Fixes**
+  - `docs` -> **Documentation**
+  - `chore` / `refactor` -> **Maintenance**
+- The notes body includes an **Installation** block (download table for Windows, macOS, Linux) and a **Full Changelog** comparison link.
 
 ### Zip contents
 
