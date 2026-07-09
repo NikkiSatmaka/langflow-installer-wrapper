@@ -1,8 +1,8 @@
-# CONTRACT.md — Langflow Windows Installer Specification
+# CONTRACT.md — Langflow Windows/macOS/Linux Installer Specification
 
 ## 1. Purpose
 
-Provide a single-click (or double-click) solution for Windows users to install, run, and uninstall Langflow (`==1.10.2`) using `uv` as the package manager, with no administrative privileges required.
+Provide a single-click (or double-click) solution for users to install, run, and uninstall Langflow (`==1.10.2`) using `uv` as the package manager on Windows, macOS, and Linux — with no administrative privileges required on any platform.
 
 ## 2. Credits & Attribution
 
@@ -10,17 +10,19 @@ Every script invocation **must** display a banner with the author's handles befo
 
 ```
 ╔══════════════════════════════════════════════════╗
-║            Langflow Installer for Windows        ║
+║                Langflow Installer                ║
 ║──────────────────────────────────────────────────║
 ║  GitHub:  https://github.com/NikkiSatmaka/       ║
 ║  LinkedIn: https://linkedin.com/in/nikkisatmaka/ ║
 ╚══════════════════════════════════════════════════╝
 ```
 
+The banner text is the same across all platforms: `Langflow Installer`.
+
 - ANSI color support is optional but preferred for terminals that support it.
 - The banner must use box-drawing characters (Unicode U+2554–255D) as shown.
 
-## 3. Entry Point Behaviour
+## 3. Entry Point Behaviour (all platforms)
 
 The script **must** clear the screen, print the banner, then present a simple menu:
 
@@ -34,101 +36,126 @@ The script **must** clear the screen, print the banner, then present a simple me
 - Any other input re-prompts.
 - `[Q]` exits immediately with code 0.
 
-## 4. Install Flow
+## 4. Platform Entry Points
+
+| Platform | Launcher file | Main script | Mechanism |
+|----------|--------------|-------------|-----------|
+| Windows | `Install Langflow.bat` | `src/install-langflow-script.ps1` | Batch calls PowerShell with `-ExecutionPolicy Bypass` |
+| macOS | `Install Langflow.command` | `src/install-langflow.sh` | `.command` file opens Terminal, runs bash script |
+| Linux | `Install Langflow.sh` | `src/install-langflow.sh` | Run via terminal: `bash Install Langflow.sh` |
+
+## 5. Install Flow (all platforms)
 
 Run when the user selects `[I]`.
 
-### 4.1 uv Installation
+### 5.1 uv Installation
 
-1. Check if `uv` is on `$env:PATH`.
+1. Check if `uv` is on PATH.
 2. If not found:
-   - Run the bundled `uv-install.ps1` via `& "$PSScriptRoot\uv-install.ps1"`.
-   - After the installer completes, add `%USERPROFILE%\.local\bin` to the **permanent user PATH** via `[Environment]::SetEnvironmentVariable('Path', ..., 'User')`.
-3. Refresh the in-session `$env:PATH` to include the new entry immediately.
+   - **Windows**: Run the bundled `uv-install.ps1` via `& "$PSScriptRoot\uv-install.ps1"`. After the installer completes, add `%USERPROFILE%\.local\bin` to the **permanent user PATH** via `[Environment]::SetEnvironmentVariable('Path', ..., 'User')`.
+   - **macOS/Linux**: Run `curl -LsSf https://astral.sh/uv/install.sh | sh`. Add `~/.local/bin` to `~/.profile`.
+3. Refresh the in-session PATH to include the new entry immediately.
 4. Verify `uv --version` succeeds. If it fails, print a clear error and abort install.
 
-### 4.2 Python 3.12
+### 5.2 Python 3.12
 
 1. Run `uv python install 3.12` (downloads prebuilt CPython, no admin needed).
-2. Run `uv python pin 3.12` inside the working directory (see 4.3).
+2. Run `uv python pin 3.12` inside the working directory (see 5.3).
 3. If 3.12 is already installed, the command is a no-op (uv handles this).
 
-### 4.3 Virtual Environment & Langflow
+### 5.3 Virtual Environment & Langflow
 
-1. Create `%USERPROFILE%\langflow\` directory if it does not exist.
-2. `cd %USERPROFILE%\langflow`
+1. Create the langflow directory:
+   - **Windows**: `%USERPROFILE%\langflow\`
+   - **macOS/Linux**: `~/langflow/`
+2. `cd` into the langflow directory.
 3. Create venv: `uv venv` (creates `.venv`).
 4. Install Langflow: `uv pip install langflow==1.10.2`.
    - If the pin fails (e.g., version yanked), catch the error and suggest `uv pip install langflow` without the pin as a fallback.
 
-### 4.4 Desktop Shortcut
+### 5.4 Desktop Shortcuts
 
-1. Resolve the desktop path via `[Environment]::GetFolderPath('Desktop')`.
-2. Create a `.lnk` file named `Langflow.lnk` using `WScript.Shell` COM:
-   - **Target**: The `run-langflow.bat` launcher created in `%USERPROFILE%\langflow\`.
-   - **Target (actual)**: `TargetPath` points to `%USERPROFILE%\langflow\run-langflow.bat`, which runs `uv run langflow run` and opens the browser.
-   - **Working directory**: `%USERPROFILE%\langflow`
-   - **Window style**: Normal (1)
-   - **Description**: `Langflow AI Platform (http://127.0.0.1:7860)`
-3. If `WScript.Shell` is unavailable (stripped Windows N/KN), catch and print the shortcut path so the user can create it manually.
+Two shortcuts are created: one to start Langflow, one to stop it.
 
-### 4.5 Completion
+**Start shortcut:**
+- **Windows**: Create `Langflow.lnk` using `WScript.Shell` COM pointing to `run-langflow.bat`. If COM is unavailable, print the shortcut path for manual creation.
+- **macOS**: Create `~/Desktop/Langflow.command` that executes the launcher script. Make it executable with `chmod +x`.
+- **Linux**: Create `langflow.desktop` at `~/.local/share/applications/` and copy to `~/Desktop/`. On GNOME, mark as trusted via `gio set metadata::trusted true`.
 
-Print a success summary:
+**Stop shortcut:**
+- **Windows**: Create `Stop Langflow.lnk` pointing to `stop-langflow-script.ps1`.
+- **macOS**: Create `~/Desktop/Stop Langflow.command` that executes the stop script. Make it executable with `chmod +x`.
+- **Linux**: Create `stop-langflow.desktop` at `~/.local/share/applications/` and copy to `~/Desktop/`. Mark as trusted on GNOME.
+
+All platforms also create a launcher script in the langflow directory:
+- **Windows**: `%USERPROFILE%\langflow\run-langflow.bat`
+- **macOS/Linux**: `~/langflow/start-langflow.sh`
+
+### 5.5 Completion
+
+Print a platform-appropriate success summary:
 
 ```
 ✓ Langflow 1.10.2 installed
-✓ Desktop shortcut created: %USERPROFILE%\Desktop\Langflow.lnk
+✓ Desktop shortcut created: <path>
 ➜ Double-click the shortcut to start Langflow
 ➜ Browser opens automatically at http://127.0.0.1:7860
 ```
 
-## 5. Uninstall Flow
+## 6. Uninstall Flow (all platforms)
 
 Run when the user selects `[U]`.
 
 1. Confirm: `Are you sure? [y/N]`
    - Defaults to `N` on empty input.
-2. Remove `%USERPROFILE%\langflow\` (recursive, if it exists).
-3. Remove `%USERPROFILE%\Desktop\Langflow.lnk` (if it exists).
+2. Remove the langflow directory:
+   - **Windows**: `%USERPROFILE%\langflow\` (recursive)
+   - **macOS/Linux**: `~/langflow/` (recursive)
+3. Remove desktop shortcuts (start and stop):
+   - **Windows**: `%USERPROFILE%\Desktop\Langflow.lnk` and `%USERPROFILE%\Desktop\Stop Langflow.lnk`
+   - **macOS**: `~/Desktop/Langflow.command` and `~/Desktop/Stop Langflow.command`
+   - **Linux**: `~/.local/share/applications/langflow.desktop`, `~/Desktop/langflow.desktop`, `~/.local/share/applications/stop-langflow.desktop`, and `~/Desktop/stop-langflow.desktop`
 4. Ask: `Remove Python 3.12 installed by uv? [y/N]`
    - If `Y`, run `uv python uninstall 3.12`.
-5. **Do not** remove `uv` or `%USERPROFILE%\.local\bin\` — uv may be used for other projects.
+5. **Do not** remove `uv` or its bin directory — uv may be used for other projects.
 6. Print: `✓ Langflow uninstalled`
 
-## 6. Non-Functional Requirements
+## 7. Non-Functional Requirements
 
 | Requirement | Specification |
 |-------------|---------------|
-| Admin privileges | None required at any step |
+| Admin privileges | None required at any step on any platform |
 | Idempotency | Re-running the installer overwrites nothing unexpectedly; re-checks every dependency |
 | Error resilience | Non-fatal errors (e.g., shortcut creation) print a warning and continue. Fatal errors (uv install fail, Python install fail) abort with a clear message |
 | Progress visibility | Long operations (`uv pip install langflow`) should print stdout so user sees download progress |
-| PATH persistence | The `%USERPROFILE%\.local\bin` PATH entry persists across reboots via `[Environment]::SetEnvironmentVariable` |
-| Portability | All operations use `%USERPROFILE%` — works on Windows 10 and 11 regardless of drive letter |
-| File encoding | `install-langflow-script.ps1` must be saved as **UTF-8 with BOM** to ensure Windows PowerShell correctly parses non-ASCII characters (box-drawing, em dashes, check marks, etc.) |
-| Bundled uv installer | `uv-install.ps1` is shipped in the release zip; the script references it via `$PSScriptRoot` instead of using `irm \| iex` |
-| Minimal release assets | GitHub release `.zip` must contain exactly `Install Langflow.bat` and `LICENSE` at zip root, with `install-langflow-script.ps1` and `uv-install.ps1` under a `src/` subdirectory. No other repository files. |
-| Landing page download | Each release also uploads `langflow-installer-win.zip` (same contents as versioned zip, consistent name). Download link on the landing page never needs updating across versions. |
-| Python version rationale | Pin 3.12 — the latest version with pre-built wheels for all C-extension dependencies (e.g., fastparquet). 3.13/3.14 require building from source via MSVC, which most Windows users lack. |
+| PATH persistence | Windows: Registry via `[Environment]::SetEnvironmentVariable`. macOS/Linux: `~/.profile` |
+| Portability | All operations use `%USERPROFILE%` (Windows) or `$HOME` (macOS/Linux) |
+| File encoding (Windows) | `install-langflow-script.ps1` must be saved as **UTF-8 with BOM** to ensure Windows PowerShell correctly parses non-ASCII characters |
+| Bundled uv installer | Windows bundles `uv-install.ps1` to avoid `irm \| iex` AV triggers. macOS/Linux use `curl \| sh` from the official astral.sh URL |
+| Release assets | Three per-platform zips: `langflow-installer-win.zip`, `langflow-installer-macos.zip`, `langflow-installer-linux.zip`. Each contains only the files needed for that platform |
+| Landing page download | `langflow-installer-win.zip` URL stays consistent. macOS and Linux zips have their own URLs |
+| Python version rationale | Pin 3.12 — the latest version with pre-built wheels for all C-extension dependencies. 3.13+ requires building from source |
 
-## 7. Known Risks & Mitigations
+## 8. Known Risks & Mitigations
 
 | Risk | Mitigation |
 |------|------------|
-| PowerShell execution policy blocks `.ps1` | Ship `Install Langflow.bat` that calls the script with `-ExecutionPolicy Bypass` |
-| PATH not refreshed after uv install | Read permanent PATH from registry into current session explicitly |
+| PowerShell execution policy blocks `.ps1` (Windows) | Ship `Install Langflow.bat` that calls the script with `-ExecutionPolicy Bypass` |
+| PATH not refreshed after uv install | Read permanent PATH explicitly; on macOS/Linux add to `~/.profile` and re-source |
 | Langflow download is large (~300MB) | Stream uv pip output; print "This may take a few minutes..." beforehand |
 | Port 7860 conflict | Document in completion message; user can configure via `.env` |
 | langflow==1.10.2 yanked on PyPI | Catch the pip error and suggest removing the version pin |
-| WScript.Shell missing on N/KN editions | Catch COM error and print manual shortcut instructions |
-| Antivirus flags `irm \| iex` pattern | Bundle `uv-install.ps1` in the release zip; invoke via `& "$PSScriptRoot\uv-install.ps1"` instead of downloading at runtime |
-| uv binary not on PATH after install | Explicitly add `%USERPROFILE%\.local\bin` to permanent PATH in script |
+| WScript.Shell missing on N/KN editions (Windows) | Catch COM error and print manual shortcut instructions |
+| Antivirus flags `irm \| iex` pattern (Windows) | Bundle `uv-install.ps1` in the release zip; invoke via `& "$PSScriptRoot\uv-install.ps1"` instead of downloading at runtime |
+| uv binary not on PATH after install | Explicitly add to PATH in script |
+| macOS quarantine warning for `.command` files | Document System Settings > Privacy & Security > Open Anyway flow, with a dedicated guide at `docs/GATEKEEPER.md` |
+| Linux desktop shortcut not trusted | Use `gio set metadata::trusted true` for GNOME |
 
-## 8. Out of Scope
+## 9. Out of Scope
 
 - Upgrading Langflow (user runs `uv pip install langflow -U` manually)
 - Installing system-wide Python or modifying system PATH
 - Docker-based Langflow deployment
 - Langflow Desktop (standalone GUI app) — this installs the OSS Python package only
-- Creating a Start Menu entry or taskbar pinning
+- Platform-specific packaging (`.msi`, `.dmg`, `.deb`, `.rpm`)
+- Creating signed macOS `.app` bundles or Windows code signing

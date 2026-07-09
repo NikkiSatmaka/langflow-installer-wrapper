@@ -1,5 +1,28 @@
 # Changelog
 
+## v1.6.0-beta.3 (2026-07-08)
+
+- fix: redirect menu display to stderr so choice capture works
+- fix: banner alignment (off-by-1 on the title line)
+- fix: kill Langflow immediately in stop script (no grace period)
+- feat: print waiting status every 5s in macOS/Linux launcher
+- docs: GATEKEEPER.md with detailed macOS bypass guide
+- docs: update landing page Gatekeeper tip with correct instructions
+- fix: add checkout step to release workflow
+- fix: produce both versioned and unversioned zips in packaging scripts
+
+## v1.6.0-beta.1 (2026-07-08)
+
+- feat: macOS and Linux installer beta
+- feat: cross-platform landing page with OS tabs
+- feat: double-click stop launchers for all platforms
+- feat: desktop stop shortcut created during installation
+- feat: Python version variable for easier future migration
+- chore: update bundled uv from 0.11.23 to 0.11.28
+- chore: add CI/CD workflows (verify + release automation)
+- chore: add packaging scripts under scripts/
+- chore: add verify.sh pre-commit verification (10 checks)
+
 ## v1.5.0 (2026-07-08)
 - feat: update Langflow from 1.10.1 to 1.10.2
 

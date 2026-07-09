@@ -13,8 +13,9 @@
 
 #Requires -Version 5.1
 
-$ScriptVersion   = "1.5.0"
+$ScriptVersion   = "1.6.0-beta.1"
 $LangflowVersion = "1.10.2"
+$PythonVersion   = "3.12"
 $LangflowDir     = "$env:USERPROFILE\langflow"
 $UvBinDir        = "$env:USERPROFILE\.local\bin"
 $ShortcutName    = "Langflow.lnk"
@@ -36,7 +37,7 @@ function Show-Banner {
     $B = "$([char]0x1b)[1m"
 
     Write-Host "${G}╔══════════════════════════════════════════════════╗${R}"
-    Write-Host "${G}║${C}${B}            Langflow Installer for Windows        ${G}║${R}"
+    Write-Host "${G}║${C}${B}                Langflow Installer                ${G}║${R}"
     Write-Host "${G}║──────────────────────────────────────────────────║${R}"
     Write-Host "${G}║${R}  GitHub:  https://github.com/NikkiSatmaka/       ${G}║${R}"
     Write-Host "${G}║${R}  LinkedIn: https://linkedin.com/in/nikkisatmaka/ ${G}║${R}"
@@ -98,12 +99,12 @@ function Install-Uv {
 # ── Python ─────────────────────────────────────────────────────────────────
 
 function Install-Python {
-    Write-Info "Installing Python 3.12..."
+    Write-Info "Installing Python $PythonVersion..."
     try {
-        uv python install 3.12 2>&1 | Out-Null
+        uv python install $PythonVersion 2>&1 | Out-Null
     }
     catch {
-        Write-Fail "Failed to install Python 3.12: $_"
+        Write-Fail "Failed to install Python $PythonVersion: $_"
         return $false
     }
 
@@ -113,13 +114,13 @@ function Install-Python {
 
     Push-Location "$LangflowDir"
     try {
-        uv python pin 3.12 2>&1 | Out-Null
+        uv python pin $PythonVersion 2>&1 | Out-Null
     }
     finally {
         Pop-Location
     }
 
-    Write-Ok "Python 3.12 ready"
+    Write-Ok "Python $PythonVersion ready"
     return $true
 }
 
@@ -260,6 +261,47 @@ pause >nul
     return $true
 }
 
+# ── Stop Shortcut ─────────────────────────────────────────────────────────
+
+function New-DesktopStopShortcut {
+    $DesktopPath = [Environment]::GetFolderPath('Desktop')
+    $StopShortcutPath = "$DesktopPath\Stop Langflow.lnk"
+    $StopLauncherPath = "$LangflowDir\stop-langflow.ps1"
+    $SourceStopScript = "$PSScriptRoot\stop-langflow-script.ps1"
+
+    if (Test-Path $SourceStopScript) {
+        try {
+            Copy-Item -Path $SourceStopScript -Destination $StopLauncherPath -Force
+        }
+        catch {
+            Write-Warn "Could not copy stop launcher script: $_"
+            return $false
+        }
+    }
+    else {
+        Write-Warn "Stop script not found at $SourceStopScript"
+        return $false
+    }
+
+    try {
+        $WshShell = New-Object -ComObject WScript.Shell
+        $Shortcut = $WshShell.CreateShortcut($StopShortcutPath)
+        $Shortcut.TargetPath = "powershell.exe"
+        $Shortcut.Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$StopLauncherPath`""
+        $Shortcut.WorkingDirectory = $LangflowDir
+        $Shortcut.Description = "Stop the Langflow server"
+        $Shortcut.Save()
+
+        Write-Ok "Stop shortcut created: $StopShortcutPath"
+    }
+    catch {
+        Write-Warn "Could not create stop desktop shortcut (COM unavailable)."
+        Write-Info "  Run manually: powershell -File ""$StopLauncherPath"""
+        return $false
+    }
+    return $true
+}
+
 # ── Install ────────────────────────────────────────────────────────────────
 
 function Start-Install {
@@ -270,11 +312,12 @@ function Start-Install {
     if (-not (Install-Python)) { return }
     if (-not (Install-LangflowPackage)) { return }
     New-DesktopShortcut | Out-Null
+    New-DesktopStopShortcut | Out-Null
 
     Write-Host ""
     Write-Host "══════════════════════════════════════════════════" -ForegroundColor Green
     Write-Ok "Langflow $LangflowVersion installed"
-    Write-Ok "Desktop shortcut created"
+    Write-Ok "Desktop shortcuts created"
     Write-Host " ➜  Double-click the Langflow desktop shortcut to start" -ForegroundColor Cyan
     Write-Host " ➜  Browser will open automatically at http://127.0.0.1:7860" -ForegroundColor Cyan
     Write-Host "══════════════════════════════════════════════════" -ForegroundColor Green
@@ -318,14 +361,25 @@ function Start-Uninstall {
         }
     }
 
-    $removePy = Read-Host "Remove Python 3.12 installed by uv? [y/N]"
-    if ($removePy.ToUpper() -eq 'Y') {
+    $StopShortcutPath = "$DesktopPath\Stop Langflow.lnk"
+    if (Test-Path $StopShortcutPath) {
         try {
-            uv python uninstall 3.12 2>&1 | Out-Null
-            Write-Ok "Python 3.12 removed"
+            Remove-Item -Path $StopShortcutPath -Force
+            Write-Ok "Stop shortcut removed"
         }
         catch {
-            Write-Warn "Could not remove Python 3.12: $_"
+            Write-Warn "Could not remove stop shortcut: $_"
+        }
+    }
+
+    $removePy = Read-Host "Remove Python $PythonVersion installed by uv? [y/N]"
+    if ($removePy.ToUpper() -eq 'Y') {
+        try {
+            uv python uninstall $PythonVersion 2>&1 | Out-Null
+            Write-Ok "Python $PythonVersion removed"
+        }
+        catch {
+            Write-Warn "Could not remove Python $PythonVersion: $_"
         }
     }
 
