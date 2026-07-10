@@ -234,6 +234,20 @@ These existing skills are useful for this project. Load them via the `skill()` t
 | `implement` | Building the macOS/Linux installer port |
 | `diagnosing-bugs` | Investigating user-reported issues, AV false positives, or runtime failures |
 
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues. Use the `gh` CLI. External PRs are not a triage surface. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context repo. One `CONTEXT.md` at root, ADRs in `docs/adr/`. See `docs/agents/domain.md`.
+
 ## Verification
 
 Before committing (or before merging a PR), run `bash scripts/verify.sh` — it checks all the following automatically:
