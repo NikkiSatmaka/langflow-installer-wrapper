@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.6.1 (2026-07-14)
+
+- fix: use ${_} syntax in PowerShell scripts to prevent parser error
+
 ## v1.6.0 (2026-07-08)
 
 - feat: macOS and Linux installer (cross-platform support)
