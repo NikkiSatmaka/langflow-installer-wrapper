@@ -123,7 +123,7 @@ install_langflow_package() {
     info "Installing Langflow ${LANGFLOW_VERSION} (this may take a few minutes)..."
 
     install_ok=false
-    if uv pip install "langflow==${LANGFLOW_VERSION}" 2>&1; then
+    if uv pip install "langflow==${LANGFLOW_VERSION}" "litellm>=1.85.1,<1.92.0" 2>&1; then
         install_ok=true
     else
         warn "Version ${LANGFLOW_VERSION} failed -- trying latest..."
