@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.6.2 (2026-07-14)
+
+- fix: use ${PythonVersion} to prevent drive-qualified parse error
+
 ## v1.6.1 (2026-07-14)
 
 - fix: use ${_} syntax in PowerShell scripts to prevent parser error

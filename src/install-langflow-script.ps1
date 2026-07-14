@@ -13,7 +13,7 @@
 
 #Requires -Version 5.1
 
-$ScriptVersion   = "1.6.1"
+$ScriptVersion   = "1.6.2"
 $LangflowVersion = "1.10.2"
 $PythonVersion   = "3.12"
 $LangflowDir     = "$env:USERPROFILE\langflow"
