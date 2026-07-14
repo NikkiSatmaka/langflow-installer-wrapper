@@ -104,7 +104,7 @@ function Install-Python {
         uv python install $PythonVersion 2>&1 | Out-Null
     }
     catch {
-        Write-Fail "Failed to install Python $PythonVersion: ${_}"
+        Write-Fail "Failed to install Python ${PythonVersion}: ${_}"
         return $false
     }
 
@@ -379,7 +379,7 @@ function Start-Uninstall {
             Write-Ok "Python $PythonVersion removed"
         }
         catch {
-            Write-Warn "Could not remove Python $PythonVersion: ${_}"
+            Write-Warn "Could not remove Python ${PythonVersion}: ${_}"
         }
     }
 
