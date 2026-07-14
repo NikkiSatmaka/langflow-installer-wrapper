@@ -146,7 +146,7 @@ function Install-LangflowPackage {
 
         $installOk = $false
 
-        uv pip install "langflow==$LangflowVersion" 2>&1 | ForEach-Object { Write-Host "   $_" }
+        uv pip install "langflow==$LangflowVersion" "litellm>=1.85.1,<1.92.0" 2>&1 | ForEach-Object { Write-Host "   $_" }
         if ($LASTEXITCODE -eq 0) {
             $installOk = $true
         }
