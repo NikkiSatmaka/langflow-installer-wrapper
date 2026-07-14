@@ -69,7 +69,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 - **Banner**: box-drawing characters with ANSI colors (if available), preserved as-is
 - **Documentation**: markdown (this file and CONTRACT.md)
 - **Bash style**: `set -euo pipefail`, `command -v` for existence checks, POSIX-friendly where feasible
-- **Variable expansion**: Always use curly braces to delimit variable names — `${VarName}` in PowerShell, `${var}` in bash. This avoids ambiguous parse errors (e.g., `$PythonVersion:` is misinterpreted as drive-qualified syntax) and improves readability.
+- **Variable expansion**: Use `${VarName}` when the variable name boundary is ambiguous (i.e., the parser cannot tell where the variable name ends and surrounding text begins). For example, `$PythonVersion:` is misinterpreted as drive-qualified syntax in PowerShell; `${PythonVersion}:` resolves this. Automatic variables (`$_`, `$args`, `$PSScriptRoot`, `$HOME`, `$PATH`, `$?`, `$#`, etc.) are fine without braces.
 
 ## Security Rules
 
