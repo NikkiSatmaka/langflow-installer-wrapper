@@ -69,6 +69,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 - **Banner**: box-drawing characters with ANSI colors (if available), preserved as-is
 - **Documentation**: markdown (this file and CONTRACT.md)
 - **Bash style**: `set -euo pipefail`, `command -v` for existence checks, POSIX-friendly where feasible
+- **Variable expansion**: Always use curly braces to delimit variable names — `${VarName}` in PowerShell, `${var}` in bash. This avoids ambiguous parse errors (e.g., `$PythonVersion:` is misinterpreted as drive-qualified syntax) and improves readability.
 
 ## Security Rules
 
