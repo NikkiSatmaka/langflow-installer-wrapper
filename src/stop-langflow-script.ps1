@@ -42,7 +42,7 @@ try {
     $connections = netstat -ano | Select-String ":$Port "
     if ($connections) {
         $pids = $connections | ForEach-Object {
-            (${_} -split '\s+')[-1]
+            ($_ -split '\s+')[-1]
         } | Select-Object -Unique
 
         foreach ($pid in $pids) {
@@ -58,7 +58,7 @@ catch {
 # Method 2: Find by window title (start /MIN "Langflow Server")
 if (-not $found) {
     try {
-        $procs = Get-Process | Where-Object { ${_}.MainWindowTitle -eq "Langflow Server" }
+        $procs = Get-Process | Where-Object { $_.MainWindowTitle -eq "Langflow Server" }
         if ($procs) {
             $procs | Stop-Process -Force -ErrorAction SilentlyContinue
             $found = $true
@@ -72,9 +72,9 @@ if (-not $found) {
     try {
         Get-Process -Name "uv" -ErrorAction SilentlyContinue | ForEach-Object {
             try {
-                $cmdLine = (Get-CimInstance Win32_Process -Filter "ProcessId = $(${_}.Id)").CommandLine
+                $cmdLine = (Get-CimInstance Win32_Process -Filter "ProcessId = $($_.Id)").CommandLine
                 if ($cmdLine -match "langflow") {
-                    Stop-Process -Id ${_}.Id -Force -ErrorAction SilentlyContinue | Out-Null
+                    Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue | Out-Null
                     $found = $true
                 }
             }
