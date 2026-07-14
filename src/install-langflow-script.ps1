@@ -13,7 +13,7 @@
 
 #Requires -Version 5.1
 
-$ScriptVersion   = "1.6.0"
+$ScriptVersion   = "1.6.2"
 $LangflowVersion = "1.10.2"
 $PythonVersion   = "3.12"
 $LangflowDir     = "$env:USERPROFILE\langflow"
@@ -104,7 +104,7 @@ function Install-Python {
         uv python install $PythonVersion 2>&1 | Out-Null
     }
     catch {
-        Write-Fail "Failed to install Python $PythonVersion: ${_}"
+        Write-Fail "Failed to install Python ${PythonVersion}: ${_}"
         return $false
     }
 
@@ -379,7 +379,7 @@ function Start-Uninstall {
             Write-Ok "Python $PythonVersion removed"
         }
         catch {
-            Write-Warn "Could not remove Python $PythonVersion: ${_}"
+            Write-Warn "Could not remove Python ${PythonVersion}: ${_}"
         }
     }
 
