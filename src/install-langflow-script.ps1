@@ -67,7 +67,7 @@ function Install-Uv {
             & "$PSScriptRoot\uv-install.ps1"
         }
         catch {
-            Write-Fail "Failed to install uv: $_"
+            Write-Fail "Failed to install uv: ${_}"
             return $false
         }
 
@@ -104,7 +104,7 @@ function Install-Python {
         uv python install $PythonVersion 2>&1 | Out-Null
     }
     catch {
-        Write-Fail "Failed to install Python $PythonVersion: $_"
+        Write-Fail "Failed to install Python $PythonVersion: ${_}"
         return $false
     }
 
@@ -146,13 +146,13 @@ function Install-LangflowPackage {
 
         $installOk = $false
 
-        uv pip install "langflow==$LangflowVersion" 2>&1 | ForEach-Object { Write-Host "   $_" }
+        uv pip install "langflow==$LangflowVersion" 2>&1 | ForEach-Object { Write-Host "   ${_}" }
         if ($LASTEXITCODE -eq 0) {
             $installOk = $true
         }
         else {
             Write-Warn "Version $LangflowVersion failed -- trying latest..."
-            uv pip install langflow 2>&1 | ForEach-Object { Write-Host "   $_" }
+            uv pip install langflow 2>&1 | ForEach-Object { Write-Host "   ${_}" }
             if ($LASTEXITCODE -eq 0) {
                 $installOk = $true
             }
@@ -240,7 +240,7 @@ pause >nul
         Set-Content -Path $LauncherPath -Value $launcherContent -Encoding Ascii
     }
     catch {
-        Write-Warn "Could not create launcher script: $_"
+        Write-Warn "Could not create launcher script: ${_}"
     }
 
     try {
@@ -274,7 +274,7 @@ function New-DesktopStopShortcut {
             Copy-Item -Path $SourceStopScript -Destination $StopLauncherPath -Force
         }
         catch {
-            Write-Warn "Could not copy stop launcher script: $_"
+            Write-Warn "Could not copy stop launcher script: ${_}"
             return $false
         }
     }
@@ -342,7 +342,7 @@ function Start-Uninstall {
             Write-Ok "Langflow directory removed"
         }
         catch {
-            Write-Fail "Could not remove $LangflowDir : $_"
+            Write-Fail "Could not remove $LangflowDir : ${_}"
         }
     }
     else {
@@ -357,7 +357,7 @@ function Start-Uninstall {
             Write-Ok "Desktop shortcut removed"
         }
         catch {
-            Write-Warn "Could not remove shortcut: $_"
+            Write-Warn "Could not remove shortcut: ${_}"
         }
     }
 
@@ -368,7 +368,7 @@ function Start-Uninstall {
             Write-Ok "Stop shortcut removed"
         }
         catch {
-            Write-Warn "Could not remove stop shortcut: $_"
+            Write-Warn "Could not remove stop shortcut: ${_}"
         }
     }
 
@@ -379,7 +379,7 @@ function Start-Uninstall {
             Write-Ok "Python $PythonVersion removed"
         }
         catch {
-            Write-Warn "Could not remove Python $PythonVersion: $_"
+            Write-Warn "Could not remove Python $PythonVersion: ${_}"
         }
     }
 
