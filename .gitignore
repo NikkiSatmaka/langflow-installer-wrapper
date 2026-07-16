@@ -3,3 +3,7 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# mise local overrides
+mise.local.toml
+.mise/

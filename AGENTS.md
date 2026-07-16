@@ -29,7 +29,10 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `src/uv-install.ps1` | Bundled uv bootstrapper (official script from astral.sh) — eliminates `irm \| iex` AV trigger (Windows only) |
 | `src/stop-langflow-script.ps1` | PowerShell stop script (Windows) |
 | `src/stop-langflow.sh` | Bash stop script (macOS/Linux) |
-| `scripts/verify.sh` | Pre-commit verification checks (10 checks, POSIX-safe for CI) |
+| `mise.toml` | Dev tooling: pins shellcheck, shfmt, powershell and defines lint/fmt tasks |
+| `.shellcheckrc` | shellcheck config (disables SC2059 for intentional ANSI colour output) |
+| `PSScriptAnalyzerSettings.psd1` | PSScriptAnalyzer config (excludes rules that conflict with conventions) |
+| `scripts/verify.sh` | Pre-commit verification checks (11 checks, POSIX-safe for CI) |
 | `scripts/package.sh` | Cross-platform zip packaging (bash) |
 | `scripts/package.ps1` | Cross-platform zip packaging (PowerShell) |
 | `.github/workflows/verify.yml` | CI: PR verification (runs `scripts/verify.sh`) |
@@ -262,6 +265,14 @@ Before committing (or before merging a PR), run `bash scripts/verify.sh` — it 
 - **Version consistency**: all files reference the same `$LangflowVersion`
 - **No stale version refs**: after bumping, confirm no outdated version strings remain (CHANGELOG history excluded)
 - **Bash script**: has `set -euo pipefail` and POSIX-friendly syntax
+- **Lint**: `mise run lint` (shellcheck + shfmt + PSScriptAnalyzer) passes
+
+`mise` is a required contributor prerequisite. `scripts/verify.sh` runs `mise run lint` as check 11 and fails if mise is not installed. Install it with `mise install` (reads `mise.toml`), then run `mise run lint` locally or `mise run fmt` to reformat bash scripts in place. The lint gate is enforced in CI via `jdx/mise-action@v2` on every PR to `main`.
+
+Lint config rationale:
+
+- `.shellcheckrc` disables `SC2059` because the installer intentionally embeds ANSI colour variables in `printf` format strings for banners.
+- `PSScriptAnalyzerSettings.psd1` excludes `PSAvoidUsingWriteHost`, `PSUseShouldProcessForStateChangingFunctions`, and `PSAvoidUsingEmptyCatchBlock` — these conflict with the documented conventions (Write-Host output, try/catch-continue error handling).
 
 The CI workflow (`.github/workflows/verify.yml`) runs `scripts/verify.sh` on every PR to `main`.
 
