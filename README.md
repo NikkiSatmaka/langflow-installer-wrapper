@@ -4,7 +4,9 @@ One-click installer for [Langflow](https://github.com/langflow-ai/langflow) **1.
 
 [![GitHub](https://img.shields.io/badge/GitHub-NikkiSatmaka-181717?style=for-the-badge&logo=github)](https://github.com/NikkiSatmaka/)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-nikkisatmaka-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/nikkisatmaka/)
+[![GitHub stars](https://img.shields.io/github/stars/NikkiSatmaka/langflow-installer-wrapper?style=for-the-badge&logo=github)](https://github.com/NikkiSatmaka/langflow-installer-wrapper/stargazers)
 
+> If you find this useful, please star the repo!
 
 ## Downloads
 
