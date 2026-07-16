@@ -20,18 +20,27 @@ UV_BIN_DIR="$HOME/.local/bin"
 # ── Colors ──────────────────────────────────────────────────────────────────
 
 if [ -t 1 ]; then
-    G='\033[0;32m'; C='\033[0;36m'; B='\033[1m'
-    R='\033[0;31m'; Y='\033[0;33m'; N='\033[0m'
+    G='\033[0;32m'
+    C='\033[0;36m'
+    B='\033[1m'
+    R='\033[0;31m'
+    Y='\033[0;33m'
+    N='\033[0m'
 else
-    G=''; C=''; B=''; R=''; Y=''; N=''
+    G=''
+    C=''
+    B=''
+    R=''
+    Y=''
+    N=''
 fi
 
 # ── Helpers ─────────────────────────────────────────────────────────────────
 
-info()  { printf "${C} %s${N}\n" "$*"; }
-ok()    { printf "${G} ✓ %s${N}\n" "$*"; }
-fail()  { printf "${R} ✗ %s${N}\n" "$*"; }
-warn()  { printf "${Y} ⚠ %s${N}\n" "$*"; }
+info() { printf "${C} %s${N}\n" "$*"; }
+ok() { printf "${G} ✓ %s${N}\n" "$*"; }
+fail() { printf "${R} ✗ %s${N}\n" "$*"; }
+warn() { printf "${Y} ⚠ %s${N}\n" "$*"; }
 
 # ── Banner ──────────────────────────────────────────────────────────────────
 
@@ -74,7 +83,7 @@ install_uv() {
     export PATH="$UV_BIN_DIR:$PATH"
 
     if ! grep -qs "$UV_BIN_DIR" "$HOME/.profile" 2>/dev/null; then
-        printf '\nexport PATH="%s:$PATH"\n' "$UV_BIN_DIR" >> "$HOME/.profile"
+        printf '\nexport PATH="%s:$PATH"\n' "$UV_BIN_DIR" >>"$HOME/.profile"
         info "Added $UV_BIN_DIR to ~/.profile"
     fi
 
@@ -148,7 +157,7 @@ install_langflow_package() {
 create_launcher() {
     local launcher_path="$LANGFLOW_DIR/start-langflow.sh"
 
-    cat > "$launcher_path" << 'LAUNCHER'
+    cat >"$launcher_path" <<'LAUNCHER'
 #!/usr/bin/env bash
 cd "$HOME/langflow" || exit 1
 echo ""
@@ -196,7 +205,7 @@ create_macos_shortcut() {
     local launcher_path="$1"
     local shortcut_path="$HOME/Desktop/Langflow.command"
 
-    cat > "$shortcut_path" << EOF
+    cat >"$shortcut_path" <<EOF
 #!/usr/bin/env bash
 exec "${launcher_path}"
 EOF
@@ -209,7 +218,7 @@ create_linux_shortcut() {
 
     local desktop_path="$HOME/.local/share/applications/langflow.desktop"
     mkdir -p "$HOME/.local/share/applications"
-    cat > "$desktop_path" << EOF
+    cat >"$desktop_path" <<EOF
 [Desktop Entry]
 Name=Langflow
 Comment=Langflow AI Platform (http://127.0.0.1:7860)
@@ -245,7 +254,7 @@ create_stop_shortcut() {
     case "$OS" in
         Darwin)
             shortcut_path="$HOME/Desktop/Stop Langflow.command"
-            cat > "$shortcut_path" << EOF
+            cat >"$shortcut_path" <<EOF
 #!/usr/bin/env bash
 exec "${launcher_path}"
 EOF
@@ -254,7 +263,7 @@ EOF
         *)
             local desktop_path="$HOME/.local/share/applications/stop-langflow.desktop"
             mkdir -p "$HOME/.local/share/applications"
-            cat > "$desktop_path" << EOF
+            cat >"$desktop_path" <<EOF
 [Desktop Entry]
 Name=Stop Langflow
 Comment=Stop the Langflow server
@@ -394,8 +403,14 @@ main() {
     while true; do
         choice=$(show_menu)
         case "$choice" in
-            I) start_install; show_banner ;;
-            U) start_uninstall; show_banner ;;
+            I)
+                start_install
+                show_banner
+                ;;
+            U)
+                start_uninstall
+                show_banner
+                ;;
             Q) exit 0 ;;
             *)
                 warn "Invalid choice. Press [I], [U], or [Q]."

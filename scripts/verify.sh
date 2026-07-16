@@ -9,13 +9,16 @@ PASS=0
 FAIL=0
 
 pass() { PASS=$((PASS + 1)); }
-fail() { echo "FAIL: $*"; FAIL=$((FAIL + 1)); }
+fail() {
+    echo "FAIL: $*"
+    FAIL=$((FAIL + 1))
+}
 
 # ── 1. Shebang on .sh files ────────────────────────────────────────────────
 
 for f in Install\ Langflow.sh Stop\ Langflow.sh src/*.sh; do
     [ -f "$f" ] || continue
-    read -r first < "$f"
+    read -r first <"$f"
     if [ "$first" != "#!/usr/bin/env bash" ]; then
         fail "$f: shebang must be '#!/usr/bin/env bash', got '$first'"
     fi
@@ -36,8 +39,8 @@ pass "set -euo pipefail"
 
 for f in src/*.ps1; do
     [ -f "$f" ] || continue
-    opens=$(tr -d -c '{' < "$f" | wc -c)
-    closes=$(tr -d -c '}' < "$f" | wc -c)
+    opens=$(tr -d -c '{' <"$f" | wc -c)
+    closes=$(tr -d -c '}' <"$f" | wc -c)
     if [ "$opens" -ne "$closes" ]; then
         fail "$f: brace imbalance ($opens open vs $closes close)"
     fi
@@ -65,7 +68,7 @@ pass "UTF-8 BOM"
 # ── 6. Executable bit on .command and .sh files ────────────────────────────
 
 for f in Install\ Langflow.command Stop\ Langflow.command \
-         Install\ Langflow.sh Stop\ Langflow.sh src/*.sh scripts/verify.sh scripts/package.sh; do
+    Install\ Langflow.sh Stop\ Langflow.sh src/*.sh scripts/verify.sh scripts/package.sh; do
     [ -f "$f" ] || continue
     if [ ! -x "$f" ]; then
         fail "$f: not executable"
@@ -115,10 +118,10 @@ pass "secrets scan"
 # ── 10. Zip contents match spec ────────────────────────────────────────────
 
 for f in "Install Langflow.bat" "Stop Langflow.bat" \
-         "Install Langflow.command" "Stop Langflow.command" \
-         "Install Langflow.sh" "Stop Langflow.sh" \
-         src/install-langflow-script.ps1 src/stop-langflow-script.ps1 \
-         src/uv-install.ps1 src/install-langflow.sh src/stop-langflow.sh; do
+    "Install Langflow.command" "Stop Langflow.command" \
+    "Install Langflow.sh" "Stop Langflow.sh" \
+    src/install-langflow-script.ps1 src/stop-langflow-script.ps1 \
+    src/uv-install.ps1 src/install-langflow.sh src/stop-langflow.sh; do
     if [ ! -f "$f" ]; then
         fail "$f: referenced by zip spec but does not exist"
     fi
