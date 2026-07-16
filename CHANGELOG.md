@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.6.3 (2026-07-15)
+
+- fix: pin litellm<1.92.0 to avoid Rust build requirement on Windows/macOS
+
 ## v1.6.2 (2026-07-14)
 
 - fix: use ${PythonVersion} to prevent drive-qualified parse error
