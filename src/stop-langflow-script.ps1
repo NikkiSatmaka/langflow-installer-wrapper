@@ -11,6 +11,10 @@
 
 #Requires -Version 5.1
 
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'found',
+    Justification = 'Flow analysis misses reads across ForEach-Object script blocks; the variable is used.')]
+param()
+
 $Port = 7860
 $found = $false
 
@@ -45,8 +49,8 @@ try {
             ($_ -split '\s+')[-1]
         } | Select-Object -Unique
 
-        foreach ($pid in $pids) {
-            Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue | Out-Null
+        foreach ($procId in $pids) {
+            Stop-Process -Id $procId -Force -ErrorAction SilentlyContinue | Out-Null
             $found = $true
         }
     }

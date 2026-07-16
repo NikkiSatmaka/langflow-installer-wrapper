@@ -1,0 +1,4 @@
+# SC2059: the installer intentionally embeds ANSI colour variables in printf
+# format strings for the banners and status output. This is deliberate and safe
+# because the colour values are controlled constants defined in-script.
+disable=SC2059
