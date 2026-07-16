@@ -11,6 +11,7 @@
 set -euo pipefail
 
 OS="$(uname -s)"
+# shellcheck disable=SC2034  # kept as the single source of truth for the script version
 SCRIPT_VERSION="1.6.3"
 LANGFLOW_VERSION="1.10.2"
 PYTHON_VERSION="3.12"
@@ -83,6 +84,7 @@ install_uv() {
     export PATH="$UV_BIN_DIR:$PATH"
 
     if ! grep -qs "$UV_BIN_DIR" "$HOME/.profile" 2>/dev/null; then
+        # shellcheck disable=SC2016  # $PATH must stay literal so it expands when .profile is sourced
         printf '\nexport PATH="%s:$PATH"\n' "$UV_BIN_DIR" >>"$HOME/.profile"
         info "Added $UV_BIN_DIR to ~/.profile"
     fi

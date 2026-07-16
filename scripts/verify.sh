@@ -128,6 +128,17 @@ for f in "Install Langflow.bat" "Stop Langflow.bat" \
 done
 pass "zip spec files exist"
 
+# ── 11. Lint (shellcheck + shfmt + PSScriptAnalyzer via mise) ──────────────
+
+if ! command -v mise >/dev/null 2>&1; then
+    fail "mise not found -- install it (https://mise.jdx.dev) then run 'mise install'"
+else
+    if ! mise run lint; then
+        fail "lint failed (see output above)"
+    fi
+fi
+pass "lint"
+
 # ── Summary ─────────────────────────────────────────────────────────────────
 
 echo "────────────────────────────────────────"

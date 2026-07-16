@@ -1,0 +1,40 @@
+[tools]
+powershell = "7.6.3"
+shellcheck = "0.11.0"
+shfmt = "3.13.1"
+
+[env]
+BASH_FILES = "src/install-langflow.sh src/stop-langflow.sh scripts/verify.sh scripts/package.sh 'Install Langflow.sh' 'Stop Langflow.sh'"
+PS_FILES = "src/install-langflow-script.ps1 src/stop-langflow-script.ps1"
+
+[tasks.fmt]
+description = "Format bash scripts in place with shfmt"
+run = "eval shfmt -w -i 4 -ci $BASH_FILES"
+
+[tasks.lint-bash]
+description = "Lint bash scripts with shellcheck and check formatting with shfmt"
+run = [
+    "eval shellcheck $BASH_FILES",
+    "eval shfmt -d -i 4 -ci $BASH_FILES",
+]
+
+[tasks.lint-ps]
+description = "Lint PowerShell scripts with PSScriptAnalyzer"
+run = """
+pwsh -NoProfile -Command '
+  Import-Module PSScriptAnalyzer
+  $files = @("src/install-langflow-script.ps1", "src/stop-langflow-script.ps1")
+  $findings = @()
+  foreach ($f in $files) {
+    $findings += Invoke-ScriptAnalyzer -Path $f -Settings ./PSScriptAnalyzerSettings.psd1
+  }
+  if ($findings) {
+    $findings | Format-Table -AutoSize
+    exit 1
+  }
+'
+"""
+
+[tasks.lint]
+description = "Run all linters (bash + PowerShell)"
+depends = ["lint-bash", "lint-ps"]

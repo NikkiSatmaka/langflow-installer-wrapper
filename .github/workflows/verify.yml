@@ -11,4 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+      - name: Install PSScriptAnalyzer
+        run: mise exec -- pwsh -NoProfile -Command "Install-Module PSScriptAnalyzer -Scope CurrentUser -Force"
       - run: bash scripts/verify.sh
