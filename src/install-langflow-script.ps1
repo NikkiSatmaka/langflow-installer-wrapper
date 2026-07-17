@@ -22,7 +22,7 @@ $LangflowVersion = "1.10.2"
 $PythonVersion   = "3.12"
 $LangflowDir     = "$env:USERPROFILE\langflow"
 $UvBinDir        = "$env:USERPROFILE\.local\bin"
-$ShortcutName    = "Langflow.lnk"
+$ShortcutName    = "Langflow Web.lnk"
 
 # ── Helpers ────────────────────────────────────────────────────────────────
 
