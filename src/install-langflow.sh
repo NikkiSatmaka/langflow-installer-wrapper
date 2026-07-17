@@ -205,7 +205,7 @@ LAUNCHER
 
 create_macos_shortcut() {
     local launcher_path="$1"
-    local shortcut_path="$HOME/Desktop/Langflow.command"
+    local shortcut_path="$HOME/Desktop/Langflow Web.command"
 
     cat >"$shortcut_path" <<EOF
 #!/usr/bin/env bash
@@ -217,14 +217,22 @@ EOF
 
 create_linux_shortcut() {
     local launcher_path="$1"
+    local script_dir
+    script_dir=$(cd "$(dirname "$0")" && pwd)
+
+    local icon_path="$LANGFLOW_DIR/langflow.png"
+    if [ -f "$script_dir/assets/langflow.png" ]; then
+        cp "$script_dir/assets/langflow.png" "$icon_path"
+    fi
 
     local desktop_path="$HOME/.local/share/applications/langflow.desktop"
     mkdir -p "$HOME/.local/share/applications"
     cat >"$desktop_path" <<EOF
 [Desktop Entry]
-Name=Langflow
+Name=Langflow Web
 Comment=Langflow AI Platform (http://127.0.0.1:7860)
 Exec=${launcher_path}
+Icon=${icon_path}
 Terminal=true
 Type=Application
 Categories=Development;
@@ -352,8 +360,8 @@ start_uninstall() {
 
     case "$OS" in
         Darwin)
-            if [ -f "$HOME/Desktop/Langflow.command" ]; then
-                rm -f "$HOME/Desktop/Langflow.command"
+            if [ -f "$HOME/Desktop/Langflow Web.command" ]; then
+                rm -f "$HOME/Desktop/Langflow Web.command"
                 ok "Desktop shortcut removed"
             fi
             if [ -f "$HOME/Desktop/Stop Langflow.command" ]; then

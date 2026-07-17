@@ -22,7 +22,7 @@ $LangflowVersion = "1.10.2"
 $PythonVersion   = "3.12"
 $LangflowDir     = "$env:USERPROFILE\langflow"
 $UvBinDir        = "$env:USERPROFILE\.local\bin"
-$ShortcutName    = "Langflow.lnk"
+$ShortcutName    = "Langflow Web.lnk"
 
 # ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -248,11 +248,18 @@ pause >nul
     }
 
     try {
+        if (Test-Path "$PSScriptRoot\assets\langflow.ico") {
+            Copy-Item "$PSScriptRoot\assets\langflow.ico" "$LangflowDir\langflow.ico" -Force
+        }
+
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut($ShortcutPath)
         $Shortcut.TargetPath = $LauncherPath
         $Shortcut.WorkingDirectory = $LangflowDir
         $Shortcut.Description = "Langflow AI Platform (http://127.0.0.1:7860)"
+        if (Test-Path "$LangflowDir\langflow.ico") {
+            $Shortcut.IconLocation = "$LangflowDir\langflow.ico"
+        }
         $Shortcut.Save()
 
         Write-Ok "Desktop shortcut created: $ShortcutPath"

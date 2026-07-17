@@ -227,6 +227,10 @@ This project has no automated tests. Before releasing, manually verify:
 - Confirm `uv pip install langflow==<new version>` succeeds on the pinned Python 3.12.
 - Confirm Uninstall removes `%USERPROFILE%\langflow\` and the shortcut, and optionally Python 3.12.
 
+## Assets
+
+- `src/assets/langflow.png` and `src/assets/langflow.ico` are the desktop shortcut icons, sourced from [dashboard-icons](https://github.com/homarr-labs/dashboard-icons) by homarr-labs (MIT license). The `.ico` is generated from the `.png` via ImageMagick. Windows uses the `.ico`; Linux uses the `.png` via the `.desktop` `Icon=` field. macOS keeps the default `.command` icon by design.
+
 ## Skills
 
 These existing skills are useful for this project. Load them via the `skill()` tool when the task matches:

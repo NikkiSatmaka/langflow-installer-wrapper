@@ -27,7 +27,7 @@ The script will:
 - Download Python 3.12
 - Create a virtual environment in `%USERPROFILE%\langflow\`
 - Install Langflow 1.10.2
-- Create desktop shortcuts (`Langflow.lnk` and `Stop Langflow.lnk`)
+- Create desktop shortcuts (`Langflow Web.lnk` and `Stop Langflow.lnk`)
 
 After install, double-click the **Langflow** desktop shortcut. A terminal window will open, and your browser will launch automatically once the server is ready at `http://127.0.0.1:7860`. To stop the server, double-click **Stop Langflow**.
 
@@ -109,6 +109,10 @@ Re-run the installer script and select **Uninstall**. This removes:
 | `docs/TROUBLESHOOTING.md` | Common issues and fixes |
 | `docs/GATEKEEPER.md` | macOS Gatekeeper bypass guide |
 | `CONTRACT.md` | Formal requirements specification |
+
+## Credits
+
+- The Langflow desktop icon (`src/assets/langflow.png` and `src/assets/langflow.ico`) is from [dashboard-icons](https://github.com/homarr-labs/dashboard-icons) by homarr-labs, licensed under MIT.
 
 ## License
 
