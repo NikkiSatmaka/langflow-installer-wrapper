@@ -78,9 +78,9 @@ Run when the user selects `[I]`.
 Two shortcuts are created: one to start Langflow, one to stop it.
 
 **Start shortcut:**
-- **Windows**: Create `Langflow.lnk` using `WScript.Shell` COM pointing to `run-langflow.bat`. If COM is unavailable, print the shortcut path for manual creation.
-- **macOS**: Create `~/Desktop/Langflow.command` that executes the launcher script. Make it executable with `chmod +x`.
-- **Linux**: Create `langflow.desktop` at `~/.local/share/applications/` and copy to `~/Desktop/`. On GNOME, mark as trusted via `gio set metadata::trusted true`.
+- **Windows**: Create `Langflow Web.lnk` using `WScript.Shell` COM pointing to `run-langflow.bat`. Set `IconLocation` to the bundled `langflow.ico`. If COM is unavailable, print the shortcut path for manual creation.
+- **macOS**: Create `~/Desktop/Langflow Web.command` that executes the launcher script. Make it executable with `chmod +x`. The `.command` keeps the default Finder icon by design.
+- **Linux**: Create `langflow.desktop` at `~/.local/share/applications/` (with `Name=Langflow Web` and `Icon=` pointing at the bundled `langflow.png`) and copy to `~/Desktop/`. On GNOME, mark as trusted via `gio set metadata::trusted true`.
 
 **Stop shortcut:**
 - **Windows**: Create `Stop Langflow.lnk` pointing to `stop-langflow-script.ps1`.
@@ -112,8 +112,8 @@ Run when the user selects `[U]`.
    - **Windows**: `%USERPROFILE%\langflow\` (recursive)
    - **macOS/Linux**: `~/langflow/` (recursive)
 3. Remove desktop shortcuts (start and stop):
-   - **Windows**: `%USERPROFILE%\Desktop\Langflow.lnk` and `%USERPROFILE%\Desktop\Stop Langflow.lnk`
-   - **macOS**: `~/Desktop/Langflow.command` and `~/Desktop/Stop Langflow.command`
+   - **Windows**: `%USERPROFILE%\Desktop\Langflow Web.lnk` and `%USERPROFILE%\Desktop\Stop Langflow.lnk`
+   - **macOS**: `~/Desktop/Langflow Web.command` and `~/Desktop/Stop Langflow.command`
    - **Linux**: `~/.local/share/applications/langflow.desktop`, `~/Desktop/langflow.desktop`, `~/.local/share/applications/stop-langflow.desktop`, and `~/Desktop/stop-langflow.desktop`
 4. Ask: `Remove Python 3.12 installed by uv? [y/N]`
    - If `Y`, run `uv python uninstall 3.12`.

@@ -29,7 +29,7 @@ The script will:
 - Install Langflow 1.10.2
 - Create desktop shortcuts (`Langflow Web.lnk` and `Stop Langflow.lnk`)
 
-After install, double-click the **Langflow** desktop shortcut. A terminal window will open, and your browser will launch automatically once the server is ready at `http://127.0.0.1:7860`. To stop the server, double-click **Stop Langflow**.
+After install, double-click the **Langflow Web** desktop shortcut. A terminal window will open, and your browser will launch automatically once the server is ready at `http://127.0.0.1:7860`. To stop the server, double-click **Stop Langflow**.
 
 > **Having trouble?** See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for Smart App Control and antivirus help.
 
@@ -46,9 +46,9 @@ The script will:
 - Download Python 3.12
 - Create a virtual environment in `~/langflow/`
 - Install Langflow 1.10.2
-- Create desktop shortcuts (`Langflow.command` and `Stop Langflow.command`)
+- Create desktop shortcuts (`Langflow Web.command` and `Stop Langflow.command`)
 
-After install, double-click the **Langflow** desktop shortcut. Terminal will open, start the server, and open your browser automatically. To stop the server, double-click **Stop Langflow**.
+After install, double-click the **Langflow Web** desktop shortcut. Terminal will open, start the server, and open your browser automatically. To stop the server, double-click **Stop Langflow**.
 
 ## Quick Start (Linux)
 
@@ -63,7 +63,7 @@ The script will:
 - Install Langflow 1.10.2
 - Create desktop shortcuts in your app menu and on your desktop (for both starting and stopping Langflow)
 
-After install, launch Langflow from your app menu or desktop shortcut. A terminal will open, start the server, and open your browser automatically. To stop the server, find **Stop Langflow** in your app menu or desktop.
+After install, launch **Langflow Web** from your app menu or desktop shortcut. A terminal will open, start the server, and open your browser automatically. To stop the server, find **Stop Langflow** in your app menu or desktop.
 
 ## Running manually
 
