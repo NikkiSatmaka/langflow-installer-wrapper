@@ -41,3 +41,26 @@ If the desktop shortcut file (`langflow.desktop`) appears as a text file, you ma
 ```bash
 chmod +x ~/Desktop/langflow.desktop
 ```
+
+## PyTorch fails to install or load (Windows)
+
+Some packages (for example PyTorch) require the Visual C++ Redistributable. If it is missing, `uv pip install` may fail with an error about `VCRUNTIME140.dll` or `msvcp140.dll`.
+
+**To fix:**
+1. Download the Visual C++ Redistributable (x64) from Microsoft: <https://aka.ms/vc14/vc_redist.x64.exe>
+2. Run the installer and follow the prompts (you may need to approve a UAC prompt).
+3. Re-run the Langflow installer and choose **Install**.
+
+> The redistributable is safe and published by Microsoft. Many Python packages with native C++ extensions (including PyTorch) depend on it.
+
+## Langflow won't start or behaves oddly
+
+Corrupted cache or stale data can cause Langflow to fail on startup or act unexpectedly. Deleting its cache gives it a clean slate.
+
+**To fix:** stop Langflow, then delete its cache directory:
+
+- **Windows**: Delete `C:\Users\<you>\AppData\Local\langflow` (or run `rmdir /s "%LOCALAPPDATA%\langflow"` in a terminal)
+- **macOS**: Delete `~/Library/Caches/langflow` (or run `rm -rf ~/Library/Caches/langflow`)
+- **Linux**: Delete `~/.cache/langflow` (or run `rm -rf ~/.cache/langflow`)
+
+Then start Langflow again from the desktop shortcut. Your installed packages stay in place — only cached data is removed.
