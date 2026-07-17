@@ -217,6 +217,13 @@ EOF
 
 create_linux_shortcut() {
     local launcher_path="$1"
+    local script_dir
+    script_dir=$(cd "$(dirname "$0")" && pwd)
+
+    local icon_path="$LANGFLOW_DIR/langflow.png"
+    if [ -f "$script_dir/assets/langflow.png" ]; then
+        cp "$script_dir/assets/langflow.png" "$icon_path"
+    fi
 
     local desktop_path="$HOME/.local/share/applications/langflow.desktop"
     mkdir -p "$HOME/.local/share/applications"
@@ -225,6 +232,7 @@ create_linux_shortcut() {
 Name=Langflow Web
 Comment=Langflow AI Platform (http://127.0.0.1:7860)
 Exec=${launcher_path}
+Icon=${icon_path}
 Terminal=true
 Type=Application
 Categories=Development;
