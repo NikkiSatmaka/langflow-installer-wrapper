@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.7.0 (2026-07-17)
+
+- feat: rename desktop launcher to Langflow Web (distinct from other Langflow shortcuts)
+- feat: bundle Langflow icon and apply to launch shortcuts (Windows .ico, Linux .desktop Icon=)
+- docs: update docs and landing page for Langflow Web shortcut
+- docs: add troubleshooting entries for PyTorch/vcredist and Langflow cache
+
 ## v1.6.3 (2026-07-15)
 
 - fix: pin litellm<1.92.0 to avoid Rust build requirement on Windows/macOS

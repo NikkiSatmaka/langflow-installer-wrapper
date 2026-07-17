@@ -17,7 +17,7 @@
     Justification = 'Kept as a single source of truth for the script version, mirrored in the bash installer.')]
 param()
 
-$ScriptVersion = "1.6.3"
+$ScriptVersion = "1.7.0"
 $LangflowVersion = "1.10.2"
 $PythonVersion   = "3.12"
 $LangflowDir     = "$env:USERPROFILE\langflow"
