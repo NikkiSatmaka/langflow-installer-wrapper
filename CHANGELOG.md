@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.8.0 (2026-07-23)
+
+- feat: upgrade Langflow from 1.10.2 to 1.10.3
+
 ## v1.7.0 (2026-07-17)
 
 - feat: rename desktop launcher to Langflow Web (distinct from other Langflow shortcuts)
