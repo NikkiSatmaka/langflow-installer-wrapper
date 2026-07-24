@@ -108,6 +108,7 @@ Use semantic prefixes with kebab-case descriptions:
 | `fix/` | Bug fix | `fix/utf8-bom-regression` |
 | `docs/` | Documentation only | `docs/add-troubleshooting-section` |
 | `refactor/` | Code restructuring | `refactor/extract-shortcut-logic` |
+| `release/` | Release prep (version bump + changelog) | `release/v1.8.0` |
 | `chore/` | Maintenance, tooling | `chore/update-verification-commands` |
 
 Branch from `main`, open a PR, squash merge, delete branch. Keep branches short-lived (days, not weeks).
@@ -139,21 +140,22 @@ Branch from `main`, open a PR, squash merge, delete branch. Keep branches short-
 
 Tagging triggers the release workflow automatically:
 
-1. Ensure `main` has the changes merged and verified.
+1. Create a `release/vX.Y.Z` branch from `main`.
 2. Update `$ScriptVersion` / `SCRIPT_VERSION` in the install scripts if they changed.
 3. Update `CHANGELOG.md` with the new version, date, and entries.
 4. Update `README.md` and `docs/index.html` if the hero message or version number changed.
 5. Run `bash scripts/verify.sh` to confirm everything passes.
 6. Commit with message: `docs: update changelog for vX.Y.Z`.
-7. Tag the commit: `git tag vX.Y.Z`.
-8. Push tag: `git push origin vX.Y.Z`.
-9. The CI workflow (`.github/workflows/release.yml`):
-   - Runs verify checks
-   - Packages all 3 platform zips (both versioned and unversioned names)
-   - Generates release notes from `CHANGELOG.md` via `scripts/release-notes.sh`
-   - Creates a GitHub Release with grouped notes (Features, Bug Fixes, Documentation, Maintenance)
-   - Uploads all 6 zips to the release
-   - Tags containing `beta`, `rc`, or `alpha` are automatically marked as pre-release
+7. Push branch and open a draft PR against `main`.
+8. User reviews, approves, and **squash merges** the PR.
+9. After merge, push the tag from `main`: `git tag vX.Y.Z && git push origin vX.Y.Z`.
+10. The CI workflow (`.github/workflows/release.yml`):
+    - Runs verify checks
+    - Packages all 3 platform zips (both versioned and unversioned names)
+    - Generates release notes from `CHANGELOG.md` via `scripts/release-notes.sh`
+    - Creates a GitHub Release with grouped notes (Features, Bug Fixes, Documentation, Maintenance)
+    - Uploads all 6 zips to the release
+    - Tags containing `beta`, `rc`, or `alpha` are automatically marked as pre-release
 
 **Do not delete and re-push the same tag name** — the CI workflow will create a new release or fail. If you need to fix a release, bump the version.
 
