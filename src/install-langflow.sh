@@ -12,7 +12,7 @@ set -euo pipefail
 
 OS="$(uname -s)"
 # shellcheck disable=SC2034  # kept as the single source of truth for the script version
-SCRIPT_VERSION="1.7.0"
+SCRIPT_VERSION="1.8.0"
 LANGFLOW_VERSION="1.10.3"
 PYTHON_VERSION="3.12"
 LANGFLOW_DIR="$HOME/langflow"
