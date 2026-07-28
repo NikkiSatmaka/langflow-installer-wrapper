@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.8.1 (2026-07-28)
+
+- fix: add constraints for fastapi, crypotgraphy, pypdfium2
+
 ## v1.8.0 (2026-07-23)
 
 - feat: upgrade Langflow from 1.10.2 to 1.10.3
