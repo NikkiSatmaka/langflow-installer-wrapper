@@ -150,7 +150,7 @@ function Install-LangflowPackage {
 
         $installOk = $false
 
-        uv pip install "langflow==$LangflowVersion" "litellm>=1.85.1,<1.92.0" 2>&1 | ForEach-Object { Write-Host "   $_" }
+        uv pip install "langflow==$LangflowVersion" "litellm>=1.85.1,<1.92.0" "fastapi>=0.139.0,<0.140.0" "cryptography>=48.0.1,<49.0.0" "pypdfium2>=4.30.0,<5.0.0" 2>&1 | ForEach-Object { Write-Host "   $_" }
         if ($LASTEXITCODE -eq 0) {
             $installOk = $true
         }
