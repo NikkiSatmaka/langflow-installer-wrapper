@@ -134,7 +134,7 @@ install_langflow_package() {
     info "Installing Langflow ${LANGFLOW_VERSION} (this may take a few minutes)..."
 
     install_ok=false
-    if uv pip install "langflow==${LANGFLOW_VERSION}" "litellm>=1.85.1,<1.92.0" 2>&1; then
+    if uv pip install "langflow==${LANGFLOW_VERSION}" "litellm>=1.85.1,<1.92.0" "fastapi>=0.139.0,<0.140.0" "cryptography>=48.0.1,<49.0.0" "pypdfium2>=4.30.0,<5.0.0" 2>&1; then
         install_ok=true
     else
         warn "Version ${LANGFLOW_VERSION} failed -- trying latest..."
