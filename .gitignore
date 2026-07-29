@@ -7,3 +7,6 @@ Thumbs.db
 # mise local overrides
 mise.local.toml
 .mise/
+
+# package
+dist/
