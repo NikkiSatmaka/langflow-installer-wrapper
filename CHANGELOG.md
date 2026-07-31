@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.8.2 (2026-07-31)
+
+- hotfix: remove constraints for fastapi
+
 ## v1.8.1 (2026-07-28)
 
 - fix: add constraints for fastapi, crypotgraphy, pypdfium2
