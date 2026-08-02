@@ -1,6 +1,11 @@
 name: Constraint Test
 
 on:
+  workflow_call:
+    inputs:
+      release_mode:
+        type: boolean
+        default: false
   pull_request:
     branches: [main]
   push:
@@ -104,4 +109,18 @@ jobs:
       - name: Verify installation
         shell: bash
         run: |
-          uv run langflow --version 2>/dev/null
+          INSTALLED=$(uv run langflow --version 2>/dev/null | awk '/^langflow /{print $2; exit}')
+          echo "Installed: $INSTALLED, Pin: $LANGFLOW_VERSION"
+          if [ -z "$INSTALLED" ] || [ "$INSTALLED" != "$LANGFLOW_VERSION" ]; then
+            echo "::error::Installed version '$INSTALLED' does not match pin '$LANGFLOW_VERSION'"
+            exit 1
+          fi
+          if [ "${{ inputs.release_mode }}" = "true" ]; then
+            TAG="${GITHUB_REF_NAME#v}"
+            SCRIPT_VER=$(awk -F '"' '/^SCRIPT_VERSION=/{print $2; exit}' src/install-langflow.sh)
+            echo "Tag: $TAG, Script: $SCRIPT_VER"
+            if [ "$TAG" != "$SCRIPT_VER" ]; then
+              echo "::error::Tag $TAG does not match script version $SCRIPT_VER"
+              exit 1
+            fi
+          fi

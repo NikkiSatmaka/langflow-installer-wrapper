@@ -38,8 +38,8 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `scripts/package.ps1` | Cross-platform zip packaging (PowerShell) |
 | `scripts/build-litellm-wheel.sh` | Builds the pinned litellm sdist into a macOS arm64 wheel (CI only) |
 | `.github/workflows/verify.yml` | CI: PR verification (runs `scripts/verify.sh`) |
-| `.github/workflows/constraint-test.yml` | CI: OS-matrix constraint test (win/mac/linux) — validates binary wheels on all platforms before release |
-| `.github/workflows/release.yml` | CI: Automated release on tag push (verify + constraint test + package + publish) |
+| `.github/workflows/constraint-test.yml` | CI: OS-matrix constraint test (win/mac/linux) — validates binary wheels on all platforms before release; a shared reusable workflow (`workflow_call`) consumed by `release.yml` |
+| `.github/workflows/release.yml` | CI: Automated release on tag push (verify + constraint test + package + publish) — calls `constraint-test.yml` as a reusable workflow |
 | `docs/TROUBLESHOOTING.md` | Common issues and fixes |
 | `docs/GATEKEEPER.md` | macOS Gatekeeper bypass guide |
 | `docs/index.html` | Landing page for non-GitHub users (GitHub Pages) — published at `https://nikkisatmaka.github.io/langflow-installer-wrapper/` |
