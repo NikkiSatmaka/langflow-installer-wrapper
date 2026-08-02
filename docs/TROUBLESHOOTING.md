@@ -14,7 +14,7 @@ Windows Smart App Control may block `Install Langflow.bat` because it runs an un
 
 ## Antivirus flags the installer (Windows)
 
-Some antivirus software (Kaspersky, Total Security) may flag the `uv pip install` step or the `irm | iex` pattern. Starting from v1.1.4, the installer bundles `uv-install.ps1` instead of using `irm | iex`. If your AV still blocks it, add an exclusion for `%USERPROFILE%\langflow\`.
+Some antivirus software (Kaspersky, Total Security) may flag the `uv pip install` step or the `irm | iex` pattern. Starting from v1.1.4, the installer uses `uv-install.ps1` (fetched from upstream at package time) instead of using `irm | iex`. If your AV still blocks it, add an exclusion for `%USERPROFILE%\langflow\`.
 
 ## Uninstall doesn't clean up everything
 
@@ -32,6 +32,19 @@ Run the installer again and select **Uninstall**. This removes:
 The first time you double-click `Install Langflow.command` (or the desktop shortcut), macOS may show: *"Langflow.command cannot be opened because it is from an unidentified developer."*
 
 **To fix:** Right-click the file and select **Open**, then click **Open** in the dialog. This one-time step adds the file to your security exceptions.
+
+## Install fails on an Intel (x86_64) Mac
+
+The installer bundles a pre-built `litellm` wheel for Apple Silicon (arm64) only. Langflow 1.11.1 requires `litellm>=1.93`, which publishes no macOS wheels, so on Intel Macs the install must compile it from source and fails if Xcode Command Line Tools and Rust are not installed.
+
+**To fix:** install Xcode Command Line Tools and Rust, then re-run the installer:
+
+```bash
+xcode-select --install
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+Apple Silicon (M-series) Macs are unaffected — they use the bundled wheel.
 
 ## Linux desktop shortcut doesn't appear
 

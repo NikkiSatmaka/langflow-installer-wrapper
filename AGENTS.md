@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository provides single-click installers for Langflow on Windows, macOS, and Linux using `uv` as the package manager. Python 3.12 is pinned. Langflow is pinned to version **1.10.3**.
+This repository provides single-click installers for Langflow on Windows, macOS, and Linux using `uv` as the package manager. Python 3.12 is pinned. Langflow is pinned to version **1.11.1**.
 
 **Author**: Nikki Satmaka
 - GitHub: https://github.com/NikkiSatmaka/
@@ -26,17 +26,20 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `src/install-langflow.sh` | Main bash installer/uninstaller script (macOS/Linux) |
 | `src/stop-langflow-script.ps1` | PowerShell stop script (Windows) |
 | `src/stop-langflow.sh` | Bash stop script (macOS/Linux) |
-| `src/uv-install.ps1` | Bundled uv bootstrapper (official script from astral.sh) — eliminates `irm \| iex` AV trigger (Windows only) |
+| `src/uv-install.ps1` | Fetched from astral.sh at package time (not in repo) — eliminates `irm \| iex` AV trigger (Windows only) |
 | `src/stop-langflow-script.ps1` | PowerShell stop script (Windows) |
 | `src/stop-langflow.sh` | Bash stop script (macOS/Linux) |
+| `src/constraints.txt` | Pins known-breaking transitive deps (litellm, etc.); `litellm==1.95.0` is the single source of truth for the bundled macOS wheel |
 | `mise.toml` | Dev tooling: pins shellcheck, shfmt, powershell and defines lint/fmt tasks |
 | `.shellcheckrc` | shellcheck config (disables SC2059 for intentional ANSI colour output) |
 | `PSScriptAnalyzerSettings.psd1` | PSScriptAnalyzer config (excludes rules that conflict with conventions) |
-| `scripts/verify.sh` | Pre-commit verification checks (11 checks, POSIX-safe for CI) |
+| `scripts/verify.sh` | Pre-commit verification checks (12 checks, POSIX-safe for CI) |
 | `scripts/package.sh` | Cross-platform zip packaging (bash) |
 | `scripts/package.ps1` | Cross-platform zip packaging (PowerShell) |
+| `scripts/build-litellm-wheel.sh` | Builds the pinned litellm sdist into a macOS arm64 wheel (CI only) |
 | `.github/workflows/verify.yml` | CI: PR verification (runs `scripts/verify.sh`) |
-| `.github/workflows/release.yml` | CI: Automated release on tag push (verify + package + publish) |
+| `.github/workflows/constraint-test.yml` | CI: OS-matrix constraint test (win/mac/linux) — validates binary wheels on all platforms before release |
+| `.github/workflows/release.yml` | CI: Automated release on tag push (verify + constraint test + package + publish) |
 | `docs/TROUBLESHOOTING.md` | Common issues and fixes |
 | `docs/GATEKEEPER.md` | macOS Gatekeeper bypass guide |
 | `docs/index.html` | Landing page for non-GitHub users (GitHub Pages) — published at `https://nikkisatmaka.github.io/langflow-installer-wrapper/` |
@@ -47,7 +50,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 - **Idempotent** — safe to re-run; checks before acting
 - **User-prompted** — script asks Install / Uninstall / Quit at startup
 - **Credits banner** — GitHub + LinkedIn displayed on every run (Chris Titus style)
-- **Version pinned** — Langflow `==1.10.3`; do not change without updating CONTRACT.md
+- **Version pinned** — Langflow `==1.11.1`; do not change without updating CONTRACT.md
 - **Cross-platform** — Windows (PowerShell), macOS, and Linux (bash); platform-specific logic with shared installer flow
 - **Python pinned** — 3.12 via `uv python install 3.12` (only version with pre-built wheels for all C-extensions on Windows; 3.13+ requires MSVC not available to most users)
 
@@ -61,8 +64,10 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | Desktop shortcut targets `uv run langflow run` | Works regardless of active venv state |
 | Uninstall keeps `uv` | uv may be used for other projects |
 | UTF-8 BOM required on `.ps1` | Windows PowerShell requires UTF-8 with BOM; without it, non-ASCII characters cause parser errors |
-| Bundled `uv-install.ps1` | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
-| Release zip structure | `Install Langflow.bat` and `LICENSE` at zip root; `install-langflow-script.ps1` and `uv-install.ps1` under `src/` — mirrors repo layout |
+| `uv-install.ps1` fetched at package time | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
+| Release zip structure | `Install Langflow.bat` and `LICENSE` at zip root; `install-langflow-script.ps1`, `uv-install.ps1`, and `constraints.txt` under `src/` — mirrors repo layout |
+| `--constraint constraints.txt` | Pins only known-breaking transitive deps instead of a full lock file; weekly constraint test CI catches breakage |
+| litellm wheel built at release time | litellm >=1.93 ships a Rust extension (maturin) with no macOS wheels, so `scripts/build-litellm-wheel.sh` builds the pinned version from sdist on a macOS runner and bundles it into the macOS zip; Windows/Linux use the PyPI wheel |
 | Consistent zip name for landing page | `langflow-installer-win.zip` uploaded alongside each versioned zip; landing page download link never needs updating |
 
 ## Conventions
@@ -78,7 +83,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 
 - Never hardcode API keys, tokens, or secrets
 - Avoid `Invoke-Expression` on user-controlled or untrusted input
-- The `irm ... | iex` pattern is **not used** — the uv bootstrapper is bundled as `uv-install.ps1` and invoked via `& "$PSScriptRoot\uv-install.ps1"`
+- The `irm ... | iex` pattern is **not used** — the uv bootstrapper is fetched from upstream at package time and invoked via `& "$PSScriptRoot\uv-install.ps1"`
 
 ## Commit Rules
 
@@ -118,7 +123,7 @@ Branch from `main`, open a PR, squash merge, delete branch. Keep branches short-
 1. Create a feature branch from `main` with a semantic name.
 2. Make atomic commits with conventional commit messages.
 3. Open a PR against `main`. Use a draft PR if the work is in progress.
-4. PR title format: `<type>: <short description>` (e.g., `feat: upgrade Langflow to 1.10.3`).
+4. PR title format: `<type>: <short description>` (e.g., `feat: upgrade Langflow to 1.11.1`).
 5. PR description should explain **what** and **why**, not **how**.
 6. Self-review the diff before marking the PR ready.
 7. The user reviews, approves, and **squash merges** into `main` — this keeps main history linear and atomic.
@@ -151,6 +156,8 @@ Tagging triggers the release workflow automatically:
 9. After merge, push the tag from `main`: `git tag vX.Y.Z && git push origin vX.Y.Z`.
 10. The CI workflow (`.github/workflows/release.yml`):
     - Runs verify checks
+    - Runs OS-matrix constraint test (win-amd64, macos-arm64, linux-x64) with the pinned Langflow version and constraints
+    - Confirms installed version matches the tag and script pin
     - Packages all 3 platform zips (both versioned and unversioned names)
     - Generates release notes from `CHANGELOG.md` via `scripts/release-notes.sh`
     - Creates a GitHub Release with grouped notes (Features, Bug Fixes, Documentation, Maintenance)
@@ -182,7 +189,8 @@ Each zip contains platform-specific files only:
 - `LICENSE` (root)
 - `src/install-langflow-script.ps1`
 - `src/stop-langflow-script.ps1`
-- `src/uv-install.ps1`
+- `src/uv-install.ps1` (fetched from upstream at package time)
+- `src/constraints.txt`
 
 **`langflow-installer-macos.zip`:**
 - `Install Langflow.command` (root)
@@ -190,6 +198,8 @@ Each zip contains platform-specific files only:
 - `LICENSE` (root)
 - `src/install-langflow.sh`
 - `src/stop-langflow.sh`
+- `src/constraints.txt`
+- `src/litellm-*.whl` (built at release time; installed before Langflow)
 
 **`langflow-installer-linux.zip`:**
 - `Install Langflow.sh` (root)
@@ -197,6 +207,7 @@ Each zip contains platform-specific files only:
 - `LICENSE` (root)
 - `src/install-langflow.sh`
 - `src/stop-langflow.sh`
+- `src/constraints.txt`
 
 Landing page download URLs (never changes across versions):
 - Windows: `https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-win.zip`
@@ -209,24 +220,24 @@ Update files in this order:
 
 1. **Single source of truth**: change `$LangflowVersion` in `src/install-langflow-script.ps1`.
    - Update `LANGFLOW_VERSION` in `src/install-langflow.sh` to match.
-2. Update plain-text references in these files to match:
-2. Update plain-text references in these files to match:
+2. Update `src/constraints.txt` if any known-breaking transitive deps need new version bounds for the new Langflow version.
+3. Update plain-text references in these files to match:
    - `README.md` (hero line + what-it-does list)
    - `CONTRACT.md` (purpose + install step)
    - `AGENTS.md` (project overview + design constraints)
    - `docs/index.html` (hero + what-it-does list)
-3. Run verification checks to confirm all references are consistent.
-4. If the new Langflow version has pre-built wheels for Python 3.12, no Python version change needed. Otherwise reassess the Python pin in `CONTRACT.md` section 6.
+4. Run verification checks to confirm all references are consistent.
+5. If the new Langflow version has pre-built wheels for Python 3.12, no Python version change needed. Otherwise reassess the Python pin in `CONTRACT.md` section 6.
 
 ## Smoke Testing
 
-This project has no automated tests. Before releasing, manually verify:
+Smoke tests are automated via CI (weekly schedule + tag triggers). Before releasing, also manually verify:
 
 - Run the script in a Windows VM or clean environment (no pre-installed Python).
 - Test all 3 menu paths: Install, Uninstall, Quit.
 - Confirm Install is idempotent (re-running detects existing components).
 - Confirm the desktop shortcut launches Langflow and the browser opens.
-- Confirm `uv pip install langflow==<new version>` succeeds on the pinned Python 3.12.
+- Confirm `uv pip install "langflow==X.Y.Z" --constraint src/constraints.txt` succeeds on the pinned Python 3.12.
 - Confirm Uninstall removes `%USERPROFILE%\langflow\` and the shortcut, and optionally Python 3.12.
 
 ## Assets
@@ -271,9 +282,10 @@ Before committing (or before merging a PR), run `bash scripts/verify.sh` — it 
 - **Version consistency**: all files reference the same `$LangflowVersion`
 - **No stale version refs**: after bumping, confirm no outdated version strings remain (CHANGELOG history excluded)
 - **Bash script**: has `set -euo pipefail` and POSIX-friendly syntax
+- **constraints.txt exists**: the constraints file must be present alongside installer scripts
 - **Lint**: `mise run lint` (shellcheck + shfmt + PSScriptAnalyzer) passes
 
-`mise` is a required contributor prerequisite. `scripts/verify.sh` runs `mise run lint` as check 11 and fails if mise is not installed. Install it with `mise install` (reads `mise.toml`), then run `mise run lint` locally or `mise run fmt` to reformat bash scripts in place. The lint gate is enforced in CI via `jdx/mise-action@v2` on every PR to `main`.
+`mise` is a required contributor prerequisite. `scripts/verify.sh` runs `mise run lint` as check 12 and fails if mise is not installed. Install it with `mise install` (reads `mise.toml`), then run `mise run lint` locally or `mise run fmt` to reformat bash scripts in place. The lint gate is enforced in CI via `jdx/mise-action@v2` on every PR to `main`.
 
 Lint config rationale:
 

@@ -50,16 +50,24 @@ function Package-Platform {
 
 Write-Host "Packaging..."
 
+# Fetch uv-installer from upstream (not committed to repo)
+Write-Host "  Fetching uv-install.ps1 from astral.sh..."
+$uvInstallerPath = Join-Path $RepoRoot "src\uv-install.ps1"
+Invoke-WebRequest -Uri "https://astral.sh/uv/install.ps1" -OutFile $uvInstallerPath -UseBasicParsing
+
 Package-Platform -Platform "win" `
     -RootFiles @("Install Langflow.bat", "Stop Langflow.bat", "LICENSE") `
-    -SrcFiles @("install-langflow-script.ps1", "stop-langflow-script.ps1", "uv-install.ps1", "assets/langflow.ico")
+    -SrcFiles @("install-langflow-script.ps1", "stop-langflow-script.ps1", "uv-install.ps1", "constraints.txt", "assets/langflow.ico")
+
+# Clean up fetched file
+Remove-Item -Path $uvInstallerPath -Force
 
 Package-Platform -Platform "macos" `
     -RootFiles @("Install Langflow.command", "Stop Langflow.command", "LICENSE") `
-    -SrcFiles @("install-langflow.sh", "stop-langflow.sh")
+    -SrcFiles @("install-langflow.sh", "stop-langflow.sh", "constraints.txt")
 
 Package-Platform -Platform "linux" `
     -RootFiles @("Install Langflow.sh", "Stop Langflow.sh", "LICENSE") `
-    -SrcFiles @("install-langflow.sh", "stop-langflow.sh", "assets/langflow.png")
+    -SrcFiles @("install-langflow.sh", "stop-langflow.sh", "constraints.txt", "assets/langflow.png")
 
 Write-Host "Done. All zips in $Dist/"

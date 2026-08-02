@@ -1,0 +1,4 @@
+# Pins known-breaking transitive dependencies.
+# litellm >=1.93 builds a Rust extension (maturin) and publishes no macOS wheels,
+# so macOS installs from the bundled wheel at the exact version below.
+litellm==1.95.0

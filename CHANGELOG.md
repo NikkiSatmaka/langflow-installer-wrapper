@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- feat: fetch `uv-install.ps1` from upstream at package time (no longer committed to repo)
+- fix: bundle a CI-built litellm macOS wheel in the release zip (litellm >=1.93 ships no macOS wheels)
+- chore: pin litellm==1.95.0 in constraints.txt
+
 ## v1.8.2 (2026-07-31)
 
 - hotfix: remove constraints for fastapi

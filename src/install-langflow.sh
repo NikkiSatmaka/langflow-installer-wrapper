@@ -2,7 +2,7 @@
 #
 # Install or uninstall Langflow on macOS/Linux using uv.
 # Bootstraps uv, installs Python 3.12, creates a virtual environment,
-# installs Langflow 1.10.3, and creates a desktop shortcut.
+# installs Langflow 1.11.1, and creates a desktop shortcut.
 # Also supports clean uninstall of all components.
 #
 # Author: Nikki Satmaka
@@ -12,11 +12,13 @@ set -euo pipefail
 
 OS="$(uname -s)"
 # shellcheck disable=SC2034  # kept as the single source of truth for the script version
-SCRIPT_VERSION="1.8.2"
-LANGFLOW_VERSION="1.10.3"
+SCRIPT_VERSION="1.9.0"
+LANGFLOW_VERSION="1.11.1"
 PYTHON_VERSION="3.12"
 LANGFLOW_DIR="$HOME/langflow"
 UV_BIN_DIR="$HOME/.local/bin"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONSTRAINTS_FILE="$SCRIPT_DIR/constraints.txt"
 
 # ── Colors ──────────────────────────────────────────────────────────────────
 
@@ -133,12 +135,28 @@ install_langflow_package() {
 
     info "Installing Langflow ${LANGFLOW_VERSION} (this may take a few minutes)..."
 
+    if [ "$OS" = "Darwin" ]; then
+        LITELLM_WHEEL=""
+        for w in "$SCRIPT_DIR"/litellm-*.whl; do
+            [ -e "$w" ] && LITELLM_WHEEL="$w" && break
+        done
+        if [ -n "$LITELLM_WHEEL" ]; then
+            info "Installing bundled litellm wheel..."
+            if ! uv pip install "$LITELLM_WHEEL" 2>&1; then
+                warn "Bundled litellm wheel failed -- will try PyPI instead"
+            fi
+        fi
+    fi
+
     install_ok=false
-    if uv pip install "langflow==${LANGFLOW_VERSION}" "litellm>=1.85.1,<1.92.0" "cryptography>=48.0.1,<49.0.0" "pypdfium2>=4.30.0,<5.0.0" 2>&1; then
+    constraints_args=()
+    [ -f "$CONSTRAINTS_FILE" ] && constraints_args=("--constraint" "$CONSTRAINTS_FILE")
+
+    if uv pip install "langflow==${LANGFLOW_VERSION}" "${constraints_args[@]}" 2>&1; then
         install_ok=true
     else
         warn "Version ${LANGFLOW_VERSION} failed -- trying latest..."
-        if uv pip install langflow 2>&1; then
+        if uv pip install langflow "${constraints_args[@]}" 2>&1; then
             install_ok=true
         fi
     fi

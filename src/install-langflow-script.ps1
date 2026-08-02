@@ -3,7 +3,7 @@
     Install or uninstall Langflow on Windows using uv.
 .DESCRIPTION
     Bootstraps uv, installs Python 3.12, creates a virtual environment,
-    installs Langflow 1.10.3, and creates a desktop shortcut.
+    installs Langflow 1.11.1, and creates a desktop shortcut.
     Also supports clean uninstall of all components.
 .NOTES
     Author: Nikki Satmaka
@@ -17,12 +17,13 @@
     Justification = 'Kept as a single source of truth for the script version, mirrored in the bash installer.')]
 param()
 
-$ScriptVersion = "1.8.2"
-$LangflowVersion = "1.10.3"
+$ScriptVersion   = "1.9.0"
+$LangflowVersion = "1.11.1"
 $PythonVersion   = "3.12"
 $LangflowDir     = "$env:USERPROFILE\langflow"
 $UvBinDir        = "$env:USERPROFILE\.local\bin"
 $ShortcutName    = "Langflow Web.lnk"
+$ConstraintsFile = "$PSScriptRoot\constraints.txt"
 
 # ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -149,14 +150,18 @@ function Install-LangflowPackage {
         Write-Info "Installing Langflow $LangflowVersion (this may take a few minutes)..."
 
         $installOk = $false
+        $constraintsArg = ""
+        if (Test-Path $ConstraintsFile) {
+            $constraintsArg = "--constraint $ConstraintsFile"
+        }
 
-        uv pip install "langflow==$LangflowVersion" "litellm>=1.85.1,<1.92.0" "cryptography>=48.0.1,<49.0.0" "pypdfium2>=4.30.0,<5.0.0" 2>&1 | ForEach-Object { Write-Host "   $_" }
+        uv pip install "langflow==$LangflowVersion" $constraintsArg 2>&1 | ForEach-Object { Write-Host "   $_" }
         if ($LASTEXITCODE -eq 0) {
             $installOk = $true
         }
         else {
             Write-Warn "Version $LangflowVersion failed -- trying latest..."
-            uv pip install langflow 2>&1 | ForEach-Object { Write-Host "   $_" }
+            uv pip install langflow $constraintsArg 2>&1 | ForEach-Object { Write-Host "   $_" }
             if ($LASTEXITCODE -eq 0) {
                 $installOk = $true
             }
