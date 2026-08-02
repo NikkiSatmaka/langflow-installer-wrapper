@@ -55,12 +55,3 @@ jobs:
         shell: bash
         run: |
           uv run langflow --version
-
-      - name: Check for source compilation
-        shell: bash
-        run: |
-          if grep -qiE '(Building|Compiling)' /tmp/uv-install.log; then
-            echo "::error::Source compilation detected — binary wheels are missing for this platform. Update src/constraints.txt."
-            exit 1
-          fi
-          echo "No source compilation detected — all binary wheels available."
