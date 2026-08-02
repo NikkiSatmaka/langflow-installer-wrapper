@@ -1,0 +1,66 @@
+name: Constraint Test
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  constraint-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+
+      - name: Remove build tools (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get remove --purge -y gcc g++ clang rustc cargo build-essential make 2>/dev/null || true
+          sudo apt-get autoremove -y 2>/dev/null || true
+
+      - name: Remove build tools (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          sudo rm -rf /Library/Developer/CommandLineTools
+
+      - name: Install Python 3.12
+        run: uv python install 3.12
+
+      - name: Extract pinned Langflow version
+        shell: bash
+        run: |
+          if [ -f src/install-langflow.sh ]; then
+            LF_VER=$(awk -F '"' '/^LANGFLOW_VERSION=/{print $2; exit}' src/install-langflow.sh)
+          else
+            LF_VER=$(awk -F '"' '/^\$LangflowVersion/{print $2; exit}' src/install-langflow-script.ps1)
+          fi
+          echo "LANGFLOW_VERSION=$LF_VER" >> "$GITHUB_ENV"
+          echo "Pinned Langflow version: $LF_VER"
+
+      - name: Create venv and install langflow with constraints
+        shell: bash
+        run: |
+          uv venv .venv
+          uv pip install "langflow==${LANGFLOW_VERSION}" --constraint src/constraints.txt 2>&1 | tee /tmp/uv-install.log
+
+      - name: Verify import
+        shell: bash
+        run: |
+          uv run python -c "import langflow; print('langflow', langflow.__version__)"
+
+      - name: Check for source compilation
+        shell: bash
+        run: |
+          if grep -qiE '(Building|Compiling)' /tmp/uv-install.log; then
+            echo "::error::Source compilation detected — binary wheels are missing for this platform. Update src/constraints.txt."
+            exit 1
+          fi
+          echo "No source compilation detected — all binary wheels available."

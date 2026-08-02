@@ -52,14 +52,14 @@ Write-Host "Packaging..."
 
 Package-Platform -Platform "win" `
     -RootFiles @("Install Langflow.bat", "Stop Langflow.bat", "LICENSE") `
-    -SrcFiles @("install-langflow-script.ps1", "stop-langflow-script.ps1", "uv-install.ps1", "assets/langflow.ico")
+    -SrcFiles @("install-langflow-script.ps1", "stop-langflow-script.ps1", "uv-install.ps1", "constraints.txt", "assets/langflow.ico")
 
 Package-Platform -Platform "macos" `
     -RootFiles @("Install Langflow.command", "Stop Langflow.command", "LICENSE") `
-    -SrcFiles @("install-langflow.sh", "stop-langflow.sh")
+    -SrcFiles @("install-langflow.sh", "stop-langflow.sh", "constraints.txt")
 
 Package-Platform -Platform "linux" `
     -RootFiles @("Install Langflow.sh", "Stop Langflow.sh", "LICENSE") `
-    -SrcFiles @("install-langflow.sh", "stop-langflow.sh", "assets/langflow.png")
+    -SrcFiles @("install-langflow.sh", "stop-langflow.sh", "constraints.txt", "assets/langflow.png")
 
 Write-Host "Done. All zips in $Dist/"

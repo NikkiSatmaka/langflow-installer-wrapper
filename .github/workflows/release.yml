@@ -14,8 +14,73 @@ jobs:
         run: mise exec -- pwsh -NoProfile -Command "Install-Module PSScriptAnalyzer -Scope CurrentUser -Force"
       - run: bash scripts/verify.sh
 
-  package:
+  constraint-test:
     needs: verify
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+
+      - name: Remove build tools (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get remove --purge -y gcc g++ clang rustc cargo build-essential make 2>/dev/null || true
+          sudo apt-get autoremove -y 2>/dev/null || true
+
+      - name: Remove build tools (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          sudo rm -rf /Library/Developer/CommandLineTools
+
+      - name: Install Python 3.12
+        run: uv python install 3.12
+
+      - name: Extract pinned version from installer script
+        shell: bash
+        run: |
+          if [ -f src/install-langflow.sh ]; then
+            LF_VER=$(awk -F '"' '/^LANGFLOW_VERSION=/{print $2; exit}' src/install-langflow.sh)
+          else
+            LF_VER=$(awk -F '"' '/^\$LangflowVersion/{print $2; exit}' src/install-langflow-script.ps1)
+          fi
+          echo "LANGFLOW_VERSION=$LF_VER" >> "$GITHUB_ENV"
+
+      - name: Create venv and install pinned langflow with constraints
+        shell: bash
+        run: |
+          uv venv .venv
+          uv pip install "langflow==${LANGFLOW_VERSION}" --constraint src/constraints.txt
+
+      - name: Verify version matches tag
+        shell: bash
+        run: |
+          INSTALLED=$(uv run python -c "import langflow; print(langflow.__version__)")
+          TAG="${GITHUB_REF_NAME#v}"
+          echo "Installed: $INSTALLED, Tag: $TAG, Pin: $LANGFLOW_VERSION"
+          if [ "$INSTALLED" != "$TAG" ]; then
+            echo "::error::Installed version $INSTALLED does not match tag $TAG"
+            exit 1
+          fi
+          if [ "$INSTALLED" != "$LANGFLOW_VERSION" ]; then
+            echo "::error::Installed version $INSTALLED does not match script pin $LANGFLOW_VERSION"
+            exit 1
+          fi
+
+      - name: Check for source compilation
+        shell: bash
+        run: |
+          if [ -f /tmp/uv-install.log ] && grep -qiE '(Building|Compiling)' /tmp/uv-install.log; then
+            echo "::error::Source compilation detected — binary wheels are missing for this platform. Update src/constraints.txt."
+            exit 1
+          fi
+          echo "No source compilation detected — all binary wheels available."
+
+  package:
+    needs: [verify, constraint-test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

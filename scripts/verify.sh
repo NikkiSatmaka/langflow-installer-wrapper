@@ -115,20 +115,27 @@ for f in src/install-langflow.sh src/install-langflow-script.ps1; do
 done
 pass "secrets scan"
 
-# ── 10. Zip contents match spec ────────────────────────────────────────────
+# ── 10. constraints.txt exists ────────────────────────────────────────────
+
+if [ ! -f src/constraints.txt ]; then
+    fail "src/constraints.txt: missing constraints file"
+fi
+pass "constraints.txt"
+
+# ── 11. Zip contents match spec ────────────────────────────────────────────
 
 for f in "Install Langflow.bat" "Stop Langflow.bat" \
     "Install Langflow.command" "Stop Langflow.command" \
     "Install Langflow.sh" "Stop Langflow.sh" \
     src/install-langflow-script.ps1 src/stop-langflow-script.ps1 \
-    src/uv-install.ps1 src/install-langflow.sh src/stop-langflow.sh; do
+    src/uv-install.ps1 src/constraints.txt src/install-langflow.sh src/stop-langflow.sh; do
     if [ ! -f "$f" ]; then
         fail "$f: referenced by zip spec but does not exist"
     fi
 done
 pass "zip spec files exist"
 
-# ── 11. Lint (shellcheck + shfmt + PSScriptAnalyzer via mise) ──────────────
+# ── 12. Lint (shellcheck + shfmt + PSScriptAnalyzer via mise) ──────────────
 
 if ! command -v mise >/dev/null 2>&1; then
     fail "mise not found -- install it (https://mise.jdx.dev) then run 'mise install'"

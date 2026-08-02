@@ -58,14 +58,15 @@ echo "Packaging..."
 
 package_platform "win" \
     "Install Langflow.bat" "Stop Langflow.bat" LICENSE \
-    "src/install-langflow-script.ps1" "src/stop-langflow-script.ps1" "src/uv-install.ps1" "src/assets/langflow.ico"
+    "src/install-langflow-script.ps1" "src/stop-langflow-script.ps1" \
+    "src/uv-install.ps1" "src/constraints.txt" "src/assets/langflow.ico"
 
 package_platform "macos" \
     "Install Langflow.command" "Stop Langflow.command" LICENSE \
-    "src/install-langflow.sh" "src/stop-langflow.sh"
+    "src/install-langflow.sh" "src/stop-langflow.sh" "src/constraints.txt"
 
 package_platform "linux" \
     "Install Langflow.sh" "Stop Langflow.sh" LICENSE \
-    "src/install-langflow.sh" "src/stop-langflow.sh" "src/assets/langflow.png"
+    "src/install-langflow.sh" "src/stop-langflow.sh" "src/constraints.txt" "src/assets/langflow.png"
 
 echo "Done. All zips in $DIST/"
