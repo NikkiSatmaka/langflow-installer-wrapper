@@ -35,9 +35,18 @@ jobs:
         if: matrix.os == 'windows-latest'
         shell: powershell
         run: |
-          $installer = "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe"
-          $installPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise"
-          if (Test-Path $installer) {
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $installer = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vs_installer.exe"
+          $installPath = ""
+          if (Test-Path $vswhere) {
+              $installPath = (& $vswhere -latest -property installationPath).Trim()
+          }
+          if (-not $installPath) {
+              Write-Warning "No Visual Studio instance found; cannot remove build tools"
+          } elseif (-not (Test-Path $installer)) {
+              Write-Warning "vs_installer.exe not found; cannot remove build tools"
+          } else {
+              Write-Host "Uninstalling Visual Studio from: $installPath"
               $process = Start-Process $installer `
                   -ArgumentList "uninstall --installPath `"$installPath`" --passive --norestart" `
                   -Wait -PassThru
