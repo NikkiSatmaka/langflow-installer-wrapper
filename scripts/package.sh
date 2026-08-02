@@ -56,10 +56,17 @@ package_platform() {
 
 echo "Packaging..."
 
+# Fetch uv-installer from upstream (not committed to repo)
+echo "  Fetching uv-install.ps1 from astral.sh..."
+curl -fsSL https://astral.sh/uv/install.ps1 -o src/uv-install.ps1
+
 package_platform "win" \
     "Install Langflow.bat" "Stop Langflow.bat" LICENSE \
     "src/install-langflow-script.ps1" "src/stop-langflow-script.ps1" \
     "src/uv-install.ps1" "src/constraints.txt" "src/assets/langflow.ico"
+
+# Clean up fetched file
+rm -f src/uv-install.ps1
 
 package_platform "macos" \
     "Install Langflow.command" "Stop Langflow.command" LICENSE \

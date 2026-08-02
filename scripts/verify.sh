@@ -54,7 +54,7 @@ if grep -Eq 'irm.*iex' src/install-langflow-script.ps1 2>/dev/null; then
 fi
 pass "no irm|iex"
 
-# ── 5. UTF-8 BOM on .ps1 files (skip uv-install.ps1, maintained upstream) ──
+# ── 5. UTF-8 BOM on .ps1 files (uv-install.ps1 fetched from upstream) ─────
 
 for f in src/install-langflow-script.ps1 src/stop-langflow-script.ps1; do
     [ -f "$f" ] || continue
@@ -123,12 +123,13 @@ fi
 pass "constraints.txt"
 
 # ── 11. Zip contents match spec ────────────────────────────────────────────
+# Note: uv-install.ps1 is fetched from upstream at package time, not in the repo
 
 for f in "Install Langflow.bat" "Stop Langflow.bat" \
     "Install Langflow.command" "Stop Langflow.command" \
     "Install Langflow.sh" "Stop Langflow.sh" \
     src/install-langflow-script.ps1 src/stop-langflow-script.ps1 \
-    src/uv-install.ps1 src/constraints.txt src/install-langflow.sh src/stop-langflow.sh; do
+    src/constraints.txt src/install-langflow.sh src/stop-langflow.sh; do
     if [ ! -f "$f" ]; then
         fail "$f: referenced by zip spec but does not exist"
     fi

@@ -131,7 +131,7 @@ Run when the user selects `[U]`.
 | PATH persistence | Windows: Registry via `[Environment]::SetEnvironmentVariable`. macOS/Linux: `~/.profile` |
 | Portability | All operations use `%USERPROFILE%` (Windows) or `$HOME` (macOS/Linux) |
 | File encoding (Windows) | `install-langflow-script.ps1` must be saved as **UTF-8 with BOM** to ensure Windows PowerShell correctly parses non-ASCII characters |
-| Bundled uv installer | Windows bundles `uv-install.ps1` to avoid `irm \| iex` AV triggers. macOS/Linux use `curl \| sh` from the official astral.sh URL |
+| uv installer sourcing | Windows fetches `uv-install.ps1` from astral.sh at package time (not committed to repo) to avoid `irm \| iex` AV triggers. macOS/Linux use `curl \| sh` from the official astral.sh URL |
 | Release assets | Three per-platform zips: `langflow-installer-win.zip`, `langflow-installer-macos.zip`, `langflow-installer-linux.zip`. Each contains only the files needed for that platform |
 | Landing page download | `langflow-installer-win.zip` URL stays consistent. macOS and Linux zips have their own URLs |
 | Python version rationale | Pin 3.12 — the latest version with pre-built wheels for all C-extension dependencies. 3.13+ requires building from source |
@@ -146,7 +146,7 @@ Run when the user selects `[U]`.
 | Port 7860 conflict | Document in completion message; user can configure via `.env` |
 | langflow==1.10.3 yanked on PyPI | Catch the pip error and suggest removing the version pin |
 | WScript.Shell missing on N/KN editions (Windows) | Catch COM error and print manual shortcut instructions |
-| Antivirus flags `irm \| iex` pattern (Windows) | Bundle `uv-install.ps1` in the release zip; invoke via `& "$PSScriptRoot\uv-install.ps1"` instead of downloading at runtime |
+| Antivirus flags `irm \| iex` pattern (Windows) | Fetch `uv-install.ps1` from upstream at package time and include in release zip; invoke via `& "$PSScriptRoot\uv-install.ps1"` instead of downloading at runtime |
 | uv binary not on PATH after install | Explicitly add to PATH in script |
 | macOS quarantine warning for `.command` files | Document System Settings > Privacy & Security > Open Anyway flow, with a dedicated guide at `docs/GATEKEEPER.md` |
 | Linux desktop shortcut not trusted | Use `gio set metadata::trusted true` for GNOME |

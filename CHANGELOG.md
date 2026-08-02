@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- feat: fetch `uv-install.ps1` from upstream at package time (no longer committed to repo)
+
 ## v1.8.2 (2026-07-31)
 
 - hotfix: remove constraints for fastapi

@@ -100,7 +100,7 @@ Re-run the installer script and select **Uninstall**. This removes:
 | `src/install-langflow.sh` | Main installer/uninstaller script (macOS/Linux) |
 | `src/stop-langflow-script.ps1` | Stop script (Windows) |
 | `src/stop-langflow.sh` | Stop script (macOS/Linux) |
-| `src/uv-install.ps1` | Bundled uv bootstrapper (Windows) |
+| `src/uv-install.ps1` | uv bootstrapper (Windows, fetched from upstream at package time) |
 | `scripts/verify.sh` | Pre-commit verification checks |
 | `scripts/package.sh` | Cross-platform packaging script (bash) |
 | `scripts/package.ps1` | Cross-platform packaging script (PowerShell) |

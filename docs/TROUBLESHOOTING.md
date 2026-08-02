@@ -14,7 +14,7 @@ Windows Smart App Control may block `Install Langflow.bat` because it runs an un
 
 ## Antivirus flags the installer (Windows)
 
-Some antivirus software (Kaspersky, Total Security) may flag the `uv pip install` step or the `irm | iex` pattern. Starting from v1.1.4, the installer bundles `uv-install.ps1` instead of using `irm | iex`. If your AV still blocks it, add an exclusion for `%USERPROFILE%\langflow\`.
+Some antivirus software (Kaspersky, Total Security) may flag the `uv pip install` step or the `irm | iex` pattern. Starting from v1.1.4, the installer uses `uv-install.ps1` (fetched from upstream at package time) instead of using `irm | iex`. If your AV still blocks it, add an exclusion for `%USERPROFILE%\langflow\`.
 
 ## Uninstall doesn't clean up everything
 

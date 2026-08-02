@@ -26,7 +26,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `src/install-langflow.sh` | Main bash installer/uninstaller script (macOS/Linux) |
 | `src/stop-langflow-script.ps1` | PowerShell stop script (Windows) |
 | `src/stop-langflow.sh` | Bash stop script (macOS/Linux) |
-| `src/uv-install.ps1` | Bundled uv bootstrapper (official script from astral.sh) — eliminates `irm \| iex` AV trigger (Windows only) |
+| `src/uv-install.ps1` | Fetched from astral.sh at package time (not in repo) — eliminates `irm \| iex` AV trigger (Windows only) |
 | `src/stop-langflow-script.ps1` | PowerShell stop script (Windows) |
 | `src/stop-langflow.sh` | Bash stop script (macOS/Linux) |
 | `src/constraints.txt` | Pins known-breaking transitive deps (litellm, fastapi, etc.) that lack wheels |
@@ -63,7 +63,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | Desktop shortcut targets `uv run langflow run` | Works regardless of active venv state |
 | Uninstall keeps `uv` | uv may be used for other projects |
 | UTF-8 BOM required on `.ps1` | Windows PowerShell requires UTF-8 with BOM; without it, non-ASCII characters cause parser errors |
-| Bundled `uv-install.ps1` | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
+| `uv-install.ps1` fetched at package time | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
 | Release zip structure | `Install Langflow.bat` and `LICENSE` at zip root; `install-langflow-script.ps1`, `uv-install.ps1`, and `constraints.txt` under `src/` — mirrors repo layout |
 | `--constraint constraints.txt` | Pins only known-breaking transitive deps instead of a full lock file; weekly constraint test CI catches breakage |
 | Consistent zip name for landing page | `langflow-installer-win.zip` uploaded alongside each versioned zip; landing page download link never needs updating |
@@ -81,7 +81,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 
 - Never hardcode API keys, tokens, or secrets
 - Avoid `Invoke-Expression` on user-controlled or untrusted input
-- The `irm ... | iex` pattern is **not used** — the uv bootstrapper is bundled as `uv-install.ps1` and invoked via `& "$PSScriptRoot\uv-install.ps1"`
+- The `irm ... | iex` pattern is **not used** — the uv bootstrapper is fetched from upstream at package time and invoked via `& "$PSScriptRoot\uv-install.ps1"`
 
 ## Commit Rules
 
@@ -187,7 +187,7 @@ Each zip contains platform-specific files only:
 - `LICENSE` (root)
 - `src/install-langflow-script.ps1`
 - `src/stop-langflow-script.ps1`
-- `src/uv-install.ps1`
+- `src/uv-install.ps1` (fetched from upstream at package time)
 - `src/constraints.txt`
 
 **`langflow-installer-macos.zip`:**
