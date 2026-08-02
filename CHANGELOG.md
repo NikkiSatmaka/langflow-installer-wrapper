@@ -1,8 +1,10 @@
 # Changelog
 
-## Unreleased
+## v1.9.0 (2026-08-02)
 
+- feat: upgrade Langflow to 1.11.1
 - feat: fetch `uv-install.ps1` from upstream at package time (no longer committed to repo)
+- feat: add constraint-test CI workflow with build-tool removal on all OSes
 - fix: bundle a CI-built litellm macOS wheel in the release zip (litellm >=1.93 ships no macOS wheels)
 - chore: pin litellm==1.95.0 in constraints.txt
 
