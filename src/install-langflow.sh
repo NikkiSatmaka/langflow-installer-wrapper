@@ -28,6 +28,7 @@ if [ -t 1 ]; then
     B='\033[1m'
     R='\033[0;31m'
     Y='\033[0;33m'
+    BG='\033[42m'
     N='\033[0m'
 else
     G=''
@@ -35,6 +36,7 @@ else
     B=''
     R=''
     Y=''
+    BG=''
     N=''
 fi
 
@@ -348,13 +350,20 @@ start_install() {
 
     printf "\n"
     printf "${G}══════════════════════════════════════════════════${N}\n"
-    ok "Langflow ${LANGFLOW_VERSION} installed"
+    printf "\n"
+    printf "${BG}${B}  ✓  Langflow ${LANGFLOW_VERSION} installed${N}\n"
     ok "Desktop shortcuts created"
-    printf "${C} ➜  Double-click the Langflow shortcut to start${N}\n"
-    printf "${C} ➜  Browser will open automatically at http://127.0.0.1:7860${N}\n"
+    printf "\n"
+    printf "${Y}  NEXT STEP:${N}\n"
+    printf "${C}   1. Double-click the 'Langflow Web' shortcut to start${N}\n"
+    printf "${C}   2. Your browser opens automatically at http://127.0.0.1:7860${N}\n"
+    printf "\n"
+    printf "${Y}  Keep the server window open - closing it stops the server.${N}\n"
+    printf "\n"
     printf "${G}══════════════════════════════════════════════════${N}\n"
     printf "\n"
-    read -r -p "$(printf "${C}Press Enter to continue...${N}")"
+    read -r -p "$(printf "${C}Installation complete - press Enter to close this window: ${N}")"
+    exit 0
 }
 
 # ── Uninstall ───────────────────────────────────────────────────────────────
@@ -421,7 +430,8 @@ start_uninstall() {
     info "    rm -rf ${UV_BIN_DIR}"
     printf "${G}══════════════════════════════════════════════════${N}\n"
     printf "\n"
-    read -r -p "$(printf "${C}Press Enter to continue...${N}")"
+    read -r -p "$(printf "${C}Uninstall complete - press Enter to close this window: ${N}")"
+    exit 0
 }
 
 # ── Main ────────────────────────────────────────────────────────────────────

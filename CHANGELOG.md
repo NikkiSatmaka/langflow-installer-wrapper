@@ -7,6 +7,8 @@
 - feat: add constraint-test CI workflow with build-tool removal on all OSes
 - fix: bundle a CI-built litellm macOS wheel in the release zip (litellm >=1.93 ships no macOS wheels)
 - chore: pin litellm==1.95.0 in constraints.txt
+- feat: rename Langflow server window to "Langflow Server - KEEP OPEN" to prevent accidental closes
+- feat: highlight post-install next steps and exit the installer after install/uninstall
 
 ## v1.8.2 (2026-07-31)
 
