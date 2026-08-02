@@ -31,6 +31,21 @@ jobs:
         run: |
           sudo rm -rf /Library/Developer/CommandLineTools
 
+      - name: Remove build tools (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: powershell
+        run: |
+          $installer = "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe"
+          $installPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise"
+          if (Test-Path $installer) {
+              $process = Start-Process $installer `
+                  -ArgumentList "uninstall --installPath `"$installPath`" --passive --norestart" `
+                  -Wait -PassThru
+              if ($process.ExitCode -ne 0) {
+                  Write-Warning "VS uninstall returned exit code $($process.ExitCode)"
+              }
+          }
+
       - name: Install Python 3.12
         run: uv python install 3.12
 
