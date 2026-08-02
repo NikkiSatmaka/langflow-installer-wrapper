@@ -100,7 +100,7 @@ jobs:
       - name: Verify version matches tag
         shell: bash
         run: |
-          INSTALLED=$(uv run python -c "import langflow; print(langflow.__version__)")
+          INSTALLED=$(uv run langflow --version 2>/dev/null | awk '/^langflow /{print $2; exit}')
           TAG="${GITHUB_REF_NAME#v}"
           echo "Installed: $INSTALLED, Tag: $TAG, Pin: $LANGFLOW_VERSION"
           if [ "$INSTALLED" != "$TAG" ]; then

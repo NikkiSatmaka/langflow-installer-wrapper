@@ -96,4 +96,5 @@ jobs:
       - name: Verify installation
         shell: bash
         run: |
-          uv run langflow --version
+          uv run langflow --version 2>/dev/null
+
