@@ -112,12 +112,31 @@ jobs:
             exit 1
           fi
 
+  litellm-wheel:
+    needs: verify
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+      - name: Install Python 3.12
+        run: uv python install 3.12
+      - name: Build litellm macOS wheel
+        run: bash scripts/build-litellm-wheel.sh dist/wheels
+      - uses: actions/upload-artifact@v4
+        with:
+          name: litellm-wheel
+          path: dist/wheels/litellm-*.whl
+
   package:
-    needs: [verify, constraint-test]
+    needs: [verify, constraint-test, litellm-wheel]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: bash scripts/package.sh "${{ github.ref_name }}"
+      - uses: actions/download-artifact@v4
+        with:
+          name: litellm-wheel
+          path: wheels
+      - run: bash scripts/package.sh "${{ github.ref_name }}" wheels
       - uses: actions/upload-artifact@v4
         with:
           name: zips

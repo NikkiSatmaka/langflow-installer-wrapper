@@ -135,6 +135,19 @@ install_langflow_package() {
 
     info "Installing Langflow ${LANGFLOW_VERSION} (this may take a few minutes)..."
 
+    if [ "$OS" = "Darwin" ]; then
+        LITELLM_WHEEL=""
+        for w in "$SCRIPT_DIR"/litellm-*.whl; do
+            [ -e "$w" ] && LITELLM_WHEEL="$w" && break
+        done
+        if [ -n "$LITELLM_WHEEL" ]; then
+            info "Installing bundled litellm wheel..."
+            if ! uv pip install "$LITELLM_WHEEL" 2>&1; then
+                warn "Bundled litellm wheel failed -- will try PyPI instead"
+            fi
+        fi
+    fi
+
     install_ok=false
     constraints_args=()
     [ -f "$CONSTRAINTS_FILE" ] && constraints_args=("--constraint" "$CONSTRAINTS_FILE")

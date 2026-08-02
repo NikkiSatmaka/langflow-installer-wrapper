@@ -20,6 +20,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
 
+      - name: Install Python 3.12
+        run: uv python install 3.12
+
+      - name: Build litellm macOS wheel (macOS)
+        if: matrix.os == 'macos-latest'
+        shell: bash
+        run: bash scripts/build-litellm-wheel.sh
+
       - name: Remove build tools (Linux)
         if: matrix.os == 'ubuntu-latest'
         run: |
@@ -73,9 +81,6 @@ jobs:
               }
           }
 
-      - name: Install Python 3.12
-        run: uv python install 3.12
-
       - name: Extract pinned Langflow version
         shell: bash
         run: |
@@ -91,10 +96,12 @@ jobs:
         shell: bash
         run: |
           uv venv .venv
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            uv pip install "$(ls src/litellm-*.whl | head -1)"
+          fi
           uv pip install "langflow==${LANGFLOW_VERSION}" --constraint src/constraints.txt 2>&1 | tee /tmp/uv-install.log
 
       - name: Verify installation
         shell: bash
         run: |
           uv run langflow --version 2>/dev/null
-
