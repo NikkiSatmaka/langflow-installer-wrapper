@@ -1,6 +1,6 @@
 # Langflow Installer
 
-One-click installer for [Langflow](https://github.com/langflow-ai/langflow) **1.10.3** on Windows, macOS, and Linux — no admin rights required.
+One-click installer for [Langflow](https://github.com/langflow-ai/langflow) **1.11.1** on Windows, macOS, and Linux — no admin rights required.
 
 [![GitHub](https://img.shields.io/badge/GitHub-NikkiSatmaka-181717?style=for-the-badge&logo=github)](https://github.com/NikkiSatmaka/)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-nikkisatmaka-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/nikkisatmaka/)
@@ -26,7 +26,7 @@ The script will:
 - Install `uv` (self-bootstrapping package manager)
 - Download Python 3.12
 - Create a virtual environment in `%USERPROFILE%\langflow\`
-- Install Langflow 1.10.3
+- Install Langflow 1.11.1
 - Create desktop shortcuts (`Langflow Web.lnk` and `Stop Langflow.lnk`)
 
 After install, double-click the **Langflow Web** desktop shortcut. A terminal window will open, and your browser will launch automatically once the server is ready at `http://127.0.0.1:7860`. To stop the server, double-click **Stop Langflow**.
@@ -45,7 +45,7 @@ The script will:
 - Install `uv` (self-bootstrapping package manager)
 - Download Python 3.12
 - Create a virtual environment in `~/langflow/`
-- Install Langflow 1.10.3
+- Install Langflow 1.11.1
 - Create desktop shortcuts (`Langflow Web.command` and `Stop Langflow.command`)
 
 After install, double-click the **Langflow Web** desktop shortcut. Terminal will open, start the server, and open your browser automatically. To stop the server, double-click **Stop Langflow**.
@@ -60,7 +60,7 @@ The script will:
 - Install `uv` (self-bootstrapping package manager)
 - Download Python 3.12
 - Create a virtual environment in `~/langflow/`
-- Install Langflow 1.10.3
+- Install Langflow 1.11.1
 - Create desktop shortcuts in your app menu and on your desktop (for both starting and stopping Langflow)
 
 After install, launch **Langflow Web** from your app menu or desktop shortcut. A terminal will open, start the server, and open your browser automatically. To stop the server, find **Stop Langflow** in your app menu or desktop.
