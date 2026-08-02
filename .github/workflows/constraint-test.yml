@@ -51,10 +51,10 @@ jobs:
           uv venv .venv
           uv pip install "langflow==${LANGFLOW_VERSION}" --constraint src/constraints.txt 2>&1 | tee /tmp/uv-install.log
 
-      - name: Verify import
+      - name: Verify installation
         shell: bash
         run: |
-          uv run python -c "import langflow; print('langflow', langflow.__version__)"
+          uv run langflow --version
 
       - name: Check for source compilation
         shell: bash
