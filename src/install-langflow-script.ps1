@@ -219,7 +219,7 @@ echo  +  browser will no longer work.                    +
 echo  +==================================================+
 echo.
 echo Starting Langflow server...
-start /MIN "Langflow Server" "$uvPath" run langflow run
+start /MIN "Langflow Server - KEEP OPEN" "$uvPath" run langflow run
 echo.
 echo Waiting for Langflow to start...
 echo The browser will open automatically when the server is ready.
@@ -332,13 +332,22 @@ function Start-Install {
 
     Write-Host ""
     Write-Host "══════════════════════════════════════════════════" -ForegroundColor Green
-    Write-Ok "Langflow $LangflowVersion installed"
+    Write-Host ""
+    Write-Host "  ✓ Langflow $LangflowVersion installed" -ForegroundColor White -BackgroundColor Green
     Write-Ok "Desktop shortcuts created"
-    Write-Host " ➜  Double-click the Langflow desktop shortcut to start" -ForegroundColor Cyan
-    Write-Host " ➜  Browser will open automatically at http://127.0.0.1:7860" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "  NEXT STEP:" -ForegroundColor Yellow
+    Write-Host "   1. Double-click the 'Langflow Web' shortcut on your Desktop" -ForegroundColor Cyan
+    Write-Host "   2. A 'Langflow Server - KEEP OPEN' window starts minimized" -ForegroundColor Cyan
+    Write-Host "   3. Your browser opens automatically at http://127.0.0.1:7860" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "  Keep the 'Langflow Server - KEEP OPEN' window open." -ForegroundColor Yellow
+    Write-Host "  Closing it stops the server." -ForegroundColor Yellow
+    Write-Host ""
     Write-Host "══════════════════════════════════════════════════" -ForegroundColor Green
     Write-Host ""
-    pause
+    Read-Host "Installation complete - press Enter to close this window"
+    exit 0
 }
 
 # ── Uninstall ──────────────────────────────────────────────────────────────
@@ -406,7 +415,8 @@ function Start-Uninstall {
     Write-Info "    rm -r ""$UvBinDir\uv.exe"" ""$UvBinDir\uvx.exe"" ""$UvBinDir\uvw.exe"""
     Write-Host "══════════════════════════════════════════════════" -ForegroundColor Green
     Write-Host ""
-    pause
+    Read-Host "Uninstall complete - press Enter to close this window"
+    exit 0
 }
 
 # ── Main ───────────────────────────────────────────────────────────────────

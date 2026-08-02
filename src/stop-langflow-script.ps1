@@ -59,10 +59,10 @@ catch {
     # netstat not available
 }
 
-# Method 2: Find by window title (start /MIN "Langflow Server")
+# Method 2: Find by window title (start /MIN "Langflow Server - KEEP OPEN")
 if (-not $found) {
     try {
-        $procs = Get-Process | Where-Object { $_.MainWindowTitle -eq "Langflow Server" }
+        $procs = Get-Process | Where-Object { $_.MainWindowTitle -like "Langflow Server*" }
         if ($procs) {
             $procs | Stop-Process -Force -ErrorAction SilentlyContinue
             $found = $true

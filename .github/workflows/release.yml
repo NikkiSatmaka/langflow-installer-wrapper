@@ -97,18 +97,19 @@ jobs:
           uv venv .venv
           uv pip install "langflow==${LANGFLOW_VERSION}" --constraint src/constraints.txt
 
-      - name: Verify version matches tag
+      - name: Verify version matches tag and script pin
         shell: bash
         run: |
           INSTALLED=$(uv run langflow --version 2>/dev/null | awk '/^langflow /{print $2; exit}')
           TAG="${GITHUB_REF_NAME#v}"
-          echo "Installed: $INSTALLED, Tag: $TAG, Pin: $LANGFLOW_VERSION"
-          if [ "$INSTALLED" != "$TAG" ]; then
-            echo "::error::Installed version $INSTALLED does not match tag $TAG"
-            exit 1
-          fi
+          SCRIPT_VER=$(awk -F '"' '/^SCRIPT_VERSION=/{print $2; exit}' src/install-langflow.sh)
+          echo "Installed: $INSTALLED, Tag: $TAG, Pin: $LANGFLOW_VERSION, Script: $SCRIPT_VER"
           if [ "$INSTALLED" != "$LANGFLOW_VERSION" ]; then
             echo "::error::Installed version $INSTALLED does not match script pin $LANGFLOW_VERSION"
+            exit 1
+          fi
+          if [ "$TAG" != "$SCRIPT_VER" ]; then
+            echo "::error::Tag $TAG does not match script version $SCRIPT_VER"
             exit 1
           fi
 
