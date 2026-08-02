@@ -34,29 +34,47 @@ jobs:
       - name: Remove build tools (macOS)
         if: matrix.os == 'macos-latest'
         run: |
-          sudo rm -rf /Library/Developer/CommandLineTools
+          # Remove active Apple C toolchain (selected Xcode or Command Line Tools)
+          DEV_DIR=$(xcode-select -p 2>/dev/null || true)
+          if [ -n "$DEV_DIR" ]; then
+            if [[ "$DEV_DIR" == /Library/Developer/CommandLineTools* ]]; then
+              sudo rm -rf /Library/Developer/CommandLineTools
+            else
+              sudo rm -rf "$(dirname "$DEV_DIR")"
+              sudo rm -rf /Library/Developer/CommandLineTools
+            fi
+          fi
+          # Remove Rust toolchain
+          rm -rf "$HOME/.cargo" "$HOME/.rustup"
 
       - name: Remove build tools (Windows)
         if: matrix.os == 'windows-latest'
         shell: powershell
         run: |
           $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-          $installer = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vs_installer.exe"
-          $installPath = ""
           if (Test-Path $vswhere) {
-              $installPath = (& $vswhere -latest -property installationPath).Trim()
-          }
-          if (-not $installPath) {
-              Write-Warning "No Visual Studio instance found; cannot remove build tools"
-          } elseif (-not (Test-Path $installer)) {
-              Write-Warning "vs_installer.exe not found; cannot remove build tools"
+              $installPaths = @(& $vswhere -all -property installationPath)
+              if (-not $installPaths) {
+                  Write-Warning "No Visual Studio instance found; cannot hide MSVC build tools"
+              }
+              foreach ($installPath in $installPaths) {
+                  foreach ($sub in @('VC\Tools\MSVC', 'VC\Tools\Llvm')) {
+                      $dir = Join-Path $installPath $sub
+                      if (Test-Path $dir) {
+                          try {
+                              Rename-Item $dir "$dir.bak" -ErrorAction Stop
+                          } catch {
+                              Remove-Item $dir -Recurse -Force -ErrorAction SilentlyContinue
+                          }
+                      }
+                  }
+              }
           } else {
-              Write-Host "Uninstalling Visual Studio from: $installPath"
-              $process = Start-Process $installer `
-                  -ArgumentList "uninstall --installPath `"$installPath`" --passive --norestart" `
-                  -Wait -PassThru
-              if ($process.ExitCode -ne 0) {
-                  Write-Warning "VS uninstall returned exit code $($process.ExitCode)"
+              Write-Warning "vswhere.exe not found; cannot hide MSVC build tools"
+          }
+          foreach ($dir in @($env:RUSTUP_HOME, $env:CARGO_HOME, "$env:USERPROFILE\.rustup", "$env:USERPROFILE\.cargo")) {
+              if ($dir -and (Test-Path $dir)) {
+                  Remove-Item $dir -Recurse -Force
               }
           }
 
