@@ -17,7 +17,7 @@ A tag `v<LangflowVersion>` (e.g., `v1.11.1`) that pins that exact Langflow versi
 A `v<LangflowVersion>-N` postfix when constraints need updating between Langflow versions (e.g., `v1.11.1-1`).
 
 **Langflow version**:
-The upstream Langflow package version pinned in the installer scripts (e.g., `1.10.3`). Changed manually when a new Langflow version is tested and released.
+The upstream Langflow package version pinned in the installer scripts (e.g., `1.11.1`). Changed manually when a new Langflow version is tested and released.
 
 **Installer wrapper version**:
 The version of this repository's releases (e.g., `v1.9.0`), tracked in the CHANGELOG and used for GitHub Releases and zip filenames. Distinct from the upstream Langflow version.
