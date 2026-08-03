@@ -150,18 +150,18 @@ function Install-LangflowPackage {
         Write-Info "Installing Langflow $LangflowVersion (this may take a few minutes)..."
 
         $installOk = $false
-        $constraintsArg = ""
+        $constraintsArgs = @()
         if (Test-Path $ConstraintsFile) {
-            $constraintsArg = "--constraint $ConstraintsFile"
+            $constraintsArgs = @('--constraint', $ConstraintsFile)
         }
 
-        uv pip install "langflow==$LangflowVersion" $constraintsArg 2>&1 | ForEach-Object { Write-Host "   $_" }
+        uv pip install "langflow==$LangflowVersion" @constraintsArgs 2>&1 | ForEach-Object { Write-Host "   $_" }
         if ($LASTEXITCODE -eq 0) {
             $installOk = $true
         }
         else {
             Write-Warn "Version $LangflowVersion failed -- trying latest..."
-            uv pip install langflow $constraintsArg 2>&1 | ForEach-Object { Write-Host "   $_" }
+            uv pip install langflow @constraintsArgs 2>&1 | ForEach-Object { Write-Host "   $_" }
             if ($LASTEXITCODE -eq 0) {
                 $installOk = $true
             }
