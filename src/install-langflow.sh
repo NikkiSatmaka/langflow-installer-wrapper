@@ -251,8 +251,8 @@ create_linux_shortcut() {
 [Desktop Entry]
 Name=Langflow Web
 Comment=Langflow AI Platform (http://127.0.0.1:7860)
-Exec=${launcher_path}
-Icon=${icon_path}
+Exec="${launcher_path}"
+Icon="${icon_path}"
 Terminal=true
 Type=Application
 Categories=Development;
@@ -297,7 +297,7 @@ EOF
 [Desktop Entry]
 Name=Stop Langflow
 Comment=Stop the Langflow server
-Exec=${launcher_path}
+Exec="${launcher_path}"
 Terminal=true
 Type=Application
 Categories=Development;
