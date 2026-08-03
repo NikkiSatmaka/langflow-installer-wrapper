@@ -27,7 +27,7 @@ pass "shebang"
 
 # ── 2. set -euo pipefail on .sh files ──────────────────────────────────────
 
-for f in Install\ Langflow.sh Stop\ Langflow.sh src/install-langflow.sh src/stop-langflow.sh scripts/verify.sh scripts/package.sh; do
+for f in Install\ Langflow.sh Stop\ Langflow.sh src/install-langflow.sh src/stop-langflow.sh scripts/verify.sh scripts/verify-install.sh scripts/package.sh; do
     [ -f "$f" ] || continue
     if ! grep -q 'set -euo pipefail' "$f" 2>/dev/null; then
         fail "$f: missing 'set -euo pipefail'"
@@ -68,7 +68,7 @@ pass "UTF-8 BOM"
 # ── 6. Executable bit on .command and .sh files ────────────────────────────
 
 for f in Install\ Langflow.command Stop\ Langflow.command \
-    Install\ Langflow.sh Stop\ Langflow.sh src/*.sh scripts/verify.sh scripts/package.sh; do
+    Install\ Langflow.sh Stop\ Langflow.sh src/*.sh scripts/verify.sh scripts/verify-install.sh scripts/package.sh; do
     [ -f "$f" ] || continue
     if [ ! -x "$f" ]; then
         fail "$f: not executable"
@@ -78,7 +78,7 @@ pass "executable bit"
 
 # ── 7. bash syntax check ───────────────────────────────────────────────────
 
-for f in src/install-langflow.sh src/stop-langflow.sh scripts/verify.sh scripts/package.sh; do
+for f in src/install-langflow.sh src/stop-langflow.sh scripts/verify.sh scripts/verify-install.sh scripts/package.sh; do
     [ -f "$f" ] || continue
     if ! bash -n "$f" 2>/dev/null; then
         fail "$f: bash syntax error"

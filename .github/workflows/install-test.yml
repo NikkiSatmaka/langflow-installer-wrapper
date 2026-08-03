@@ -1,4 +1,4 @@
-name: Constraint Test
+name: Install Test
 
 on:
   workflow_call:
@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  constraint-test:
+  install-test:
     strategy:
       fail-fast: false
       matrix:
@@ -24,6 +24,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
+
+      - name: Pin global uv version for mise shims
+        shell: bash
+        run: |
+          UV_VER=$(awk -F '"' '/^uv =/{print $2; exit}' mise.toml)
+          mise use -g "uv@${UV_VER}"
 
       - name: Install Python 3.12
         run: uv python install 3.12
@@ -97,30 +103,29 @@ jobs:
           echo "LANGFLOW_VERSION=$LF_VER" >> "$GITHUB_ENV"
           echo "Pinned Langflow version: $LF_VER"
 
-      - name: Create venv and install langflow with constraints
+      - name: Run the real installer script
         shell: bash
+        timeout-minutes: 15
         run: |
-          uv venv .venv
-          if [ "$RUNNER_OS" = "macOS" ]; then
-            uv pip install "$(ls src/litellm-*.whl | head -1)"
+          mkdir -p "$HOME/Desktop"
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            printf 'I\n\n' | powershell.exe -NoProfile -ExecutionPolicy Bypass -File src/install-langflow-script.ps1
+          else
+            printf 'I\n\n' | bash src/install-langflow.sh
           fi
-          uv pip install "langflow==${LANGFLOW_VERSION}" --constraint src/constraints.txt 2>&1 | tee /tmp/uv-install.log
 
       - name: Verify installation
         shell: bash
+        run: bash scripts/verify-install.sh "$RUNNER_OS" "$LANGFLOW_VERSION"
+
+      - name: Verify release consistency
+        if: ${{ inputs.release_mode }}
+        shell: bash
         run: |
-          INSTALLED=$(uv run langflow --version 2>/dev/null | awk '/^langflow /{print $2; exit}')
-          echo "Installed: $INSTALLED, Pin: $LANGFLOW_VERSION"
-          if [ -z "$INSTALLED" ] || [ "$INSTALLED" != "$LANGFLOW_VERSION" ]; then
-            echo "::error::Installed version '$INSTALLED' does not match pin '$LANGFLOW_VERSION'"
+          TAG="${GITHUB_REF_NAME#v}"
+          SCRIPT_VER=$(awk -F '"' '/^SCRIPT_VERSION=/{print $2; exit}' src/install-langflow.sh)
+          echo "Tag: $TAG, Script: $SCRIPT_VER"
+          if [ "$TAG" != "$SCRIPT_VER" ]; then
+            echo "::error::Tag $TAG does not match script version $SCRIPT_VER"
             exit 1
-          fi
-          if [ "${{ inputs.release_mode }}" = "true" ]; then
-            TAG="${GITHUB_REF_NAME#v}"
-            SCRIPT_VER=$(awk -F '"' '/^SCRIPT_VERSION=/{print $2; exit}' src/install-langflow.sh)
-            echo "Tag: $TAG, Script: $SCRIPT_VER"
-            if [ "$TAG" != "$SCRIPT_VER" ]; then
-              echo "::error::Tag $TAG does not match script version $SCRIPT_VER"
-              exit 1
-            fi
           fi
