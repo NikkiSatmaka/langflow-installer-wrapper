@@ -105,12 +105,13 @@ jobs:
 
       - name: Run the real installer script
         shell: bash
+        timeout-minutes: 15
         run: |
           mkdir -p "$HOME/Desktop"
           if [ "$RUNNER_OS" = "Windows" ]; then
-            printf 'I\n\n' | timeout 900 powershell.exe -NoProfile -ExecutionPolicy Bypass -File src/install-langflow-script.ps1
+            printf 'I\n\n' | powershell.exe -NoProfile -ExecutionPolicy Bypass -File src/install-langflow-script.ps1
           else
-            printf 'I\n\n' | timeout 900 bash src/install-langflow.sh
+            printf 'I\n\n' | bash src/install-langflow.sh
           fi
 
       - name: Verify installation
