@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.9.1 (2026-08-03)
+
+- fix: pass constraints as separate args to uv on Windows
+
 ## v1.9.0 (2026-08-02)
 
 - feat: upgrade Langflow to 1.11.1
