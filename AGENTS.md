@@ -38,8 +38,8 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `scripts/package.ps1` | Cross-platform zip packaging (PowerShell) |
 | `scripts/build-litellm-wheel.sh` | Builds the pinned litellm sdist into a macOS arm64 wheel (CI only) |
 | `.github/workflows/verify.yml` | CI: PR verification (runs `scripts/verify.sh`) |
-| `.github/workflows/constraint-test.yml` | CI: OS-matrix constraint test (win/mac/linux) — validates binary wheels on all platforms before release; a shared reusable workflow (`workflow_call`) consumed by `release.yml` |
-| `.github/workflows/release.yml` | CI: Automated release on tag push (verify + constraint test + package + publish) — calls `constraint-test.yml` as a reusable workflow |
+| `.github/workflows/install-test.yml` | CI: OS-matrix install test (win/mac/linux) — runs the real installer scripts end-to-end without build tools, validating binary wheels and the installer code paths before release; a shared reusable workflow (`workflow_call`) consumed by `release.yml` |
+| `.github/workflows/release.yml` | CI: Automated release on tag push (verify + install test + package + publish) — calls `install-test.yml` as a reusable workflow |
 | `docs/TROUBLESHOOTING.md` | Common issues and fixes |
 | `docs/GATEKEEPER.md` | macOS Gatekeeper bypass guide |
 | `docs/index.html` | Landing page for non-GitHub users (GitHub Pages) — published at `https://nikkisatmaka.github.io/langflow-installer-wrapper/` |
@@ -66,7 +66,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | UTF-8 BOM required on `.ps1` | Windows PowerShell requires UTF-8 with BOM; without it, non-ASCII characters cause parser errors |
 | `uv-install.ps1` fetched at package time | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
 | Release zip structure | `Install Langflow.bat` and `LICENSE` at zip root; `install-langflow-script.ps1`, `uv-install.ps1`, and `constraints.txt` under `src/` — mirrors repo layout |
-| `--constraint constraints.txt` | Pins only known-breaking transitive deps instead of a full lock file; weekly constraint test CI catches breakage |
+| `--constraint constraints.txt` | Pins only known-breaking transitive deps instead of a full lock file; the weekly install test CI runs the real installer and catches breakage |
 | litellm wheel built at release time | litellm >=1.93 ships a Rust extension (maturin) with no macOS wheels, so `scripts/build-litellm-wheel.sh` builds the pinned version from sdist on a macOS runner and bundles it into the macOS zip; Windows/Linux use the PyPI wheel |
 | Consistent zip name for landing page | `langflow-installer-win.zip` uploaded alongside each versioned zip; landing page download link never needs updating |
 
@@ -156,7 +156,7 @@ Tagging triggers the release workflow automatically:
 9. After merge, push the tag from `main`: `git tag vX.Y.Z && git push origin vX.Y.Z`.
 10. The CI workflow (`.github/workflows/release.yml`):
     - Runs verify checks
-    - Runs OS-matrix constraint test (win-amd64, macos-arm64, linux-x64) with the pinned Langflow version and constraints
+    - Runs the real installer scripts on the OS matrix (win-amd64, macos-arm64, linux-x64) with the pinned Langflow version and constraints
     - Confirms installed version matches the tag and script pin
     - Packages all 3 platform zips (both versioned and unversioned names)
     - Generates release notes from `CHANGELOG.md` via `scripts/release-notes.sh`

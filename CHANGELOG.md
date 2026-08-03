@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- feat: run the actual install scripts in CI (replaces the manual uv install in the constraint test)
+
 ## v1.9.1 (2026-08-03)
 
 - fix: pass constraints as separate args to uv on Windows

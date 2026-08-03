@@ -5,7 +5,7 @@ shfmt = "3.13.1"
 uv = "0.12.1"
 
 [env]
-BASH_FILES = "src/install-langflow.sh src/stop-langflow.sh scripts/verify.sh scripts/package.sh scripts/build-litellm-wheel.sh 'Install Langflow.sh' 'Stop Langflow.sh'"
+BASH_FILES = "src/install-langflow.sh src/stop-langflow.sh scripts/verify.sh scripts/verify-install.sh scripts/package.sh scripts/build-litellm-wheel.sh 'Install Langflow.sh' 'Stop Langflow.sh'"
 PS_FILES = "src/install-langflow-script.ps1 src/stop-langflow-script.ps1"
 
 [tasks.fmt]

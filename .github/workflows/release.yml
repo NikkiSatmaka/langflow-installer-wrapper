@@ -14,9 +14,9 @@ jobs:
         run: mise exec -- pwsh -NoProfile -Command "Install-Module PSScriptAnalyzer -Scope CurrentUser -Force"
       - run: bash scripts/verify.sh
 
-  constraint-test:
+  install-test:
     needs: verify
-    uses: ./.github/workflows/constraint-test.yml
+    uses: ./.github/workflows/install-test.yml
     with:
       release_mode: true
 
@@ -36,7 +36,7 @@ jobs:
           path: dist/wheels/litellm-*.whl
 
   package:
-    needs: [verify, constraint-test, litellm-wheel]
+    needs: [verify, install-test, litellm-wheel]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
