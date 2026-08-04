@@ -152,7 +152,7 @@ install_langflow_package() {
 
     install_ok=false
     constraints_args=()
-    [ -f "$CONSTRAINTS_FILE" ] && constraints_args=("--constraint" "$CONSTRAINTS_FILE")
+    [ -f "$CONSTRAINTS_FILE" ] && constraints_args=("--constraint=$CONSTRAINTS_FILE")
 
     if uv pip install "langflow==${LANGFLOW_VERSION}" "${constraints_args[@]}" 2>&1; then
         install_ok=true

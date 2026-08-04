@@ -66,7 +66,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | UTF-8 BOM required on `.ps1` | Windows PowerShell requires UTF-8 with BOM; without it, non-ASCII characters cause parser errors |
 | `uv-install.ps1` fetched at package time | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
 | Release zip structure | `Install Langflow.bat` and `LICENSE` at zip root; `install-langflow-script.ps1`, `uv-install.ps1`, and `constraints.txt` under `src/` — mirrors repo layout |
-| `--constraint constraints.txt` | Pins only known-breaking transitive deps instead of a full lock file; the weekly install test CI runs the real installer and catches breakage |
+| `--constraint=constraints.txt` | Pins only known-breaking transitive deps instead of a full lock file; the weekly install test CI runs the real installer and catches breakage |
 | litellm wheel built at release time | litellm >=1.93 ships a Rust extension (maturin) with no macOS wheels, so `scripts/build-litellm-wheel.sh` builds the pinned version from sdist on a macOS runner and bundles it into the macOS zip; Windows/Linux use the PyPI wheel |
 | Consistent zip name for landing page | `langflow-installer-win.zip` uploaded alongside each versioned zip; landing page download link never needs updating |
 
@@ -237,7 +237,7 @@ Smoke tests are automated via CI (weekly schedule + tag triggers). Before releas
 - Test all 3 menu paths: Install, Uninstall, Quit.
 - Confirm Install is idempotent (re-running detects existing components).
 - Confirm the desktop shortcut launches Langflow and the browser opens.
-- Confirm `uv pip install "langflow==X.Y.Z" --constraint src/constraints.txt` succeeds on the pinned Python 3.12.
+- Confirm `uv pip install "langflow==X.Y.Z" --constraint=src/constraints.txt` succeeds on the pinned Python 3.12.
 - Confirm Uninstall removes `%USERPROFILE%\langflow\` and the shortcut, and optionally Python 3.12.
 
 ## Assets

@@ -5,7 +5,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 ## Language
 
 **Constraints file**:
-A `constraints.txt` shipped alongside the installer scripts that constrains only the transitive dependencies known to break on certain platforms by shipping source-only releases without pre-built wheels (e.g., litellm, fastapi, cryptography, pypdfium2). Applied via `--constraint` at install time.
+A `constraints.txt` shipped alongside the installer scripts that constrains only the transitive dependencies known to break on certain platforms by shipping source-only releases without pre-built wheels (e.g., litellm, fastapi, cryptography, pypdfium2). Applied via the `--constraint=` flag at install time.
 
 **Smoke test**:
 A scheduled weekly CI workflow that runs the actual installer scripts (`install-langflow.sh` / `install-langflow-script.ps1`) on all 3 OS platforms (win-amd64, macos-arm64, linux-x64) without build tools, then verifies the installed Langflow version and installer artifacts. If it fails, the constraints file needs updating before the next stable release.
