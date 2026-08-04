@@ -324,9 +324,9 @@ function Start-Install {
     Write-Info "Starting installation..."
     Write-Host ""
 
-    if (-not (Install-Uv)) { return }
-    if (-not (Install-Python)) { return }
-    if (-not (Install-LangflowPackage)) { return }
+    if (-not (Install-Uv)) { return $false }
+    if (-not (Install-Python)) { return $false }
+    if (-not (Install-LangflowPackage)) { return $false }
     New-DesktopShortcut | Out-Null
     New-DesktopStopShortcut | Out-Null
 
@@ -427,7 +427,14 @@ function Main {
     do {
         $choice = Show-Menu
         switch ($choice) {
-            'I' { Start-Install; Show-Banner }
+            'I' {
+                if (-not (Start-Install)) {
+                    Write-Host ""
+                    Write-Warn "Installation failed. Take a screenshot of this screen if you plan to report the issue."
+                    pause
+                }
+                Show-Banner
+            }
             'U' { Start-Uninstall; Show-Banner }
             'Q' { exit 0 }
             default {

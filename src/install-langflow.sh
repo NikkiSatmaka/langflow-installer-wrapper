@@ -442,7 +442,11 @@ main() {
         choice=$(show_menu)
         case "$choice" in
             I)
-                start_install
+                if ! start_install; then
+                    printf "\n"
+                    warn "Installation failed. Take a screenshot of this screen if you plan to report the issue."
+                    read -r -p "$(printf "${C}Press Enter to return to the main menu...${N}")"
+                fi
                 show_banner
                 ;;
             U)
