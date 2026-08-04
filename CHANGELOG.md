@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.9.2 (2026-08-04)
 
 - feat: run the actual install scripts in CI (replaces the manual uv install in the constraint test)
 - fix: pause on install failure so users can screenshot the error before returning to the menu
