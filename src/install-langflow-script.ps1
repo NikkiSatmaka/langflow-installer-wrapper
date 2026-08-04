@@ -17,7 +17,7 @@
     Justification = 'Kept as a single source of truth for the script version, mirrored in the bash installer.')]
 param()
 
-$ScriptVersion   = "1.9.2"
+$ScriptVersion   = "1.9.1"
 $LangflowVersion = "1.11.1"
 $PythonVersion   = "3.12"
 $LangflowDir     = "$env:USERPROFILE\langflow"
@@ -152,12 +152,7 @@ function Install-LangflowPackage {
         $installOk = $false
         $constraintsArgs = @()
         if (Test-Path $ConstraintsFile) {
-            if ($PSVersionTable.PSVersion.Major -lt 7) {
-                $constraintsArgs = @('--constraint', "`"$ConstraintsFile`"")
-            }
-            else {
-                $constraintsArgs = @('--constraint', "$ConstraintsFile")
-            }
+            $constraintsArgs = @('--constraint', $ConstraintsFile)
         }
 
         uv pip install "langflow==$LangflowVersion" @constraintsArgs 2>&1 | ForEach-Object { Write-Host "   $_" }
