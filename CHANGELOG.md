@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.9.3 (2026-08-04)
+
+- fix: handle spaces in paths on Windows
+
 ## v1.9.2 (2026-08-04)
 
 - feat: run the actual install scripts in CI (replaces the manual uv install in the constraint test)
