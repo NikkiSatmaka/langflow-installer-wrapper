@@ -152,7 +152,12 @@ function Install-LangflowPackage {
         $installOk = $false
         $constraintsArgs = @()
         if (Test-Path $ConstraintsFile) {
-            $constraintsArgs = @('--constraint', $ConstraintsFile)
+            if ($PSVersionTable.PSVersion.Major -lt 7) {
+                $constraintsArgs = @('--constraint', "`"$ConstraintsFile`"")
+            }
+            else {
+                $constraintsArgs = @('--constraint', "$ConstraintsFile")
+            }
         }
 
         uv pip install "langflow==$LangflowVersion" @constraintsArgs 2>&1 | ForEach-Object { Write-Host "   $_" }
