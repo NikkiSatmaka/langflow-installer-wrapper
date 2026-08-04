@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.9.2 (2026-08-04)
+## Unreleased
 
 - feat: run the actual install scripts in CI (replaces the manual uv install in the constraint test)
 - fix: quote Exec= and Icon= paths in Linux .desktop files (supports usernames with spaces)
