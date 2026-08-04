@@ -4,7 +4,7 @@
 
 ## Context
 
-ADR 0002 introduced constraint-test CI: a 3-OS matrix job that removed build tools and ran `uv pip install langflow --constraint src/constraints.txt` to validate that binary wheels exist for every dependency. It never executed the installer scripts themselves.
+ADR 0002 introduced constraint-test CI: a 3-OS matrix job that removed build tools and ran `uv pip install langflow --constraint=src/constraints.txt` to validate that binary wheels exist for every dependency. It never executed the installer scripts themselves.
 
 In v1.9.1, the Windows installer regressed: `install-langflow-script.ps1` built `uv pip install ... --constraint C:\...\constraints.txt` as a single token, which clap rejected, so every Windows install failed and bounced back to the menu. The constraint test passed because it invoked uv with correctly separated bash arguments. The test that would have caught this — running the actual installer — did not exist.
 

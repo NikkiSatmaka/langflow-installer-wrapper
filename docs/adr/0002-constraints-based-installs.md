@@ -19,9 +19,9 @@ Meanwhile, the de facto approach of pinning only the Langflow version and a hand
 Replace the pylock approach with:
 
 - **`constraints.txt`:** A flat file pinning only the transitive dependencies known to ship source-only releases without pre-built wheels on our target platforms (win-amd64, macos-arm64, linux-x64).
-- **Constraint test CI** — a scheduled weekly workflow and a tag-triggered release workflow that run `uv pip install langflow --constraint src/constraints.txt` on all 3 OS platforms. If it fails or requires source compilation, the constraints file needs updating.
+- **Constraint test CI** — a scheduled weekly workflow and a tag-triggered release workflow that run `uv pip install langflow --constraint=src/constraints.txt` on all 3 OS platforms. If it fails or requires source compilation, the constraints file needs updating.
 
-The installer script pins `langflow==X.Y.Z` and applies `--constraint constraints.txt`. Users still run `uv pip install langflow` (with the pin and constraint), and resolution happens at install time — but within the bounds set by the constraints file.
+The installer script pins `langflow==X.Y.Z` and applies `--constraint=constraints.txt`. Users still run `uv pip install langflow` (with the pin and constraint), and resolution happens at install time — but within the bounds set by the constraints file.
 
 ## Consequences
 
