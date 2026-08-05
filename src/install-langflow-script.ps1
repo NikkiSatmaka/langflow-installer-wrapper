@@ -168,7 +168,7 @@ function Install-LangflowPackage {
         }
 
         if (-not $installOk) {
-            Write-Fail "Langflow installation failed. Check your internet connection and try again."
+            Write-Fail "Langflow installation failed. Please report the issue at https://github.com/NikkiSatmaka/langflow-installer-wrapper/issues"
             return $false
         }
 

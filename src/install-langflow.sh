@@ -164,7 +164,7 @@ install_langflow_package() {
     fi
 
     if [ "$install_ok" = false ]; then
-        fail "Langflow installation failed. Check your internet connection and try again."
+        fail "Langflow installation failed. Please report the issue at https://github.com/NikkiSatmaka/langflow-installer-wrapper/issues"
         popd >/dev/null || true
         return 1
     fi
