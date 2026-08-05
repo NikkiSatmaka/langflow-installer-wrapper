@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.9.4 (2026-08-05)
+
+- feat: upgrade Langflow to 1.11.2
+- fix: improve install failure error message to point to issue tracker
+
 ## v1.9.3 (2026-08-04)
 
 - fix: handle spaces in paths on Windows
