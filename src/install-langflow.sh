@@ -12,7 +12,7 @@ set -euo pipefail
 
 OS="$(uname -s)"
 # shellcheck disable=SC2034  # kept as the single source of truth for the script version
-SCRIPT_VERSION="1.9.4"
+SCRIPT_VERSION="1.9.5"
 LANGFLOW_VERSION="1.11.2"
 PYTHON_VERSION="3.12"
 LANGFLOW_DIR="$HOME/langflow"
@@ -152,7 +152,10 @@ install_langflow_package() {
 
     install_ok=false
     constraints_args=()
-    [ -f "$CONSTRAINTS_FILE" ] && constraints_args=("--constraint=$CONSTRAINTS_FILE")
+    if [ -f "$CONSTRAINTS_FILE" ]; then
+        cp -f "$CONSTRAINTS_FILE" "$LANGFLOW_DIR/constraints.txt"
+        constraints_args=("--constraint=constraints.txt")
+    fi
 
     if uv pip install "langflow==${LANGFLOW_VERSION}" "${constraints_args[@]}" 2>&1; then
         install_ok=true

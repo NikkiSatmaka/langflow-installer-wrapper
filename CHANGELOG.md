@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.9.5 (2026-08-07)
+
+- fix: pass the uv constraints file by a space-free relative name (uv truncates `--constraint` paths on whitespace, astral-sh/uv#12639; previously broke installs on profiles with spaces in the path)
+- ci: run the real installer from a directory containing a space to regression-test constraint handling
+
 ## v1.9.4 (2026-08-05)
 
 - feat: upgrade Langflow to 1.11.2

@@ -109,9 +109,16 @@ jobs:
         run: |
           mkdir -p "$HOME/Desktop"
           if [ "$RUNNER_OS" = "Windows" ]; then
-            printf 'I\n\n' | powershell.exe -NoProfile -ExecutionPolicy Bypass -File src/install-langflow-script.ps1
+            SPACED_DIR="$RUNNER_TEMP/Langflow Installer"
           else
-            printf 'I\n\n' | bash src/install-langflow.sh
+            SPACED_DIR="$HOME/Langflow Installer"
+          fi
+          mkdir -p "$SPACED_DIR"
+          cp -r src "$SPACED_DIR/src"
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            printf 'I\n\n' | powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$SPACED_DIR/src/install-langflow-script.ps1"
+          else
+            printf 'I\n\n' | bash "$SPACED_DIR/src/install-langflow.sh"
           fi
 
       - name: Verify installation

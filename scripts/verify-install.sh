@@ -30,6 +30,8 @@ if [ ! -f "$LANGFLOW_DIR/.venv/pyvenv.cfg" ]; then
     exit 1
 fi
 
+check "$LANGFLOW_DIR/constraints.txt"
+
 INSTALLED=$(cd "$LANGFLOW_DIR" && uv run langflow --version 2>/dev/null | awk '/^langflow /{print $2; exit}') || INSTALLED=""
 echo "Installed: $INSTALLED, Expected: $EXPECTED"
 if [ -z "$INSTALLED" ] || [ "$INSTALLED" != "$EXPECTED" ]; then
