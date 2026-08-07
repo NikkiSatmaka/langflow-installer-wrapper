@@ -66,7 +66,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | UTF-8 BOM required on `.ps1` | Windows PowerShell requires UTF-8 with BOM; without it, non-ASCII characters cause parser errors |
 | `uv-install.ps1` fetched at package time | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
 | Release zip structure | `Install Langflow.bat` and `LICENSE` at zip root; `install-langflow-script.ps1`, `uv-install.ps1`, and `constraints.txt` under `src/` — mirrors repo layout |
-| `--constraint=constraints.txt` | Pins only known-breaking transitive deps instead of a full lock file; the weekly install test CI runs the real installer and catches breakage |
+| Constraint applied by a relative, space-free name | Pins only known-breaking transitive deps instead of a full lock file. uv re-splits `--constraint`/`-c`/`--override`/`-r` values on whitespace (astral-sh/uv#12639), so a shell-quoted path with a space still truncates; installers copy `constraints.txt` into the langflow dir and pass `--constraint=constraints.txt`. See `docs/adr/0004-uv-constraint-space-free-path.md` |
 | litellm wheel built at release time | litellm >=1.93 ships a Rust extension (maturin) with no macOS wheels, so `scripts/build-litellm-wheel.sh` builds the pinned version from sdist on a macOS runner and bundles it into the macOS zip; Windows/Linux use the PyPI wheel |
 | Consistent zip name for landing page | `langflow-installer-win.zip` uploaded alongside each versioned zip; landing page download link never needs updating |
 
