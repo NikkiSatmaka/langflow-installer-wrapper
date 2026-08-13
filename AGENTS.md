@@ -128,14 +128,24 @@ Branch from `main`, open a PR, squash merge, delete branch. Keep branches short-
 8. Delete the feature branch after merge.
 9. Update `CHANGELOG.md` as part of the PR (not a separate commit).
 
-## Version Bumping
+## Versioning
 
-| Commit type | Version bump |
-|-------------|-------------|
-| `fix:` | patch (v1.1.8 → v1.1.9) |
-| `feat:` | patch (v1.9.5 → v1.9.6) — project practice increments the patch digit for every release, regardless of type |
-| `docs:` / `chore:` | no release |
-| `fix!:` or `feat!:` | major (v1.1.8 → v2.0.0) |
+Use Semantic Versioning for releases.
+
+| Change | Version bump |
+| --- | --- |
+| Bug fix, installer fix, dependency/lockfile update | Patch |
+| New user-facing feature or supported capability | Minor |
+| Breaking change to the installer, CLI, configuration, or supported environment | Major |
+| Docs, tests, CI, refactoring with no release impact | No release |
+
+Examples:
+
+- `1.1.8 → 1.1.9` — bug fix or dependency update
+- `1.1.8 → 1.2.0` — new user-facing feature
+- `1.1.8 → 2.0.0` — breaking change
+
+Commit prefixes (`fix:`, `feat:`, etc.) do not determine the version automatically. The release impact determines the version bump.
 
 ## Release Process
 
