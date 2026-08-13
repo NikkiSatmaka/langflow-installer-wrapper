@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository provides single-click installers for Langflow on Windows, macOS, and Linux using `uv` as the package manager. Python 3.12 is pinned. Langflow is pinned to version **1.11.2**.
+This repository provides single-click installers for Langflow on Windows, macOS, and Linux using `uv` as the package manager. Python 3.12 is pinned. Langflow is pinned to version **1.11.3**.
 
 **Author**: Nikki Satmaka
 - GitHub: https://github.com/NikkiSatmaka/
@@ -50,7 +50,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 - **Idempotent** — safe to re-run; checks before acting
 - **User-prompted** — script asks Install / Uninstall / Quit at startup
 - **Credits banner** — GitHub + LinkedIn displayed on every run (Chris Titus style)
-- **Version pinned** — Langflow `==1.11.2`; do not change without updating CONTRACT.md
+- **Version pinned** — Langflow `==1.11.3`; do not change without updating CONTRACT.md
 - **Cross-platform** — Windows (PowerShell), macOS, and Linux (bash); platform-specific logic with shared installer flow
 - **Python pinned** — 3.12 via `uv python install 3.12` (only version with pre-built wheels for all C-extensions on Windows; 3.13+ requires MSVC not available to most users)
 
@@ -123,7 +123,7 @@ Branch from `main`, open a PR, squash merge, delete branch. Keep branches short-
 1. Create a feature branch from `main` with a semantic name.
 2. Make atomic commits with conventional commit messages.
 3. Open a PR against `main`. Use a draft PR if the work is in progress.
-4. PR title format: `<type>: <short description>` (e.g., `feat: upgrade Langflow to 1.11.2`).
+4. PR title format: `<type>: <short description>` (e.g., `feat: upgrade Langflow to 1.11.3`).
 5. PR description should explain **what** and **why**, not **how**.
 6. Self-review the diff before marking the PR ready.
 7. The user reviews, approves, and **squash merges** into `main` — this keeps main history linear and atomic.

@@ -2,7 +2,7 @@
 #
 # Install or uninstall Langflow on macOS/Linux using uv.
 # Bootstraps uv, installs Python 3.12, creates a virtual environment,
-# installs Langflow 1.11.2, and creates a desktop shortcut.
+# installs Langflow 1.11.3, and creates a desktop shortcut.
 # Also supports clean uninstall of all components.
 #
 # Author: Nikki Satmaka
@@ -12,8 +12,8 @@ set -euo pipefail
 
 OS="$(uname -s)"
 # shellcheck disable=SC2034  # kept as the single source of truth for the script version
-SCRIPT_VERSION="1.9.5"
-LANGFLOW_VERSION="1.11.2"
+SCRIPT_VERSION="1.9.6"
+LANGFLOW_VERSION="1.11.3"
 PYTHON_VERSION="3.12"
 LANGFLOW_DIR="$HOME/langflow"
 UV_BIN_DIR="$HOME/.local/bin"
@@ -136,19 +136,6 @@ install_langflow_package() {
     fi
 
     info "Installing Langflow ${LANGFLOW_VERSION} (this may take a few minutes)..."
-
-    if [ "$OS" = "Darwin" ]; then
-        LITELLM_WHEEL=""
-        for w in "$SCRIPT_DIR"/litellm-*.whl; do
-            [ -e "$w" ] && LITELLM_WHEEL="$w" && break
-        done
-        if [ -n "$LITELLM_WHEEL" ]; then
-            info "Installing bundled litellm wheel..."
-            if ! uv pip install "$LITELLM_WHEEL" 2>&1; then
-                warn "Bundled litellm wheel failed -- will try PyPI instead"
-            fi
-        fi
-    fi
 
     install_ok=false
     constraints_args=()
