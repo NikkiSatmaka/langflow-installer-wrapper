@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository provides single-click installers for Langflow on Windows, macOS, and Linux using `uv` as the package manager. Python 3.12 is pinned. Langflow is pinned to version **1.11.2**.
+This repository provides single-click installers for Langflow on Windows, macOS, and Linux using `uv` as the package manager. Python 3.12 is pinned. Langflow is pinned to version **1.11.3**.
 
 **Author**: Nikki Satmaka
 - GitHub: https://github.com/NikkiSatmaka/
@@ -29,14 +29,13 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `src/uv-install.ps1` | Fetched from astral.sh at package time (not in repo) — eliminates `irm \| iex` AV trigger (Windows only) |
 | `src/stop-langflow-script.ps1` | PowerShell stop script (Windows) |
 | `src/stop-langflow.sh` | Bash stop script (macOS/Linux) |
-| `src/constraints.txt` | Pins known-breaking transitive deps (litellm, etc.); `litellm==1.95.0` is the single source of truth for the bundled macOS wheel |
+| `src/constraints.txt` | Pins known-breaking transitive deps that ship source-only releases without wheels; currently empty (all deps ship pre-built wheels on every target platform) |
 | `mise.toml` | Dev tooling: pins shellcheck, shfmt, powershell and defines lint/fmt tasks |
 | `.shellcheckrc` | shellcheck config (disables SC2059 for intentional ANSI colour output) |
 | `PSScriptAnalyzerSettings.psd1` | PSScriptAnalyzer config (excludes rules that conflict with conventions) |
 | `scripts/verify.sh` | Pre-commit verification checks (12 checks, POSIX-safe for CI) |
 | `scripts/package.sh` | Cross-platform zip packaging (bash) |
 | `scripts/package.ps1` | Cross-platform zip packaging (PowerShell) |
-| `scripts/build-litellm-wheel.sh` | Builds the pinned litellm sdist into a macOS arm64 wheel (CI only) |
 | `.github/workflows/verify.yml` | CI: PR verification (runs `scripts/verify.sh`) |
 | `.github/workflows/install-test.yml` | CI: OS-matrix install test (win/mac/linux) — runs the real installer scripts end-to-end without build tools, validating binary wheels and the installer code paths before release; a shared reusable workflow (`workflow_call`) consumed by `release.yml` |
 | `.github/workflows/release.yml` | CI: Automated release on tag push (verify + install test + package + publish) — calls `install-test.yml` as a reusable workflow |
@@ -50,7 +49,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 - **Idempotent** — safe to re-run; checks before acting
 - **User-prompted** — script asks Install / Uninstall / Quit at startup
 - **Credits banner** — GitHub + LinkedIn displayed on every run (Chris Titus style)
-- **Version pinned** — Langflow `==1.11.2`; do not change without updating CONTRACT.md
+- **Version pinned** — Langflow `==1.11.3`; do not change without updating CONTRACT.md
 - **Cross-platform** — Windows (PowerShell), macOS, and Linux (bash); platform-specific logic with shared installer flow
 - **Python pinned** — 3.12 via `uv python install 3.12` (only version with pre-built wheels for all C-extensions on Windows; 3.13+ requires MSVC not available to most users)
 
@@ -67,7 +66,6 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `uv-install.ps1` fetched at package time | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
 | Release zip structure | `Install Langflow.bat` and `LICENSE` at zip root; `install-langflow-script.ps1`, `uv-install.ps1`, and `constraints.txt` under `src/` — mirrors repo layout |
 | Constraint applied by a relative, space-free name | Pins only known-breaking transitive deps instead of a full lock file. uv re-splits `--constraint`/`-c`/`--override`/`-r` values on whitespace (astral-sh/uv#12639), so a shell-quoted path with a space still truncates; installers copy `constraints.txt` into the langflow dir and pass `--constraint=constraints.txt`. See `docs/adr/0004-uv-constraint-space-free-path.md` |
-| litellm wheel built at release time | litellm >=1.93 ships a Rust extension (maturin) with no macOS wheels, so `scripts/build-litellm-wheel.sh` builds the pinned version from sdist on a macOS runner and bundles it into the macOS zip; Windows/Linux use the PyPI wheel |
 | Consistent zip name for landing page | `langflow-installer-win.zip` uploaded alongside each versioned zip; landing page download link never needs updating |
 
 ## Conventions
@@ -123,21 +121,31 @@ Branch from `main`, open a PR, squash merge, delete branch. Keep branches short-
 1. Create a feature branch from `main` with a semantic name.
 2. Make atomic commits with conventional commit messages.
 3. Open a PR against `main`. Use a draft PR if the work is in progress.
-4. PR title format: `<type>: <short description>` (e.g., `feat: upgrade Langflow to 1.11.2`).
+4. PR title format: `<type>: <short description>` (e.g., `feat: upgrade Langflow to 1.11.3`).
 5. PR description should explain **what** and **why**, not **how**.
 6. Self-review the diff before marking the PR ready.
 7. The user reviews, approves, and **squash merges** into `main` — this keeps main history linear and atomic.
 8. Delete the feature branch after merge.
 9. Update `CHANGELOG.md` as part of the PR (not a separate commit).
 
-## Version Bumping
+## Versioning
 
-| Commit type | Version bump |
-|-------------|-------------|
-| `fix:` | patch (v1.1.8 → v1.1.9) |
-| `feat:` | minor (v1.1.8 → v1.2.0) |
-| `docs:` / `chore:` | no release |
-| `fix!:` or `feat!:` | major (v1.1.8 → v2.0.0) |
+Use Semantic Versioning for releases.
+
+| Change | Version bump |
+| --- | --- |
+| Bug fix, installer fix, dependency/lockfile update | Patch |
+| New user-facing feature or supported capability | Minor |
+| Breaking change to the installer, CLI, configuration, or supported environment | Major |
+| Docs, tests, CI, refactoring with no release impact | No release |
+
+Examples:
+
+- `1.1.8 → 1.1.9` — bug fix or dependency update
+- `1.1.8 → 1.2.0` — new user-facing feature
+- `1.1.8 → 2.0.0` — breaking change
+
+Commit prefixes (`fix:`, `feat:`, etc.) do not determine the version automatically. The release impact determines the version bump.
 
 ## Release Process
 
@@ -199,7 +207,6 @@ Each zip contains platform-specific files only:
 - `src/install-langflow.sh`
 - `src/stop-langflow.sh`
 - `src/constraints.txt`
-- `src/litellm-*.whl` (built at release time; installed before Langflow)
 
 **`langflow-installer-linux.zip`:**
 - `Install Langflow.sh` (root)

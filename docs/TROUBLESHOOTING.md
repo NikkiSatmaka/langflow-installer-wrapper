@@ -33,19 +33,6 @@ The first time you double-click `Install Langflow.command` (or the desktop short
 
 **To fix:** Right-click the file and select **Open**, then click **Open** in the dialog. This one-time step adds the file to your security exceptions.
 
-## Install fails on an Intel (x86_64) Mac
-
-The installer bundles a pre-built `litellm` wheel for Apple Silicon (arm64) only. Langflow 1.11.2 requires `litellm>=1.93`, which publishes no macOS wheels, so on Intel Macs the install must compile it from source and fails if Xcode Command Line Tools and Rust are not installed.
-
-**To fix:** install Xcode Command Line Tools and Rust, then re-run the installer:
-
-```bash
-xcode-select --install
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-
-Apple Silicon (M-series) Macs are unaffected — they use the bundled wheel.
-
 ## Linux desktop shortcut doesn't appear
 
 Some Linux desktop environments (GNOME, KDE) may not immediately show the shortcut in the app menu. Try logging out and back in, or running `update-desktop-database ~/.local/share/applications/` in a terminal.

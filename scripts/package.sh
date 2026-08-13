@@ -1,20 +1,17 @@
 #!/usr/bin/env bash
 #
 # Package the Langflow installer into platform-specific zips.
-# Usage:  bash scripts/package.sh [tag] [litellm-wheel-dir]
+# Usage:  bash scripts/package.sh [tag]
 #   If tag is given, both versioned and unversioned zips are produced:
 #     langflow-installer-{platform}-{tag}.zip
 #     langflow-installer-{platform}.zip
 #   Otherwise, only unversioned zips:
 #     langflow-installer-{platform}.zip
-#   litellm-wheel-dir is optional: any litellm-*.whl files found there are
-#   bundled under src/ in the macOS zip only (built at release time).
 #
 # Output goes to dist/
 set -euo pipefail
 
 TAG="${1:-}"
-WHEEL_DIR="${2:-}"
 DIST="dist"
 mkdir -p "$DIST"
 
@@ -71,22 +68,9 @@ package_platform "win" \
 # Clean up fetched file
 rm -f src/uv-install.ps1
 
-# Copy any macOS litellm wheels into src/ so they land under src/ in the zip
-WHEEL_FILES=()
-if [ -n "$WHEEL_DIR" ] && [ -d "$WHEEL_DIR" ]; then
-    for w in "$WHEEL_DIR"/litellm-*.whl; do
-        [ -e "$w" ] || continue
-        cp "$w" src/
-        WHEEL_FILES+=("src/$(basename "$w")")
-    done
-    echo "  Bundling macOS litellm wheel: ${WHEEL_FILES[*]}"
-fi
-
 package_platform "macos" \
     "Install Langflow.command" "Stop Langflow.command" LICENSE \
-    "src/install-langflow.sh" "src/stop-langflow.sh" "src/constraints.txt" "${WHEEL_FILES[@]}"
-
-rm -f src/litellm-*.whl
+    "src/install-langflow.sh" "src/stop-langflow.sh" "src/constraints.txt"
 
 package_platform "linux" \
     "Install Langflow.sh" "Stop Langflow.sh" LICENSE \

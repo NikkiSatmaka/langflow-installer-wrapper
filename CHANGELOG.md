@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.9.6 (2026-08-13)
+
+- feat: upgrade Langflow to 1.11.3
+- chore: drop litellm wheel build and constraint (litellm 1.96.2 ships pre-built wheels on all platforms)
+
 ## v1.9.5 (2026-08-07)
 
 - fix: pass the uv constraints file by a space-free relative name (uv truncates `--constraint` paths on whitespace, astral-sh/uv#12639; previously broke installs on profiles with spaces in the path)
