@@ -133,7 +133,7 @@ Branch from `main`, open a PR, squash merge, delete branch. Keep branches short-
 | Commit type | Version bump |
 |-------------|-------------|
 | `fix:` | patch (v1.1.8 → v1.1.9) |
-| `feat:` | minor (v1.1.8 → v1.2.0) |
+| `feat:` | patch (v1.9.5 → v1.9.6) — project practice increments the patch digit for every release, regardless of type |
 | `docs:` / `chore:` | no release |
 | `fix!:` or `feat!:` | major (v1.1.8 → v2.0.0) |
 
