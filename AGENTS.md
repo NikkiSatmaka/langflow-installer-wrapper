@@ -29,14 +29,13 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `src/uv-install.ps1` | Fetched from astral.sh at package time (not in repo) — eliminates `irm \| iex` AV trigger (Windows only) |
 | `src/stop-langflow-script.ps1` | PowerShell stop script (Windows) |
 | `src/stop-langflow.sh` | Bash stop script (macOS/Linux) |
-| `src/constraints.txt` | Pins known-breaking transitive deps (litellm, etc.); `litellm==1.95.0` is the single source of truth for the bundled macOS wheel |
+| `src/constraints.txt` | Pins known-breaking transitive deps that ship source-only releases without wheels; currently empty (all deps ship pre-built wheels on every target platform) |
 | `mise.toml` | Dev tooling: pins shellcheck, shfmt, powershell and defines lint/fmt tasks |
 | `.shellcheckrc` | shellcheck config (disables SC2059 for intentional ANSI colour output) |
 | `PSScriptAnalyzerSettings.psd1` | PSScriptAnalyzer config (excludes rules that conflict with conventions) |
 | `scripts/verify.sh` | Pre-commit verification checks (12 checks, POSIX-safe for CI) |
 | `scripts/package.sh` | Cross-platform zip packaging (bash) |
 | `scripts/package.ps1` | Cross-platform zip packaging (PowerShell) |
-| `scripts/build-litellm-wheel.sh` | Builds the pinned litellm sdist into a macOS arm64 wheel (CI only) |
 | `.github/workflows/verify.yml` | CI: PR verification (runs `scripts/verify.sh`) |
 | `.github/workflows/install-test.yml` | CI: OS-matrix install test (win/mac/linux) — runs the real installer scripts end-to-end without build tools, validating binary wheels and the installer code paths before release; a shared reusable workflow (`workflow_call`) consumed by `release.yml` |
 | `.github/workflows/release.yml` | CI: Automated release on tag push (verify + install test + package + publish) — calls `install-test.yml` as a reusable workflow |
@@ -67,7 +66,6 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `uv-install.ps1` fetched at package time | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
 | Release zip structure | `Install Langflow.bat` and `LICENSE` at zip root; `install-langflow-script.ps1`, `uv-install.ps1`, and `constraints.txt` under `src/` — mirrors repo layout |
 | Constraint applied by a relative, space-free name | Pins only known-breaking transitive deps instead of a full lock file. uv re-splits `--constraint`/`-c`/`--override`/`-r` values on whitespace (astral-sh/uv#12639), so a shell-quoted path with a space still truncates; installers copy `constraints.txt` into the langflow dir and pass `--constraint=constraints.txt`. See `docs/adr/0004-uv-constraint-space-free-path.md` |
-| litellm wheel built at release time | litellm >=1.93 ships a Rust extension (maturin) with no macOS wheels, so `scripts/build-litellm-wheel.sh` builds the pinned version from sdist on a macOS runner and bundles it into the macOS zip; Windows/Linux use the PyPI wheel |
 | Consistent zip name for landing page | `langflow-installer-win.zip` uploaded alongside each versioned zip; landing page download link never needs updating |
 
 ## Conventions
@@ -199,7 +197,6 @@ Each zip contains platform-specific files only:
 - `src/install-langflow.sh`
 - `src/stop-langflow.sh`
 - `src/constraints.txt`
-- `src/litellm-*.whl` (built at release time; installed before Langflow)
 
 **`langflow-installer-linux.zip`:**
 - `Install Langflow.sh` (root)
