@@ -64,3 +64,12 @@ Corrupted cache or stale data can cause Langflow to fail on startup or act unexp
 - **Linux**: Delete `~/.cache/langflow` (or run `rm -rf ~/.cache/langflow`)
 
 Then start Langflow again from the desktop shortcut. Your installed packages stay in place — only cached data is removed.
+
+## Browser says the site can't be reached on first launch
+
+First launch takes a few minutes while Langflow loads everything it needs. This is normal — the launcher window keeps you updated, and your browser opens by itself when the server is ready. You don't need to open `http://127.0.0.1:7860` manually while the launcher still shows status updates.
+
+If several minutes have passed and no browser opened:
+1. Check the launcher window for the latest status line
+2. Visit <http://127.0.0.1:7860> manually
+3. If it still doesn't load, check the minimized server window (Windows) or `/tmp/langflow-server.log` (macOS/Linux) for errors

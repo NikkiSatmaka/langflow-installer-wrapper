@@ -222,16 +222,30 @@ echo.
 echo Starting Langflow server...
 start /MIN "Langflow Server - KEEP OPEN" "$uvPath" run langflow run
 echo.
-echo Waiting for Langflow to start...
-echo The browser will open automatically when the server is ready.
-echo You can also manually visit http://127.0.0.1:7860 at any time.
+echo  +==================================================+
+echo  +  First launch can take a few minutes.            +
+echo  +  That is completely normal, please be patient.   +
+echo  +                                                  +
+echo  +  Your browser will open by itself as soon as     +
+echo  +  Langflow is ready.                              +
+echo  +                                                  +
+echo  +  Just leave this window open. No action needed.  +
+echo  +==================================================+
 echo.
+set /a waited=0
 
 :waitloop
 powershell -NoProfile -Command "try { Invoke-WebRequest -Uri 'http://127.0.0.1:7860/health_check' -UseBasicParsing -TimeoutSec 3 | Out-Null; exit 0 } catch { exit 1 }"
 if %errorlevel% equ 0 goto serverready
-timeout /t 5 /nobreak >nul
-echo Still waiting... check http://127.0.0.1:7860 in your browser
+timeout /t 3 /nobreak >nul
+set /a waited+=3
+set /a tick=%waited% %% 21
+if %tick% neq 0 goto waitloop
+if %waited% equ 21 echo Still starting... (%waited% seconds). This is normal on first launch.
+if %waited% equ 42 echo Still starting... (%waited% seconds). First launch takes the longest.
+if %waited% equ 63 echo Still starting... (%waited% seconds). Thanks for your patience.
+if %waited% geq 84 echo Still starting... (%waited% seconds).
+if %waited% geq 84 echo If no browser has opened by now, you can also visit http://127.0.0.1:7860 manually.
 goto waitloop
 
 :serverready
