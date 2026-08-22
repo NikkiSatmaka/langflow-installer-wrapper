@@ -8,6 +8,7 @@
 - docs: friendlier landing page copy (hero star ask, first-start expectations in run steps, timing tips per OS tab)
 - docs: surface the troubleshooting guide prominently (always-visible Need-help button plus common-issues cards deep-linking each symptom)
 - docs: open troubleshooting links in a new tab
+- chore: bump uv to 0.12.5
 
 ## v1.9.6 (2026-08-13)
 
