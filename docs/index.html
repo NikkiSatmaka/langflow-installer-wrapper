@@ -22,6 +22,12 @@
       font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0.75rem;
       border-radius: 999px; margin-bottom: 1rem;
     }
+    .hero .star-ask { font-size: 0.9rem; margin-top: 0.75rem; }
+    .hero .star-ask a {
+      color: #38bdf8; text-decoration: none;
+      border-bottom: 1px solid transparent; transition: border-color 0.15s;
+    }
+    .hero .star-ask a:hover { border-color: #38bdf8; }
 
     /* Tabs */
     input[name="os"] { display: none; }
@@ -136,6 +142,7 @@
       <span class="badge">No admin rights required</span>
       <h1>Langflow Web for Windows, macOS, and Linux</h1>
       <p>Install Langflow Web 1.11.4 with one click. No Python or package manager needed.</p>
+      <p class="star-ask">If this installer saved you time, please <a href="https://github.com/NikkiSatmaka/langflow-installer-wrapper/stargazers">leave a star</a> &mdash; it helps others find it.</p>
       <iframe src="https://ghbtns.com/github-btn.html?user=NikkiSatmaka&repo=langflow-installer-wrapper&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160" height="30" title="GitHub" style="margin-top: 1rem;"></iframe>
     </div>
 
@@ -209,8 +216,14 @@
         </div>
         <div class="step">
           <div class="step-num">3</div>
-          <div><strong>Wait for your browser</strong><p>The launcher opens your browser at <code>http://127.0.0.1:7860</code> automatically once Langflow is ready.</p></div>
+          <div><strong>Wait for your browser</strong><p>The launcher prints progress updates every minute while Langflow starts. Your browser then opens by itself at <code>http://127.0.0.1:7860</code> &mdash; no need to open it early.</p></div>
         </div>
+      </div>
+
+      <div class="tip">
+        <strong>&#9203;&#65039; First start takes a while</strong> &mdash;
+        Up to 10&ndash;15 minutes on slower computers is normal.
+        Leave this window open until your browser opens by itself.
       </div>
 
       <h2>How to stop</h2>
@@ -282,12 +295,18 @@
         </div>
         <div class="step">
           <div class="step-num">2</div>
-          <div><strong>Double-click the shortcut</strong><p>Terminal will open, start the server, and automatically open your browser once Langflow is ready at <code>http://127.0.0.1:7860</code>.</p></div>
+          <div><strong>Double-click the shortcut</strong><p>Terminal will open and start the server. Progress updates print every minute, and your browser opens by itself once Langflow is ready at <code>http://127.0.0.1:7860</code>.</p></div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <div><strong>Press Enter to dismiss</strong><p>After the browser opens, press Enter in Terminal to close the launcher. The server keeps running in the background.</p></div>
         </div>
+      </div>
+
+      <div class="tip">
+        <strong>&#9203;&#65039; First start takes a while</strong> &mdash;
+        Up to 10&ndash;15 minutes on slower computers is normal.
+        Leave this window open until your browser opens by itself.
       </div>
 
       <h2>How to stop</h2>
@@ -344,12 +363,18 @@
         </div>
         <div class="step">
           <div class="step-num">2</div>
-          <div><strong>Launch Langflow</strong><p>Click the app menu entry or double-click the desktop shortcut. A terminal will open, start the server, and automatically open your browser at <code>http://127.0.0.1:7860</code>.</p></div>
+          <div><strong>Launch Langflow</strong><p>Click the app menu entry or double-click the desktop shortcut. A terminal will open, start the server, print progress updates every minute, and open your browser by itself at <code>http://127.0.0.1:7860</code>.</p></div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <div><strong>Press Enter to dismiss</strong><p>After the browser opens, press Enter in the terminal to close it. The server keeps running in the background.</p></div>
         </div>
+      </div>
+
+      <div class="tip">
+        <strong>&#9203;&#65039; First start takes a while</strong> &mdash;
+        Up to 10&ndash;15 minutes on slower computers is normal.
+        Leave this window open until your browser opens by itself.
       </div>
 
       <h2>How to stop</h2>
