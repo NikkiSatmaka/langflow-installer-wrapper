@@ -186,11 +186,11 @@ L_PID=$!
 echo "Server PID: $L_PID"
 echo ""
 echo " +==================================================+"
-echo " +  First launch can take a few minutes.            +"
-echo " +  That is completely normal, please be patient.   +"
+echo " +  Starting Langflow can take up to 10-15          +"
+echo " +  minutes on slower computers. This is normal.    +"
 echo " +                                                  +"
 echo " +  Your browser will open by itself as soon as     +"
-echo " +  Langflow is ready.                              +"
+echo " +  Langflow is ready at http://127.0.0.1:7860      +"
 echo " +                                                  +"
 echo " +  Just leave this window open. No action needed.  +"
 echo " +==================================================+"
@@ -202,17 +202,26 @@ while true; do
     fi
     sleep 3
     waited=$((waited+3))
-    tick=$((waited % 21))
-    [ "$tick" -ne 0 ] && continue
-    case $waited in
-        21) echo "Still starting... (${waited} seconds). This is normal on first launch." ;;
-        42) echo "Still starting... (${waited} seconds). First launch takes the longest." ;;
-        63) echo "Still starting... (${waited} seconds). Thanks for your patience." ;;
-        *)
-            echo "Still starting... (${waited} seconds)."
-            echo "If no browser has opened by now, you can also visit http://127.0.0.1:7860 manually."
-            ;;
-    esac
+    tick21=$((waited % 21))
+    tick60=$((waited % 60))
+    if [ "$tick21" -eq 0 ] && [ "$waited" -lt 64 ]; then
+        case $waited in
+            21) echo "Still starting... (${waited} seconds). This is normal on first launch." ;;
+            42) echo "Still starting... (${waited} seconds). First launch takes the longest." ;;
+            63) echo "Still starting... (${waited} seconds). Thanks for your patience." ;;
+        esac
+    fi
+    if [ "$tick60" -eq 0 ] && [ "$waited" -ge 120 ]; then
+        mins=$((waited / 60))
+        if [ "$mins" -le 5 ]; then
+            echo "Still starting... (${mins} min). Slower computers can take several minutes."
+        else
+            echo "Still starting... (${mins} min). On older computers first start can take 10-15 minutes."
+        fi
+        if [ "$waited" -eq 900 ]; then
+            echo "Still waiting after 15 minutes? Check the server log: tail -f /tmp/langflow-server.log"
+        fi
+    fi
 done
 echo ""
 echo " +==================================================+"

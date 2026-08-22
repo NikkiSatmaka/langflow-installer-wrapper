@@ -223,11 +223,11 @@ echo Starting Langflow server...
 start /MIN "Langflow Server - KEEP OPEN" "$uvPath" run langflow run
 echo.
 echo  +==================================================+
-echo  +  First launch can take a few minutes.            +
-echo  +  That is completely normal, please be patient.   +
+echo  +  Starting Langflow can take up to 10-15          +
+echo  +  minutes on slower computers. This is normal.    +
 echo  +                                                  +
 echo  +  Your browser will open by itself as soon as     +
-echo  +  Langflow is ready.                              +
+echo  +  Langflow is ready at http://127.0.0.1:7860      +
 echo  +                                                  +
 echo  +  Just leave this window open. No action needed.  +
 echo  +==================================================+
@@ -239,13 +239,19 @@ powershell -NoProfile -Command "try { Invoke-WebRequest -Uri 'http://127.0.0.1:7
 if %errorlevel% equ 0 goto serverready
 timeout /t 3 /nobreak >nul
 set /a waited+=3
-set /a tick=%waited% %% 21
-if %tick% neq 0 goto waitloop
+set /a tick21=%waited% %% 21
+set /a tick60=%waited% %% 60
+set SayMsg=
+if %tick21% equ 0 if %waited% lss 64 set SayMsg=1
+if %tick60% equ 0 if %waited% geq 120 set SayMsg=1
+if not defined SayMsg goto waitloop
 if %waited% equ 21 echo Still starting... (%waited% seconds). This is normal on first launch.
 if %waited% equ 42 echo Still starting... (%waited% seconds). First launch takes the longest.
 if %waited% equ 63 echo Still starting... (%waited% seconds). Thanks for your patience.
-if %waited% geq 84 echo Still starting... (%waited% seconds).
-if %waited% geq 84 echo If no browser has opened by now, you can also visit http://127.0.0.1:7860 manually.
+set /a mins=%waited% / 60
+if %waited% geq 120 if %mins% leq 5 echo Still starting... (%mins% min). Slower computers can take several minutes.
+if %waited% geq 120 if %mins% geq 6 echo Still starting... (%mins% min). On older computers first start can take 10-15 minutes.
+if %waited% equ 900 echo Still waiting after 15 minutes? Check the minimized server window for errors.
 goto waitloop
 
 :serverready
