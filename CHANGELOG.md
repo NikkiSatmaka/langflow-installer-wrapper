@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.9.7 (2026-08-22)
+
+- feat: upgrade Langflow to 1.11.4 (MCP SDK backport pin, FastAPI range restore, dependency security floors)
+- fix: friendlier first-launch wait messages in server launchers (varied progress updates every minute with elapsed time instead of identical lines every 5 seconds)
+- fix: realistic wait expectations for slow machines (intro box states up to 10-15 minutes; manual-URL hint removed from mid-wait messages, one-time log pointer after 15 minutes)
+- docs: friendlier landing page copy (hero star ask, first-start expectations in run steps, timing tips per OS tab)
+- docs: surface the troubleshooting guide prominently (always-visible Need-help button plus common-issues cards deep-linking each symptom)
+- docs: open troubleshooting links in a new tab
+
 ## v1.9.6 (2026-08-13)
 
 - feat: upgrade Langflow to 1.11.3
