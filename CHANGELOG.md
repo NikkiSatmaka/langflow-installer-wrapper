@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.9.8 (2026-08-31)
+
+- feat: upgrade Langflow to 1.11.5 (security backports for SSRF, MCP hardening, code execution boundaries; bug fixes for memory, frontend, and CI)
+
 ## v1.9.7 (2026-08-22)
 
 - feat: upgrade Langflow to 1.11.4 (MCP SDK backport pin, FastAPI range restore, dependency security floors)
