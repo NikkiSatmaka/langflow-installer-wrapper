@@ -3,7 +3,7 @@
     Install or uninstall Langflow on Windows using uv.
 .DESCRIPTION
     Bootstraps uv, installs Python 3.12, creates a virtual environment,
-    installs Langflow 1.11.5, and creates a desktop shortcut.
+    installs Langflow 1.11.6, and creates a desktop shortcut.
     Also supports clean uninstall of all components.
 .NOTES
     Author: Nikki Satmaka
@@ -17,13 +17,14 @@
     Justification = 'Kept as a single source of truth for the script version, mirrored in the bash installer.')]
 param()
 
-$ScriptVersion   = "1.9.8"
-$LangflowVersion = "1.11.5"
-$PythonVersion   = "3.12"
-$LangflowDir     = "$env:USERPROFILE\langflow"
-$UvBinDir        = "$env:USERPROFILE\.local\bin"
-$ShortcutName    = "Langflow Web.lnk"
-$ConstraintsFile = "$PSScriptRoot\constraints.txt"
+$ScriptVersion    = "1.10.0"
+$LangflowVersion  = "1.11.6"
+$PythonVersion    = "3.12"
+$LangflowDir      = "$env:USERPROFILE\langflow"
+$UvBinDir         = "$env:USERPROFILE\.local\bin"
+$ShortcutName     = "Langflow Web.lnk"
+$ConstraintsFile  = "$PSScriptRoot\constraints.txt"
+$RequirementsFile = "$PSScriptRoot\requirements.txt"
 
 # ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -150,19 +151,35 @@ function Install-LangflowPackage {
         Write-Info "Installing Langflow $LangflowVersion (this may take a few minutes)..."
 
         $installOk = $false
+        $uvInstallArgs = @()
         $constraintsArgs = @()
+        if (Test-Path $RequirementsFile) {
+            Copy-Item -Path $RequirementsFile -Destination "$LangflowDir\requirements.txt" -Force
+            $uvInstallArgs = @("-r", "requirements.txt")
+        }
+        else {
+            $uvInstallArgs = @("langflow==$LangflowVersion")
+        }
         if (Test-Path $ConstraintsFile) {
             Copy-Item -Path $ConstraintsFile -Destination "$LangflowDir\constraints.txt" -Force
             $constraintsArgs = @("--constraint=constraints.txt")
         }
 
-        uv pip install "langflow==$LangflowVersion" @constraintsArgs 2>&1 | ForEach-Object { Write-Host "   $_" }
+        uv pip install @uvInstallArgs @constraintsArgs 2>&1 | ForEach-Object { Write-Host "   $_" }
         if ($LASTEXITCODE -eq 0) {
             $installOk = $true
         }
         else {
             Write-Warn "Version $LangflowVersion failed -- trying latest..."
-            uv pip install langflow @constraintsArgs 2>&1 | ForEach-Object { Write-Host "   $_" }
+            if (Test-Path "$LangflowDir\requirements.txt") {
+                $unpinned = (Get-Content -Raw "$LangflowDir\requirements.txt") -replace "==${LangflowVersion}", ""
+                Set-Content -Path "$LangflowDir\requirements-latest.txt" -Value $unpinned -Encoding ASCII
+                $uvInstallArgs = @("-r", "requirements-latest.txt")
+            }
+            else {
+                $uvInstallArgs = @("langflow")
+            }
+            uv pip install @uvInstallArgs @constraintsArgs 2>&1 | ForEach-Object { Write-Host "   $_" }
             if ($LASTEXITCODE -eq 0) {
                 $installOk = $true
             }

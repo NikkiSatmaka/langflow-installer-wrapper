@@ -2,7 +2,7 @@
 #
 # Install or uninstall Langflow on macOS/Linux using uv.
 # Bootstraps uv, installs Python 3.12, creates a virtual environment,
-# installs Langflow 1.11.5, and creates a desktop shortcut.
+# installs Langflow 1.11.6, and creates a desktop shortcut.
 # Also supports clean uninstall of all components.
 #
 # Author: Nikki Satmaka
@@ -12,13 +12,14 @@ set -euo pipefail
 
 OS="$(uname -s)"
 # shellcheck disable=SC2034  # kept as the single source of truth for the script version
-SCRIPT_VERSION="1.9.8"
-LANGFLOW_VERSION="1.11.5"
+SCRIPT_VERSION="1.10.0"
+LANGFLOW_VERSION="1.11.6"
 PYTHON_VERSION="3.12"
 LANGFLOW_DIR="$HOME/langflow"
 UV_BIN_DIR="$HOME/.local/bin"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONSTRAINTS_FILE="$SCRIPT_DIR/constraints.txt"
+REQUIREMENTS_FILE="$SCRIPT_DIR/requirements.txt"
 
 # ── Colors ──────────────────────────────────────────────────────────────────
 
@@ -144,11 +145,25 @@ install_langflow_package() {
         constraints_args=("--constraint=constraints.txt")
     fi
 
-    if uv pip install "langflow==${LANGFLOW_VERSION}" "${constraints_args[@]}" 2>&1; then
+    uv_install_args=()
+    if [ -f "$REQUIREMENTS_FILE" ]; then
+        cp -f "$REQUIREMENTS_FILE" "$LANGFLOW_DIR/requirements.txt"
+        uv_install_args=("-r" "requirements.txt")
+    else
+        uv_install_args=("langflow==${LANGFLOW_VERSION}")
+    fi
+
+    if uv pip install "${uv_install_args[@]}" "${constraints_args[@]}" 2>&1; then
         install_ok=true
     else
         warn "Version ${LANGFLOW_VERSION} failed -- trying latest..."
-        if uv pip install langflow "${constraints_args[@]}" 2>&1; then
+        if [ -f "$LANGFLOW_DIR/requirements.txt" ]; then
+            sed "s/==${LANGFLOW_VERSION}//" "$LANGFLOW_DIR/requirements.txt" >"$LANGFLOW_DIR/requirements-latest.txt"
+            uv_install_args=("-r" "requirements-latest.txt")
+        else
+            uv_install_args=("langflow")
+        fi
+        if uv pip install "${uv_install_args[@]}" "${constraints_args[@]}" 2>&1; then
             install_ok=true
         fi
     fi
