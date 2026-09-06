@@ -13,8 +13,18 @@ One-click installer for [Langflow](https://github.com/langflow-ai/langflow) **1.
 | Platform | Download |
 |----------|----------|
 | Windows 10/11 | [langflow-installer-win.zip](https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-win.zip) |
-| macOS 12+ | [langflow-installer-macos.zip](https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-macos.zip) |
+| macOS 12+ (Apple Silicon only) | [langflow-installer-macos.zip](https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-macos.zip) |
 | Linux | [langflow-installer-linux.zip](https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-linux.zip) |
+
+## System Requirements
+
+| Platform | OS | Chip | Hardware |
+|----------|----|------|----------|
+| Windows | Windows 10 or 11 (2016 or newer, requires Windows PowerShell 5.1) | Any 64-bit x86 CPU | 2+ CPU cores, 2 GB RAM minimum (4 GB+ recommended) |
+| macOS | macOS 12+ (Monterey or later) | Apple Silicon (M1 or newer) only — Intel Macs are not supported | 2+ CPU cores, 2 GB RAM minimum (4 GB+ recommended) |
+| Linux | Any modern 64-bit Linux distribution | Any | 2+ CPU cores, 2 GB RAM minimum (4 GB+ recommended) |
+
+Langflow is API-driven, so no GPU is required. Allow a few GB of free disk space for Python 3.12, the virtual environment, and Langflow's packages. First launch can take 10–15 minutes on slower machines.
 
 ## Quick Start (Windows)
 
@@ -34,6 +44,8 @@ After install, double-click the **Langflow Web** desktop shortcut. A terminal wi
 > **Having trouble?** See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for Smart App Control and antivirus help.
 
 ## Quick Start (macOS)
+
+> **Apple Silicon required**: This installer supports M1 (or newer) Macs only. Intel Macs are not supported — the bundled packages can fail to build there.
 
 1. [Download the macOS release](https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-macos.zip)
 2. Extract the zip (double-click in Finder)
