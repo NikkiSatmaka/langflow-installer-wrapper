@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository provides single-click installers for Langflow on Windows, macOS, and Linux using `uv` as the package manager. Python 3.12 is pinned. Langflow is pinned to version **1.11.5**.
+This repository provides single-click installers for Langflow on Windows, macOS, and Linux using `uv` as the package manager. Python 3.12 is pinned. Langflow is pinned to version **1.11.6**.
 
 **Author**: Nikki Satmaka
 - GitHub: https://github.com/NikkiSatmaka/
@@ -30,6 +30,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `src/stop-langflow-script.ps1` | PowerShell stop script (Windows) |
 | `src/stop-langflow.sh` | Bash stop script (macOS/Linux) |
 | `src/constraints.txt` | Pins known-breaking transitive deps that ship source-only releases without wheels; currently empty (all deps ship pre-built wheels on every target platform) |
+| `src/requirements.txt` | Bundled install requirements replicating the Docker image's integration groups (google, ollama, azure, postgresql); only the langflow line is pinned |
 | `mise.toml` | Dev tooling: pins shellcheck, shfmt, powershell and defines lint/fmt tasks |
 | `.shellcheckrc` | shellcheck config (disables SC2059 for intentional ANSI colour output) |
 | `PSScriptAnalyzerSettings.psd1` | PSScriptAnalyzer config (excludes rules that conflict with conventions) |
@@ -49,7 +50,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 - **Idempotent** — safe to re-run; checks before acting
 - **User-prompted** — script asks Install / Uninstall / Quit at startup
 - **Credits banner** — GitHub + LinkedIn displayed on every run (Chris Titus style)
-- **Version pinned** — Langflow `==1.11.5`; do not change without updating CONTRACT.md
+- **Version pinned** — Langflow `==1.11.6`; do not change without updating CONTRACT.md
 - **Cross-platform** — Windows (PowerShell), macOS, and Linux (bash); platform-specific logic with shared installer flow
 - **Python pinned** — 3.12 via `uv python install 3.12` (only version with pre-built wheels for all C-extensions on Windows; 3.13+ requires MSVC not available to most users)
 
@@ -64,8 +65,9 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | Uninstall keeps `uv` | uv may be used for other projects |
 | UTF-8 BOM required on `.ps1` | Windows PowerShell requires UTF-8 with BOM; without it, non-ASCII characters cause parser errors |
 | `uv-install.ps1` fetched at package time | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
-| Release zip structure | `Install Langflow.bat` and `LICENSE` at zip root; `install-langflow-script.ps1`, `uv-install.ps1`, and `constraints.txt` under `src/` — mirrors repo layout |
-| Constraint applied by a relative, space-free name | Pins only known-breaking transitive deps instead of a full lock file. uv re-splits `--constraint`/`-c`/`--override`/`-r` values on whitespace (astral-sh/uv#12639), so a shell-quoted path with a space still truncates; installers copy `constraints.txt` into the langflow dir and pass `--constraint=constraints.txt`. See `docs/adr/0004-uv-constraint-space-free-path.md` |
+| Release zip structure | `Install Langflow.bat` and `LICENSE` at zip root; `install-langflow-script.ps1`, `uv-install.ps1`, `constraints.txt`, and `requirements.txt` under `src/` — mirrors repo layout |
+| Constraint and requirements applied by a relative, space-free name | Pins only langflow plus known-breaking transitive deps instead of a full lock file. uv re-splits `--constraints`/`-c`/`--override`/`--requirements`/`-r` values on whitespace (astral-sh/uv#12639), so a shell-quoted path with a space still truncates; installers copy `constraints.txt` and `requirements.txt` into the langflow dir and pass `--constraints=constraints.txt` and `--requirements=requirements.txt`. See `docs/adr/0004-uv-constraint-space-free-path.md` |
+| Install from a bundled `requirements.txt` | Matches the Docker image's integration groups: `langchain-google-genai`/`langchain-google-community`/`langchain-ollama` live under langflow-base extras the default install misses, `langchain-azure-ai` is outside the langflow tree, and `psycopg`/`psycopg2-binary` need langflow's `postgresql` extra. See `docs/adr/0005-requirements-docker-parity.md` |
 | Consistent zip name for landing page | `langflow-installer-win.zip` uploaded alongside each versioned zip; landing page download link never needs updating |
 
 ## Conventions
@@ -199,6 +201,7 @@ Each zip contains platform-specific files only:
 - `src/stop-langflow-script.ps1`
 - `src/uv-install.ps1` (fetched from upstream at package time)
 - `src/constraints.txt`
+- `src/requirements.txt`
 
 **`langflow-installer-macos.zip`:**
 - `Install Langflow.command` (root)
@@ -207,6 +210,7 @@ Each zip contains platform-specific files only:
 - `src/install-langflow.sh`
 - `src/stop-langflow.sh`
 - `src/constraints.txt`
+- `src/requirements.txt`
 
 **`langflow-installer-linux.zip`:**
 - `Install Langflow.sh` (root)
@@ -215,6 +219,7 @@ Each zip contains platform-specific files only:
 - `src/install-langflow.sh`
 - `src/stop-langflow.sh`
 - `src/constraints.txt`
+- `src/requirements.txt`
 
 Landing page download URLs (never changes across versions):
 - Windows: `https://github.com/NikkiSatmaka/langflow-installer-wrapper/releases/latest/download/langflow-installer-win.zip`
@@ -226,7 +231,7 @@ Landing page download URLs (never changes across versions):
 Update files in this order:
 
 1. **Single source of truth**: change `$LangflowVersion` in `src/install-langflow-script.ps1`.
-   - Update `LANGFLOW_VERSION` in `src/install-langflow.sh` to match.
+   - Update `LANGFLOW_VERSION` in `src/install-langflow.sh` and `langflow[postgresql]==X.Y.Z` in `src/requirements.txt` to match.
 2. Update `src/constraints.txt` if any known-breaking transitive deps need new version bounds for the new Langflow version.
 3. Update plain-text references in these files to match:
    - `README.md` (hero line + what-it-does list)
@@ -244,7 +249,7 @@ Smoke tests are automated via CI (weekly schedule + tag triggers). Before releas
 - Test all 3 menu paths: Install, Uninstall, Quit.
 - Confirm Install is idempotent (re-running detects existing components).
 - Confirm the desktop shortcut launches Langflow and the browser opens.
-- Confirm `uv pip install "langflow==X.Y.Z" --constraint=src/constraints.txt` succeeds on the pinned Python 3.12.
+- Confirm `uv pip install --requirements=src/requirements.txt --constraints=src/constraints.txt` succeeds on the pinned Python 3.12.
 - Confirm Uninstall removes `%USERPROFILE%\langflow\` and the shortcut, and optionally Python 3.12.
 
 ## Assets
@@ -289,7 +294,7 @@ Before committing (or before merging a PR), run `bash scripts/verify.sh` — it 
 - **Version consistency**: all files reference the same `$LangflowVersion`
 - **No stale version refs**: after bumping, confirm no outdated version strings remain (CHANGELOG history excluded)
 - **Bash script**: has `set -euo pipefail` and POSIX-friendly syntax
-- **constraints.txt exists**: the constraints file must be present alongside installer scripts
+- **requirements.txt + constraints.txt exist**: the files must be present alongside installer scripts
 - **Lint**: `mise run lint` (shellcheck + shfmt + PSScriptAnalyzer) passes
 
 `mise` is a required contributor prerequisite. `scripts/verify.sh` runs `mise run lint` as check 12 and fails if mise is not installed. Install it with `mise install` (reads `mise.toml`), then run `mise run lint` locally or `mise run fmt` to reformat bash scripts in place. The lint gate is enforced in CI via `jdx/mise-action@v2` on every PR to `main`.

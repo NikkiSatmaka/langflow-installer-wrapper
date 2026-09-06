@@ -92,7 +92,7 @@ LF_VER=$(awk -F '"' '/^\$LangflowVersion/{print $2; exit}' src/install-langflow-
 if [ -z "$LF_VER" ]; then
     fail "could not extract LangflowVersion from install-langflow-script.ps1"
 else
-    for doc in README.md CONTRACT.md AGENTS.md docs/index.html; do
+    for doc in README.md CONTRACT.md AGENTS.md docs/index.html src/requirements.txt; do
         if [ -f "$doc" ]; then
             if ! grep -Fq "$LF_VER" "$doc" 2>/dev/null; then
                 fail "$doc: missing Langflow version $LF_VER"
@@ -115,12 +115,15 @@ for f in src/install-langflow.sh src/install-langflow-script.ps1; do
 done
 pass "secrets scan"
 
-# ── 10. constraints.txt exists ────────────────────────────────────────────
+# ── 10. requirements.txt and constraints.txt exist ────────────────────────
 
 if [ ! -f src/constraints.txt ]; then
     fail "src/constraints.txt: missing constraints file"
 fi
-pass "constraints.txt"
+if [ ! -f src/requirements.txt ]; then
+    fail "src/requirements.txt: missing requirements file"
+fi
+pass "requirements.txt + constraints.txt"
 
 # ── 11. Zip contents match spec ────────────────────────────────────────────
 # Note: uv-install.ps1 is fetched from upstream at package time, not in the repo
@@ -129,7 +132,7 @@ for f in "Install Langflow.bat" "Stop Langflow.bat" \
     "Install Langflow.command" "Stop Langflow.command" \
     "Install Langflow.sh" "Stop Langflow.sh" \
     src/install-langflow-script.ps1 src/stop-langflow-script.ps1 \
-    src/constraints.txt src/install-langflow.sh src/stop-langflow.sh; do
+    src/constraints.txt src/requirements.txt src/install-langflow.sh src/stop-langflow.sh; do
     if [ ! -f "$f" ]; then
         fail "$f: referenced by zip spec but does not exist"
     fi

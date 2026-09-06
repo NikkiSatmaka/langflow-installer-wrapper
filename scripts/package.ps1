@@ -57,17 +57,17 @@ Invoke-WebRequest -Uri "https://astral.sh/uv/install.ps1" -OutFile $uvInstallerP
 
 Package-Platform -Platform "win" `
     -RootFiles @("Install Langflow.bat", "Stop Langflow.bat", "LICENSE") `
-    -SrcFiles @("install-langflow-script.ps1", "stop-langflow-script.ps1", "uv-install.ps1", "constraints.txt", "assets/langflow.ico")
+    -SrcFiles @("install-langflow-script.ps1", "stop-langflow-script.ps1", "uv-install.ps1", "constraints.txt", "requirements.txt", "assets/langflow.ico")
 
 # Clean up fetched file
 Remove-Item -Path $uvInstallerPath -Force
 
 Package-Platform -Platform "macos" `
     -RootFiles @("Install Langflow.command", "Stop Langflow.command", "LICENSE") `
-    -SrcFiles @("install-langflow.sh", "stop-langflow.sh", "constraints.txt")
+    -SrcFiles @("install-langflow.sh", "stop-langflow.sh", "constraints.txt", "requirements.txt")
 
 Package-Platform -Platform "linux" `
     -RootFiles @("Install Langflow.sh", "Stop Langflow.sh", "LICENSE") `
-    -SrcFiles @("install-langflow.sh", "stop-langflow.sh", "constraints.txt", "assets/langflow.png")
+    -SrcFiles @("install-langflow.sh", "stop-langflow.sh", "constraints.txt", "requirements.txt", "assets/langflow.png")
 
 Write-Host "Done. All zips in $Dist/"
