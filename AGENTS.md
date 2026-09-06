@@ -66,7 +66,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | UTF-8 BOM required on `.ps1` | Windows PowerShell requires UTF-8 with BOM; without it, non-ASCII characters cause parser errors |
 | `uv-install.ps1` fetched at package time | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
 | Release zip structure | `Install Langflow.bat` and `LICENSE` at zip root; `install-langflow-script.ps1`, `uv-install.ps1`, `constraints.txt`, and `requirements.txt` under `src/` — mirrors repo layout |
-| Constraint and requirements applied by a relative, space-free name | Pins only langflow plus known-breaking transitive deps instead of a full lock file. uv re-splits `--constraint`/`-c`/`--override`/`-r` values on whitespace (astral-sh/uv#12639), so a shell-quoted path with a space still truncates; installers copy `constraints.txt` and `requirements.txt` into the langflow dir and pass `--constraint=constraints.txt` and `-r requirements.txt`. See `docs/adr/0004-uv-constraint-space-free-path.md` |
+| Constraint and requirements applied by a relative, space-free name | Pins only langflow plus known-breaking transitive deps instead of a full lock file. uv re-splits `--constraints`/`-c`/`--override`/`--requirements`/`-r` values on whitespace (astral-sh/uv#12639), so a shell-quoted path with a space still truncates; installers copy `constraints.txt` and `requirements.txt` into the langflow dir and pass `--constraints=constraints.txt` and `--requirements=requirements.txt`. See `docs/adr/0004-uv-constraint-space-free-path.md` |
 | Install from a bundled `requirements.txt` | Matches the Docker image's integration groups: `langchain-google-genai`/`langchain-google-community`/`langchain-ollama` live under langflow-base extras the default install misses, `langchain-azure-ai` is outside the langflow tree, and `psycopg`/`psycopg2-binary` need langflow's `postgresql` extra. See `docs/adr/0005-requirements-docker-parity.md` |
 | Consistent zip name for landing page | `langflow-installer-win.zip` uploaded alongside each versioned zip; landing page download link never needs updating |
 
@@ -249,7 +249,7 @@ Smoke tests are automated via CI (weekly schedule + tag triggers). Before releas
 - Test all 3 menu paths: Install, Uninstall, Quit.
 - Confirm Install is idempotent (re-running detects existing components).
 - Confirm the desktop shortcut launches Langflow and the browser opens.
-- Confirm `uv pip install -r src/requirements.txt --constraint=src/constraints.txt` succeeds on the pinned Python 3.12.
+- Confirm `uv pip install --requirements=src/requirements.txt --constraints=src/constraints.txt` succeeds on the pinned Python 3.12.
 - Confirm Uninstall removes `%USERPROFILE%\langflow\` and the shortcut, and optionally Python 3.12.
 
 ## Assets

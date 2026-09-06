@@ -70,8 +70,8 @@ Run when the user selects `[I]`.
    - **macOS/Linux**: `~/langflow/`
 2. `cd` into the langflow directory.
 3. Create venv: `uv venv` (creates `.venv`).
-4. Install Langflow from the bundled `requirements.txt`: `uv pip install -r requirements.txt --constraint=constraints.txt`. The file pins only the langflow line (`langflow[postgresql]==1.11.6`) and adds the Docker image's integration extras (`langflow-base[google,ollama]`, `langchain-azure-ai`).
-   - If the pin fails (e.g., version yanked), catch the error, strip the version pin out of `requirements.txt` into `requirements-latest.txt`, and retry with `uv pip install -r requirements-latest.txt --constraint=constraints.txt`.
+4. Install Langflow from the bundled `requirements.txt`: `uv pip install --requirements=requirements.txt --constraints=constraints.txt`. The file pins only the langflow line (`langflow[postgresql]==1.11.6`) and adds the Docker image's integration extras (`langflow-base[google,ollama]`, `langchain-azure-ai`).
+   - If the pin fails (e.g., version yanked), catch the error, strip the version pin out of `requirements.txt` into `requirements-latest.txt`, and retry with `uv pip install --requirements=requirements-latest.txt --constraints=constraints.txt`.
 
 ### 5.4 Desktop Shortcuts
 

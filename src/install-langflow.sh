@@ -142,13 +142,13 @@ install_langflow_package() {
     constraints_args=()
     if [ -f "$CONSTRAINTS_FILE" ]; then
         cp -f "$CONSTRAINTS_FILE" "$LANGFLOW_DIR/constraints.txt"
-        constraints_args=("--constraint=constraints.txt")
+        constraints_args=("--constraints=constraints.txt")
     fi
 
     uv_install_args=()
     if [ -f "$REQUIREMENTS_FILE" ]; then
         cp -f "$REQUIREMENTS_FILE" "$LANGFLOW_DIR/requirements.txt"
-        uv_install_args=("-r" "requirements.txt")
+        uv_install_args=("--requirements=requirements.txt")
     else
         uv_install_args=("langflow==${LANGFLOW_VERSION}")
     fi
@@ -159,7 +159,7 @@ install_langflow_package() {
         warn "Version ${LANGFLOW_VERSION} failed -- trying latest..."
         if [ -f "$LANGFLOW_DIR/requirements.txt" ]; then
             sed "s/==${LANGFLOW_VERSION}//" "$LANGFLOW_DIR/requirements.txt" >"$LANGFLOW_DIR/requirements-latest.txt"
-            uv_install_args=("-r" "requirements-latest.txt")
+            uv_install_args=("--requirements=requirements-latest.txt")
         else
             uv_install_args=("langflow")
         fi

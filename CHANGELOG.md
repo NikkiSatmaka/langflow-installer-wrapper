@@ -5,6 +5,7 @@
 - feat: upgrade Langflow to 1.11.6
 - feat: install the Google, Ollama, Azure AI, and PostgreSQL integrations from the official langflow Docker image via a new bundled `src/requirements.txt` (only the langflow line is pinned)
 - feat: install from a versioned requirements file instead of a direct package argument; the version-pin fallback now strips the pin in place and keeps the same integrations
+- refactor: use uv's canonical `--requirements=`/`--constraints=` flag names for consistency
 - docs: add ADR 0005 documenting docker-parity requirements
 
 ## v1.9.8 (2026-08-31)

@@ -155,14 +155,14 @@ function Install-LangflowPackage {
         $constraintsArgs = @()
         if (Test-Path $RequirementsFile) {
             Copy-Item -Path $RequirementsFile -Destination "$LangflowDir\requirements.txt" -Force
-            $uvInstallArgs = @("-r", "requirements.txt")
+            $uvInstallArgs = @("--requirements=requirements.txt")
         }
         else {
             $uvInstallArgs = @("langflow==$LangflowVersion")
         }
         if (Test-Path $ConstraintsFile) {
             Copy-Item -Path $ConstraintsFile -Destination "$LangflowDir\constraints.txt" -Force
-            $constraintsArgs = @("--constraint=constraints.txt")
+            $constraintsArgs = @("--constraints=constraints.txt")
         }
 
         uv pip install @uvInstallArgs @constraintsArgs 2>&1 | ForEach-Object { Write-Host "   $_" }
@@ -174,7 +174,7 @@ function Install-LangflowPackage {
             if (Test-Path "$LangflowDir\requirements.txt") {
                 $unpinned = (Get-Content -Raw "$LangflowDir\requirements.txt") -replace "==${LangflowVersion}", ""
                 Set-Content -Path "$LangflowDir\requirements-latest.txt" -Value $unpinned -Encoding ASCII
-                $uvInstallArgs = @("-r", "requirements-latest.txt")
+                $uvInstallArgs = @("--requirements=requirements-latest.txt")
             }
             else {
                 $uvInstallArgs = @("langflow")

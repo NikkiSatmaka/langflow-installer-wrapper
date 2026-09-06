@@ -26,8 +26,8 @@ Switch the installers from a direct package argument to a bundled, versioned req
   langchain-azure-ai
   ```
 - Only the langflow line is pinned; the extra lines float so uv resolves whatever satisfies the pinned langflow's range.
-- Installers stage `requirements.txt` into the langflow working directory and pass it by its space-free relative name (`-r requirements.txt`), the same mechanism as ADR 0004: uv re-splits `-r` values on whitespace (astral-sh/uv#12639), so the argument value must contain no spaces.
-- The `--constraint=constraints.txt` behavior is unchanged.
+- Installers stage `requirements.txt` into the langflow working directory and pass it by its space-free relative name (`--requirements=requirements.txt`), the same mechanism as ADR 0004: uv re-splits `--requirements`/`-r` values on whitespace (astral-sh/uv#12639), so the argument value must contain no spaces.
+- The `--constraints=constraints.txt` behavior is unchanged.
 - The version fallback is preserved: if the pinned install fails, the script strips `==1.11.6` out of the staged file into `requirements-latest.txt` and retries, keeping the same extras.
 
 ## Consequences
