@@ -30,7 +30,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `src/stop-langflow-script.ps1` | PowerShell stop script (Windows) |
 | `src/stop-langflow.sh` | Bash stop script (macOS/Linux) |
 | `src/constraints.txt` | Pins known-breaking transitive deps that ship source-only releases without wheels; currently empty (all deps ship pre-built wheels on every target platform) |
-| `src/requirements.txt` | Bundled install requirements pinning `langflow[postgresql]==<version>`; the Google GenAI, Ollama, and Azure AI provider bundles ship as default `langflow` dependencies in 1.12+ |
+| `src/requirements.txt` | Bundled install requirements pinning `langflow[postgresql]==<version>` plus the Composio bundle (`lfx-bundles[composio]==<bundles-version>`, which ships the `composio` and `composio-langchain` SDKs); the Google GenAI, Ollama, and Azure AI provider bundles ship as default `langflow` dependencies in 1.12+ |
 | `mise.toml` | Dev tooling: pins shellcheck, shfmt, powershell and defines lint/fmt tasks |
 | `.shellcheckrc` | shellcheck config (disables SC2059 for intentional ANSI colour output) |
 | `PSScriptAnalyzerSettings.psd1` | PSScriptAnalyzer config (excludes rules that conflict with conventions) |
@@ -67,7 +67,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `uv-install.ps1` fetched at package time | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
 | Release zip structure | `Install Langflow.bat` and `LICENSE` at zip root; `install-langflow-script.ps1`, `uv-install.ps1`, `constraints.txt`, and `requirements.txt` under `src/` — mirrors repo layout |
 | Constraint and requirements applied by a relative, space-free name | Pins only langflow plus known-breaking transitive deps instead of a full lock file. uv re-splits `--constraints`/`-c`/`--override`/`--requirements`/`-r` values on whitespace (astral-sh/uv#12639), so a shell-quoted path with a space still truncates; installers copy `constraints.txt` and `requirements.txt` into the langflow dir and pass `--constraints=constraints.txt` and `--requirements=requirements.txt`. See `docs/adr/0004-uv-constraint-space-free-path.md` |
-| Install from a bundled `requirements.txt` | On the 1.11 line the Google/Ollama/Azure integrations (`lfx-google`/`lfx-ollama`/`lfx-azure`) were only reachable through `langflow-base[google,ollama]` extras and `langchain-azure-ai`, and `psycopg`/`psycopg2-binary` needed langflow's `postgresql` extra. In 1.12+ the provider bundles are default `langflow` dependencies, so the file pins only `langflow[postgresql]==<version>`. See `docs/adr/0005-requirements-docker-parity.md` |
+| Install from a bundled `requirements.txt` | On the 1.11 line the Google/Ollama/Azure integrations (`lfx-google`/`lfx-ollama`/`lfx-azure`) were only reachable through `langflow-base[google,ollama]` extras and `langchain-azure-ai`, and `psycopg`/`psycopg2-binary` needed langflow's `postgresql` extra. In 1.12+ the provider bundles are default `langflow` dependencies, so the file pins `langflow[postgresql]==<version>`; the Composio bundle is an opt-in `lfx-bundles` extra, so the file adds `lfx-bundles[composio]==<bundles-version>` to ship it. See `docs/adr/0005-requirements-docker-parity.md` |
 | Consistent zip name for landing page | `langflow-installer-win.zip` uploaded alongside each versioned zip; landing page download link never needs updating |
 
 ## Conventions
@@ -232,6 +232,7 @@ Update files in this order:
 
 1. **Single source of truth**: change `$LangflowVersion` in `src/install-langflow-script.ps1`.
    - Update `LANGFLOW_VERSION` in `src/install-langflow.sh` and `langflow[postgresql]==X.Y.Z` in `src/requirements.txt` to match.
+   - Re-check the `lfx-bundles[composio]==A.B.C` pin in `src/requirements.txt` against the new Langflow version's paired `lfx-bundles` release.
 2. Update `src/constraints.txt` if any known-breaking transitive deps need new version bounds for the new Langflow version.
 3. Update plain-text references in these files to match:
    - `README.md` (hero line + what-it-does list)
