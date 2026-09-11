@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## v1.10.2 (2026-09-12)
 
-- feat: bundle the Composio integration (`lfx-bundles[composio]==1.1.23`, shipping `composio==0.16.0` and `composio-langchain==0.16.0`) in `src/requirements.txt`
+- docs: document the bundled Composio integration (`lfx-bundles[composio]==1.1.23`, shipping `composio==0.16.0` and `composio-langchain==0.16.0`) in `src/requirements.txt`
 - docs: update README, CONTRACT, AGENTS, ADR 0005, and landing page to reflect the bundled Composio bundle
 
 ## v1.10.1 (2026-09-11)
