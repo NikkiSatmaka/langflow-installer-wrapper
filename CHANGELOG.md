@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.10.1 (2026-09-11)
+
+- feat: upgrade Langflow to 1.12.1 (Google GenAI, Ollama, Azure AI, and the rest of the curated `lfx-*` provider bundles are now default `langflow` dependencies, fixing missing Google GenAI components on fresh installs)
+- refactor: collapse `src/requirements.txt` to just the pinned `langflow[postgresql]==1.12.1` line; the `langflow-base[google,ollama]` and `langchain-azure-ai` extras are redundant in 1.12 and were removed
+- docs: update ADR 0005 to document the 1.12 bundle transition
+
 ## v1.10.0 (2026-09-06)
 
 - feat: upgrade Langflow to 1.11.6
