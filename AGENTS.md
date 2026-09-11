@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository provides single-click installers for Langflow on Windows, macOS, and Linux using `uv` as the package manager. Python 3.12 is pinned. Langflow is pinned to version **1.11.6**.
+This repository provides single-click installers for Langflow on Windows, macOS, and Linux using `uv` as the package manager. Python 3.12 is pinned. Langflow is pinned to version **1.12.1**.
 
 **Author**: Nikki Satmaka
 - GitHub: https://github.com/NikkiSatmaka/
@@ -30,7 +30,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `src/stop-langflow-script.ps1` | PowerShell stop script (Windows) |
 | `src/stop-langflow.sh` | Bash stop script (macOS/Linux) |
 | `src/constraints.txt` | Pins known-breaking transitive deps that ship source-only releases without wheels; currently empty (all deps ship pre-built wheels on every target platform) |
-| `src/requirements.txt` | Bundled install requirements replicating the Docker image's integration groups (google, ollama, azure, postgresql); only the langflow line is pinned |
+| `src/requirements.txt` | Bundled install requirements pinning `langflow[postgresql]==<version>`; the Google GenAI, Ollama, and Azure AI provider bundles ship as default `langflow` dependencies in 1.12+ |
 | `mise.toml` | Dev tooling: pins shellcheck, shfmt, powershell and defines lint/fmt tasks |
 | `.shellcheckrc` | shellcheck config (disables SC2059 for intentional ANSI colour output) |
 | `PSScriptAnalyzerSettings.psd1` | PSScriptAnalyzer config (excludes rules that conflict with conventions) |
@@ -50,7 +50,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 - **Idempotent** — safe to re-run; checks before acting
 - **User-prompted** — script asks Install / Uninstall / Quit at startup
 - **Credits banner** — GitHub + LinkedIn displayed on every run (Chris Titus style)
-- **Version pinned** — Langflow `==1.11.6`; do not change without updating CONTRACT.md
+- **Version pinned** — Langflow `==1.12.1`; do not change without updating CONTRACT.md
 - **Cross-platform** — Windows (PowerShell), macOS, and Linux (bash); platform-specific logic with shared installer flow
 - **Python pinned** — 3.12 via `uv python install 3.12` (only version with pre-built wheels for all C-extensions on Windows; 3.13+ requires MSVC not available to most users)
 
@@ -67,7 +67,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `uv-install.ps1` fetched at package time | Eliminates `irm \| iex` pattern that heuristic AV triggers on; uses `$PSScriptRoot` to reference local file |
 | Release zip structure | `Install Langflow.bat` and `LICENSE` at zip root; `install-langflow-script.ps1`, `uv-install.ps1`, `constraints.txt`, and `requirements.txt` under `src/` — mirrors repo layout |
 | Constraint and requirements applied by a relative, space-free name | Pins only langflow plus known-breaking transitive deps instead of a full lock file. uv re-splits `--constraints`/`-c`/`--override`/`--requirements`/`-r` values on whitespace (astral-sh/uv#12639), so a shell-quoted path with a space still truncates; installers copy `constraints.txt` and `requirements.txt` into the langflow dir and pass `--constraints=constraints.txt` and `--requirements=requirements.txt`. See `docs/adr/0004-uv-constraint-space-free-path.md` |
-| Install from a bundled `requirements.txt` | Matches the Docker image's integration groups: `langchain-google-genai`/`langchain-google-community`/`langchain-ollama` live under langflow-base extras the default install misses, `langchain-azure-ai` is outside the langflow tree, and `psycopg`/`psycopg2-binary` need langflow's `postgresql` extra. See `docs/adr/0005-requirements-docker-parity.md` |
+| Install from a bundled `requirements.txt` | On the 1.11 line the Google/Ollama/Azure integrations (`lfx-google`/`lfx-ollama`/`lfx-azure`) were only reachable through `langflow-base[google,ollama]` extras and `langchain-azure-ai`, and `psycopg`/`psycopg2-binary` needed langflow's `postgresql` extra. In 1.12+ the provider bundles are default `langflow` dependencies, so the file pins only `langflow[postgresql]==<version>`. See `docs/adr/0005-requirements-docker-parity.md` |
 | Consistent zip name for landing page | `langflow-installer-win.zip` uploaded alongside each versioned zip; landing page download link never needs updating |
 
 ## Conventions

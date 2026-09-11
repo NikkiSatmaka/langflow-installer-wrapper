@@ -1,3 +1,1 @@
-langflow[postgresql]==1.11.6
-langflow-base[google,ollama]
-langchain-azure-ai
+langflow[postgresql]==1.12.1
