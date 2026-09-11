@@ -1,1 +1,2 @@
 langflow[postgresql]==1.12.1
+lfx-bundles[composio]==1.1.23

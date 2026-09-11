@@ -70,7 +70,7 @@ Run when the user selects `[I]`.
    - **macOS/Linux**: `~/langflow/`
 2. `cd` into the langflow directory.
 3. Create venv: `uv venv` (creates `.venv`).
-4. Install Langflow from the bundled `requirements.txt`: `uv pip install --requirements=requirements.txt --constraints=constraints.txt`. The file pins the langflow line (`langflow[postgresql]==1.12.1`); the Google GenAI, Ollama, and Azure AI provider bundles ship as default langflow dependencies in 1.12, and the `postgresql` extra adds the PostgreSQL drivers.
+4. Install Langflow from the bundled `requirements.txt`: `uv pip install --requirements=requirements.txt --constraints=constraints.txt`. The file pins the langflow line (`langflow[postgresql]==1.12.1`) plus the Composio bundle (`lfx-bundles[composio]==1.1.23`, which ship the `composio` and `composio-langchain` SDKs); the Google GenAI, Ollama, and Azure AI provider bundles ship as default langflow dependencies in 1.12, and the `postgresql` extra adds the PostgreSQL drivers.
    - If the pin fails (e.g., version yanked), catch the error, strip the version pin out of `requirements.txt` into `requirements-latest.txt`, and retry with `uv pip install --requirements=requirements-latest.txt --constraints=constraints.txt`.
 
 ### 5.4 Desktop Shortcuts

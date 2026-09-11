@@ -26,15 +26,16 @@ Install from a bundled, versioned requirements file:
 - `src/requirements.txt` (shipped in every zip):
   ```
   langflow[postgresql]==1.12.1
+  lfx-bundles[composio]==1.1.23
   ```
-- Only the langflow line is pinned; uv resolves whatever satisfies the pinned langflow's range.
+- The langflow line is pinned; uv resolves whatever satisfies the pinned langflow's range. The `lfx-bundles[composio]` line pins the bundle version paired with that langflow release; its `composio` extra adds the `composio` and `composio-langchain` SDKs that the Composio bundle components need. The Composio bundle is an opt-in `lfx-bundles` extra in 1.12 (not a default langflow dependency), so it is pinned explicitly.
 - Installers stage `requirements.txt` into the langflow working directory and pass it by its space-free relative name (`--requirements=requirements.txt`), the same mechanism as ADR 0004: uv re-splits `--requirements`/`-r` values on whitespace (astral-sh/uv#12639), so the argument value must contain no spaces.
 - The `--constraints=constraints.txt` behavior is unchanged.
 - The version fallback is preserved: if the pinned install fails, the script strips `==1.12.1` out of the staged file into `requirements-latest.txt` and retries, keeping the same extra.
 
 ## Consequences
 
-- The installer matches the langflow 1.12 curated provider set (Google GenAI, Ollama, Azure AI, PostgreSQL, plus the other built-in bundles) without extra pins.
+- The installer matches the langflow 1.12 curated provider set (Google GenAI, Ollama, Azure AI, PostgreSQL, plus the other built-in bundles) and adds the opt-in Composio bundle.
 - Requires a release/package step change: `src/requirements.txt` must ship in all three zips (`scripts/package.sh`, `scripts/package.ps1`).
 - `scripts/verify.sh` checks `src/requirements.txt` exists, references the pinned version, and is listed in the zip spec; `scripts/verify-install.sh` asserts the staged copy exists after install.
 - Bumping the Langflow pin now means editing `src/requirements.txt` in addition to the two install scripts and the docs.
