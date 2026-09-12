@@ -1,6 +1,6 @@
 # 0005: Install from a bundled requirements.txt
 
-**Status:** Accepted.
+**Status:** Accepted. The provider-set outcome is superseded by ADR 0006; the install-mechanics rationale (bundled, space-free requirements file, constraints, version-pin fallback) remains in force.
 
 ## Context
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.11.0 (2026-09-12)
+
+- feat: bundle every non-PyTorch provider via `langflow[bundles,postgresql]==1.12.1`, collapsing `src/requirements.txt` to a single line (Composio is included inside `lfx-bundles[all-no-torch]`, so its separate pin was dropped; torch-requiring providers stay opt-in)
+- docs: add ADR 0006 documenting the desktop/batteries-included intent that supersedes the docker-parity curated set
+
 ## v1.10.2 (2026-09-12)
 
 - docs: document the bundled Composio integration (`lfx-bundles[composio]==1.1.23`, shipping `composio==0.16.0` and `composio-langchain==0.16.0`) in `src/requirements.txt`
