@@ -4,6 +4,8 @@
 
 Provide a single-click (or double-click) solution for users to install, run, and uninstall Langflow (`==1.12.1`) using `uv` as the package manager on Windows, macOS, and Linux — with no administrative privileges required on any platform.
 
+This installer targets desktop users, not servers. It bundles the full non-PyTorch provider set (`langflow[bundles]`) so non-technical people can experiment with any provider component out of the box, plus the PostgreSQL drivers (`postgresql` extra).
+
 ## 2. Credits & Attribution
 
 Every script invocation **must** display a banner with the author's handles before any user prompt or action.
@@ -70,7 +72,7 @@ Run when the user selects `[I]`.
    - **macOS/Linux**: `~/langflow/`
 2. `cd` into the langflow directory.
 3. Create venv: `uv venv` (creates `.venv`).
-4. Install Langflow from the bundled `requirements.txt`: `uv pip install --requirements=requirements.txt --constraints=constraints.txt`. The file pins the langflow line (`langflow[postgresql]==1.12.1`) plus the Composio bundle (`lfx-bundles[composio]==1.1.23`, which ship the `composio` and `composio-langchain` SDKs); the Google GenAI, Ollama, and Azure AI provider bundles ship as default langflow dependencies in 1.12, and the `postgresql` extra adds the PostgreSQL drivers.
+4. Install Langflow from the bundled `requirements.txt`: `uv pip install --requirements=requirements.txt --constraints=constraints.txt`. The file pins `langflow[bundles,postgresql]==1.12.1`. The `bundles` extra installs every non-PyTorch provider bundle from `lfx-bundles[all-no-torch]` plus the opt-in standalone packages (arxiv, confluent, duckduckgo, empiriolabs, exa, firecrawl, nextplaid, paddle, valkey), so all provider components are usable out of the box excluding the Torch-requiring ones (Code Agents, CUGA, local Docling OCR). The `postgresql` extra adds the PostgreSQL drivers. Composio is included via `all-no-torch`, so it needs no separate pin.
    - If the pin fails (e.g., version yanked), catch the error, strip the version pin out of `requirements.txt` into `requirements-latest.txt`, and retry with `uv pip install --requirements=requirements-latest.txt --constraints=constraints.txt`.
 
 ### 5.4 Desktop Shortcuts

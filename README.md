@@ -36,7 +36,7 @@ The script will:
 - Install `uv` (self-bootstrapping package manager)
 - Download Python 3.12
 - Create a virtual environment in `%USERPROFILE%\langflow\`
-- Install Langflow 1.12.1 (with the Google GenAI, Ollama, Azure AI, Composio, and PostgreSQL integrations)
+- Install Langflow 1.12.1 (every non-PyTorch provider bundle, plus PostgreSQL drivers)
 - Create desktop shortcuts (`Langflow Web.lnk` and `Stop Langflow.lnk`)
 
 After install, double-click the **Langflow Web** desktop shortcut. A terminal window will open, and your browser will launch automatically once the server is ready at `http://127.0.0.1:7860`. To stop the server, double-click **Stop Langflow**.
@@ -57,7 +57,7 @@ The script will:
 - Install `uv` (self-bootstrapping package manager)
 - Download Python 3.12
 - Create a virtual environment in `~/langflow/`
-- Install Langflow 1.12.1 (with the Google GenAI, Ollama, Azure AI, Composio, and PostgreSQL integrations)
+- Install Langflow 1.12.1 (every non-PyTorch provider bundle, plus PostgreSQL drivers)
 - Create desktop shortcuts (`Langflow Web.command` and `Stop Langflow.command`)
 
 After install, double-click the **Langflow Web** desktop shortcut. Terminal will open, start the server, and open your browser automatically. To stop the server, double-click **Stop Langflow**.
@@ -72,7 +72,7 @@ The script will:
 - Install `uv` (self-bootstrapping package manager)
 - Download Python 3.12
 - Create a virtual environment in `~/langflow/`
-- Install Langflow 1.12.1 (with the Google GenAI, Ollama, Azure AI, Composio, and PostgreSQL integrations)
+- Install Langflow 1.12.1 (every non-PyTorch provider bundle, plus PostgreSQL drivers)
 - Create desktop shortcuts in your app menu and on your desktop (for both starting and stopping Langflow)
 
 After install, launch **Langflow Web** from your app menu or desktop shortcut. A terminal will open, start the server, and open your browser automatically. To stop the server, find **Stop Langflow** in your app menu or desktop.
