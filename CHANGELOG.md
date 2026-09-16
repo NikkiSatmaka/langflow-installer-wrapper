@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.11.1 (2026-09-16)
+
+- feat: upgrade Langflow to 1.12.2 (patch release: dependency upgrades for the provider bundles and LangChain Community integrations, plus DB/migration, MCP, assistant, graph, and lfx fixes)
+- docs: note that 1.12.2 resolves the identical transitive set as 1.12.1 (floor pins already pull `langflow-base==1.12.2`, `lfx==1.12.2`, `lfx-bundles==1.1.26`), so the pin bump only swaps the installer's `langflow` meta-package wheel
+
 ## v1.11.0 (2026-09-12)
 
 - feat: bundle every non-PyTorch provider via `langflow[bundles,postgresql]==1.12.1`, collapsing `src/requirements.txt` to a single line (Composio is included inside `lfx-bundles[all-no-torch]`, so its separate pin was dropped; torch-requiring providers stay opt-in)

@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-Provide a single-click (or double-click) solution for users to install, run, and uninstall Langflow (`==1.12.1`) using `uv` as the package manager on Windows, macOS, and Linux — with no administrative privileges required on any platform.
+Provide a single-click (or double-click) solution for users to install, run, and uninstall Langflow (`==1.12.2`) using `uv` as the package manager on Windows, macOS, and Linux — with no administrative privileges required on any platform.
 
 This installer targets desktop users, not servers. It bundles the full non-PyTorch provider set (`langflow[bundles]`) so non-technical people can experiment with any provider component out of the box, plus the PostgreSQL drivers (`postgresql` extra).
 
@@ -72,7 +72,7 @@ Run when the user selects `[I]`.
    - **macOS/Linux**: `~/langflow/`
 2. `cd` into the langflow directory.
 3. Create venv: `uv venv` (creates `.venv`).
-4. Install Langflow from the bundled `requirements.txt`: `uv pip install --requirements=requirements.txt --constraints=constraints.txt`. The file pins `langflow[bundles,postgresql]==1.12.1`. The `bundles` extra installs every non-PyTorch provider bundle from `lfx-bundles[all-no-torch]` plus the opt-in standalone packages (arxiv, confluent, duckduckgo, empiriolabs, exa, firecrawl, nextplaid, paddle, valkey), so all provider components are usable out of the box excluding the Torch-requiring ones (Code Agents, CUGA, local Docling OCR). The `postgresql` extra adds the PostgreSQL drivers. Composio is included via `all-no-torch`, so it needs no separate pin.
+4. Install Langflow from the bundled `requirements.txt`: `uv pip install --requirements=requirements.txt --constraints=constraints.txt`. The file pins `langflow[bundles,postgresql]==1.12.2`. The `bundles` extra installs every non-PyTorch provider bundle from `lfx-bundles[all-no-torch]` plus the opt-in standalone packages (arxiv, confluent, duckduckgo, empiriolabs, exa, firecrawl, nextplaid, paddle, valkey), so all provider components are usable out of the box excluding the Torch-requiring ones (Code Agents, CUGA, local Docling OCR). The `postgresql` extra adds the PostgreSQL drivers. Composio is included via `all-no-torch`, so it needs no separate pin.
    - If the pin fails (e.g., version yanked), catch the error, strip the version pin out of `requirements.txt` into `requirements-latest.txt`, and retry with `uv pip install --requirements=requirements-latest.txt --constraints=constraints.txt`.
 
 ### 5.4 Desktop Shortcuts
@@ -98,7 +98,7 @@ All platforms also create a launcher script in the langflow directory:
 Print a platform-appropriate success summary:
 
 ```
-✓ Langflow 1.12.1 installed
+✓ Langflow 1.12.2 installed
 ✓ Desktop shortcut created: <path>
 ➜ Double-click the shortcut to start Langflow
 ➜ Browser opens automatically at http://127.0.0.1:7860
@@ -146,7 +146,7 @@ Run when the user selects `[U]`.
 | PATH not refreshed after uv install | Read permanent PATH explicitly; on macOS/Linux add to `~/.profile` and re-source |
 | Langflow download is large (~300MB) | Stream uv pip output; print "This may take a few minutes..." beforehand |
 | Port 7860 conflict | Document in completion message; user can configure via `.env` |
-| langflow==1.12.1 yanked on PyPI | Catch the pip error and retry with the version pin stripped from `requirements.txt` |
+| langflow==1.12.2 yanked on PyPI | Catch the pip error and retry with the version pin stripped from `requirements.txt` |
 | WScript.Shell missing on N/KN editions (Windows) | Catch COM error and print manual shortcut instructions |
 | Antivirus flags `irm \| iex` pattern (Windows) | Fetch `uv-install.ps1` from upstream at package time and include in release zip; invoke via `& "$PSScriptRoot\uv-install.ps1"` instead of downloading at runtime |
 | uv binary not on PATH after install | Explicitly add to PATH in script |

@@ -25,13 +25,13 @@ Install from a bundled, versioned requirements file:
 
 - `src/requirements.txt` (shipped in every zip):
   ```
-  langflow[postgresql]==1.12.1
+  langflow[postgresql]==1.12.2
   lfx-bundles[composio]==1.1.23
   ```
 - The langflow line is pinned; uv resolves whatever satisfies the pinned langflow's range. The `lfx-bundles[composio]` line pins the bundle version paired with that langflow release; its `composio` extra adds the `composio` and `composio-langchain` SDKs that the Composio bundle components need. The Composio bundle is an opt-in `lfx-bundles` extra in 1.12 (not a default langflow dependency), so it is pinned explicitly.
 - Installers stage `requirements.txt` into the langflow working directory and pass it by its space-free relative name (`--requirements=requirements.txt`), the same mechanism as ADR 0004: uv re-splits `--requirements`/`-r` values on whitespace (astral-sh/uv#12639), so the argument value must contain no spaces.
 - The `--constraints=constraints.txt` behavior is unchanged.
-- The version fallback is preserved: if the pinned install fails, the script strips `==1.12.1` out of the staged file into `requirements-latest.txt` and retries, keeping the same extra.
+- The version fallback is preserved: if the pinned install fails, the script strips `==1.12.2` out of the staged file into `requirements-latest.txt` and retries, keeping the same extra.
 
 ## Consequences
 
