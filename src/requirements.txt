@@ -1,1 +1,1 @@
-langflow[bundles,postgresql]==1.12.1
+langflow[bundles,postgresql]==1.12.2

@@ -31,7 +31,7 @@ The installer eliminates the technical barriers that prevent non-technical users
 - **Cross-platform**: Windows 10/11, macOS 12+, and Linux
 - **No admin rights**: All installations occur under user profile directories
 - **Idempotent**: Safe to re-run; checks dependencies before acting
-- **Version pinned**: Langflow 1.12.1 with Python 3.12
+- **Version pinned**: Langflow 1.12.2 with Python 3.12
 - **uv package manager**: Self-bootstrapping, no pre-installed Python required
 - **Desktop shortcuts**: Created for starting and stopping Langflow
 - **Browser auto-launch**: Opens `http://127.0.0.1:7860` when ready

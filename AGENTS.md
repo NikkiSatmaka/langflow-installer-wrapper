@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository provides single-click installers for Langflow on Windows, macOS, and Linux using `uv` as the package manager. Python 3.12 is pinned. Langflow is pinned to version **1.12.1**.
+This repository provides single-click installers for Langflow on Windows, macOS, and Linux using `uv` as the package manager. Python 3.12 is pinned. Langflow is pinned to version **1.12.2**.
 
 **Author**: Nikki Satmaka
 - GitHub: https://github.com/NikkiSatmaka/
@@ -50,7 +50,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 - **Idempotent** — safe to re-run; checks before acting
 - **User-prompted** — script asks Install / Uninstall / Quit at startup
 - **Credits banner** — GitHub + LinkedIn displayed on every run (Chris Titus style)
-- **Version pinned** — Langflow `==1.12.1`; do not change without updating CONTRACT.md
+- **Version pinned** — Langflow `==1.12.2`; do not change without updating CONTRACT.md
 - **Cross-platform** — Windows (PowerShell), macOS, and Linux (bash); platform-specific logic with shared installer flow
 - **Python pinned** — 3.12 via `uv python install 3.12` (only version with pre-built wheels for all C-extensions on Windows; 3.13+ requires MSVC not available to most users)
 
