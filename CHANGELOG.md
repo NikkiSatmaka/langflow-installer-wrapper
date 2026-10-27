@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- feat: check upstream stable Langflow releases weekly, validate candidate installs on Windows/macOS/Linux, and open a reviewed version-update PR or maintainer issue
+
 ## v1.11.1 (2026-09-16)
 
 - feat: upgrade Langflow to 1.12.2 (patch release: dependency upgrades for the provider bundles and LangChain Community integrations, plus DB/migration, MCP, assistant, graph, and lfx fixes)

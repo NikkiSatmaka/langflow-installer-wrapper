@@ -155,7 +155,7 @@ Run when the user selects `[U]`.
 
 ## 9. Out of Scope
 
-- Upgrading Langflow (user runs `uv pip install langflow -U` manually)
+- Manual Langflow pin updates; a scheduled and manually triggered compatibility-gated workflow in `.github/workflows/upstream-version.yml` opens a human-reviewed PR only after the real installer passes on Windows, macOS, and Linux. Failures are reported in a maintainer issue.
 - Installing system-wide Python or modifying system PATH
 - Docker-based Langflow deployment
 - Langflow Desktop (standalone GUI app) — this installs the OSS Python package only
