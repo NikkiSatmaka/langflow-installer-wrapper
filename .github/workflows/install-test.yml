@@ -6,6 +6,10 @@ on:
       release_mode:
         type: boolean
         default: false
+      langflow_version:
+        type: string
+        default: ""
+        description: "Candidate Langflow version to test instead of the checked-in pin"
   pull_request:
     branches: [main]
   push:
@@ -33,7 +37,10 @@ jobs:
 
       - name: Install Python 3.12
         run: uv python install 3.12
-
+      - name: Apply candidate Langflow version
+        if: ${{ inputs.langflow_version != '' }}
+        shell: bash
+        run: python scripts/upstream-version.py update "${{ inputs.langflow_version }}"
       - name: Remove build tools (Linux)
         if: matrix.os == 'ubuntu-latest'
         run: |

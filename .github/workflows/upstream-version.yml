@@ -1,0 +1,119 @@
+name: Check Upstream Langflow Version
+
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: upstream-langflow-version
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      candidate: ${{ steps.detect.outputs.candidate }}
+      current: ${{ steps.detect.outputs.current }}
+      error: ${{ steps.detect.outputs.error }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read upstream stable version
+        id: detect
+        shell: bash
+        run: |
+          set +e
+          curl --fail --silent --show-error --location --max-time 30 https://pypi.org/pypi/langflow/json -o "$RUNNER_TEMP/langflow.json"
+          fetch_status=$?
+          if [ "$fetch_status" -ne 0 ]; then
+            echo "error=Could not fetch official PyPI metadata (curl exit $fetch_status)" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          current=$(python scripts/upstream-version.py current)
+          current_status=$?
+          if [ "$current_status" -ne 0 ]; then
+            echo "error=Could not read the current Langflow version pin" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+          latest=$(python scripts/upstream-version.py latest "$RUNNER_TEMP/langflow.json")
+          latest_status=$?
+          if [ "$latest_status" -ne 0 ]; then
+            echo "error=Could not parse stable Langflow versions from PyPI metadata" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          candidate=$(python -c 'import sys; a=tuple(map(int,sys.argv[1].split("."))); b=tuple(map(int,sys.argv[2].split("."))); print(sys.argv[2] if b>a else "")' "$current" "$latest")
+          echo "Current Langflow: $current; latest stable: $latest"
+          echo "candidate=$candidate" >> "$GITHUB_OUTPUT"
+
+  compatibility:
+    needs: detect
+    if: needs.detect.outputs.candidate != ''
+    uses: ./.github/workflows/install-test.yml
+    with:
+      langflow_version: ${{ needs.detect.outputs.candidate }}
+
+  propose-update:
+    needs: [detect, compatibility]
+    if: needs.detect.outputs.candidate != '' && needs.compatibility.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+      - name: Install PSScriptAnalyzer
+        run: mise exec -- pwsh -NoProfile -Command "Install-Module PSScriptAnalyzer -Scope CurrentUser -Force"
+      - name: Update version references
+        run: |
+          python scripts/upstream-version.py update "${{ needs.detect.outputs.candidate }}"
+          python scripts/upstream-version.py update-docs "${{ needs.detect.outputs.current }}" "${{ needs.detect.outputs.candidate }}"
+      - name: Run consistency checks
+        run: bash scripts/verify.sh
+      - name: Open version update pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: automation/langflow-${{ needs.detect.outputs.candidate }}
+          delete-branch: true
+          title: "feat: upgrade Langflow to ${{ needs.detect.outputs.candidate }}"
+          commit-message: "feat: upgrade Langflow to ${{ needs.detect.outputs.candidate }}"
+          body: |
+            Automated stable Langflow version update.
+
+            The candidate passed the existing Windows, macOS, and Linux installer matrix with Python 3.12 and committed constraints.
+            Please review and merge manually; no release or tag is created by this workflow.
+
+  report-failure:
+    needs: [detect, compatibility, propose-update]
+    if: always() && (needs.detect.outputs.error != '' || (needs.detect.outputs.candidate != '' && (needs.compatibility.result == 'failure' || needs.propose-update.result == 'failure')))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create or update maintainer issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          CANDIDATE: ${{ needs.detect.outputs.candidate }}
+          DETECTION_ERROR: ${{ needs.detect.outputs.error }}
+          COMPATIBILITY_RESULT: ${{ needs.compatibility.result }}
+          PROPOSAL_RESULT: ${{ needs.propose-update.result }}
+        run: |
+          if [ -n "$DETECTION_ERROR" ]; then
+            title="Langflow version check needs maintainer attention"
+            details="$DETECTION_ERROR"
+          elif [ "$COMPATIBILITY_RESULT" = "failure" ]; then
+            title="Langflow $CANDIDATE compatibility check failed"
+            details="The real installer compatibility matrix failed on one or more supported platforms for Langflow $CANDIDATE."
+          else
+            title="Langflow $CANDIDATE update could not be proposed"
+            details="Candidate compatibility passed, but the version update or consistency checks failed for Langflow $CANDIDATE."
+          fi
+          body=$(printf 'Automated upstream version check requires human review.\n\n%s\n\nRun: %s' "$details" "$GITHUB_SERVER_URL/$REPOSITORY/actions/runs/$GITHUB_RUN_ID")
+          existing=$(TITLE="$title" gh issue list --repo "$REPOSITORY" --state open --limit 1000 --json number,title --jq '[.[] | select(.title == env.TITLE)][0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$REPOSITORY" --body "$body"
+          else
+            gh issue create --repo "$REPOSITORY" --title "$title" --body "$body" --label needs-triage
+          fi

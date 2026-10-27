@@ -118,6 +118,7 @@ Re-run the installer script and select **Uninstall**. This removes:
 | `scripts/package.ps1` | Cross-platform packaging script (PowerShell) |
 | `.github/workflows/verify.yml` | CI: PR verification |
 | `.github/workflows/release.yml` | CI: Automated release on tag push |
+| `.github/workflows/upstream-version.yml` | Weekly upstream stable-version check and compatibility-gated update PR |
 | `docs/TROUBLESHOOTING.md` | Common issues and fixes |
 | `docs/GATEKEEPER.md` | macOS Gatekeeper bypass guide |
 | `CONTRACT.md` | Formal requirements specification |

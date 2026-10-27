@@ -40,6 +40,9 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `.github/workflows/verify.yml` | CI: PR verification (runs `scripts/verify.sh`) |
 | `.github/workflows/install-test.yml` | CI: OS-matrix install test (win/mac/linux) — runs the real installer scripts end-to-end without build tools, validating binary wheels and the installer code paths before release; a shared reusable workflow (`workflow_call`) consumed by `release.yml` |
 | `.github/workflows/release.yml` | CI: Automated release on tag push (verify + install test + package + publish) — calls `install-test.yml` as a reusable workflow |
+| `.github/workflows/upstream-version.yml` | Weekly/manual stable PyPI check; validates candidate installs on all supported platforms before opening a pull request, or reports failures in an issue |
+| `scripts/upstream-version.py` | Selects stable Langflow releases and updates source/documentation pins for the automated update flow |
+| `docs/adr/0007-upstream-version-automation.md` | Upstream version automation specification |
 | `docs/TROUBLESHOOTING.md` | Common issues and fixes |
 | `docs/GATEKEEPER.md` | macOS Gatekeeper bypass guide |
 | `docs/index.html` | Landing page for non-GitHub users (GitHub Pages) — published at `https://nikkisatmaka.github.io/langflow-installer-wrapper/` |
