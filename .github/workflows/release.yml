@@ -50,8 +50,12 @@ jobs:
           version="${release_tag#v}"
           bash_version=$(awk -F '"' '/^SCRIPT_VERSION=/{print $2; exit}' src/install-langflow.sh)
           powershell_version=$(awk -F '"' '/^\$ScriptVersion[[:space:]]*=/{print $2; exit}' src/install-langflow-script.ps1)
-          if [[ "$version" != "$bash_version" || "$version" != "$powershell_version" ]]; then
-            echo "::error::Release $release_tag must match installer versions $bash_version and $powershell_version"
+          if [[ "$version" != "$bash_version" ]]; then
+            echo "::error::Release $release_tag does not match bash installer version $bash_version"
+            exit 1
+          fi
+          if [[ "$version" != "$powershell_version" ]]; then
+            echo "::error::Release $release_tag does not match PowerShell installer version $powershell_version"
             exit 1
           fi
 
