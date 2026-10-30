@@ -1,4 +1,4 @@
-# Context: Langflow Installer Wrapper
+# Glossary: Langflow Installer Wrapper
 
 This repository provides single-click installers for Langflow on Windows, macOS, and Linux. The installer uses `uv pip install langflow` with a `constraints.txt` that pins known-breaking transitive dependencies (those that occasionally ship source-only releases without pre-built wheels).
 

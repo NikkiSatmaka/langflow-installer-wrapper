@@ -274,15 +274,15 @@ These existing skills are useful for this project. Load them via the `skill()` t
 
 ### Issue tracker
 
-Issues live in GitHub Issues. Use the `gh` CLI. External PRs are not a triage surface. See `docs/agents/issue-tracker.md`.
+Issues live in this repository's GitHub Issues. Use the `gh` CLI. External PRs are not a triage surface. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
-Default vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+Use `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, and `wontfix`. See `docs/agents/triage-labels.md`.
 
 ### Domain docs
 
-Single-context repo. One `CONTEXT.md` at root, ADRs in `docs/adr/`. See `docs/agents/domain.md`.
+Single-context repo. Read root `GLOSSARY.md` and relevant ADRs in `docs/adr/`. See `docs/agents/domain.md`.
 
 ## Verification
 
