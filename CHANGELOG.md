@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v1.11.2 (2026-10-30)
+
 - chore: publish validated releases from the GitHub Actions UI without a terminal
 
 - chore: scope GitHub Actions tokens, pin external actions to commit SHAs, and validate release tag inputs
