@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- chore: add a manual release preparation workflow that validates a version, updates installer script versions, finalizes the changelog, verifies, and opens a reviewed PR
+
 - chore: scope GitHub Actions tokens, pin external actions to commit SHAs, and validate release tag inputs
 
 - feat: upgrade Langflow to 1.13.0 after all supported platform install checks pass

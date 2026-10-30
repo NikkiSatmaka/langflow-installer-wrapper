@@ -40,7 +40,9 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `.github/workflows/verify.yml` | CI: PR verification (runs `scripts/verify.sh`) |
 | `.github/workflows/install-test.yml` | CI: OS-matrix install test (win/mac/linux) — runs the real installer scripts end-to-end without build tools, validating binary wheels and the installer code paths before release; a shared reusable workflow (`workflow_call`) consumed by `release.yml` |
 | `.github/workflows/release.yml` | CI: Automated release on tag push (verify + install test + package + publish) — calls `install-test.yml` as a reusable workflow |
+| `.github/workflows/prepare-release.yml` | Manual release preparation: updates installer script versions, finalizes `CHANGELOG.md`, verifies, and opens a human-reviewed PR |
 | `.github/workflows/upstream-version.yml` | Weekly/manual stable PyPI check; validates candidate installs on all supported platforms before opening a pull request, or reports failures in an issue |
+| `scripts/prepare-release.py` | Validates a release tag and updates both installer script-version constants and the changelog |
 | `scripts/upstream-version.py` | Selects stable Langflow releases and updates source/documentation pins for the automated update flow |
 | `docs/adr/0007-upstream-version-automation.md` | Upstream version automation specification |
 | `docs/TROUBLESHOOTING.md` | Common issues and fixes |
@@ -158,24 +160,21 @@ Commit prefixes (`fix:`, `feat:`, etc.) do not determine the version automatical
 
 Tagging triggers the release workflow automatically:
 
-1. Create a `release/vX.Y.Z` branch from `main`.
-2. Update `$ScriptVersion` / `SCRIPT_VERSION` in the install scripts if they changed.
-3. Update `CHANGELOG.md` with the new version, date, and entries.
-4. Update `README.md` and `docs/index.html` if the hero message or version number changed.
-5. Run `bash scripts/verify.sh` to confirm everything passes.
-6. Commit with message: `docs: update changelog for vX.Y.Z`.
-7. Push branch and open a draft PR against `main`.
-8. User reviews, approves, and **squash merges** the PR.
-9. After merge, push the tag from `main`: `git tag vX.Y.Z && git push origin vX.Y.Z`.
-10. The CI workflow (`.github/workflows/release.yml`):
-    - Runs verify checks
-    - Runs the real installer scripts on the OS matrix (win-amd64, macos-arm64, linux-x64) with the pinned Langflow version and constraints
-    - Confirms installed version matches the tag and script pin
-    - Packages all 3 platform zips (both versioned and unversioned names)
-    - Generates release notes from `CHANGELOG.md` via `scripts/release-notes.sh`
-    - Creates a GitHub Release with grouped notes (Features, Bug Fixes, Documentation, Maintenance)
-    - Uploads all 6 zips to the release
-    - Tags containing `beta`, `rc`, or `alpha` are automatically marked as pre-release
+1. Run `.github/workflows/prepare-release.yml` manually from `main`, providing `vX.Y.Z` (or a prerelease tag).
+2. The workflow validates that the tag is well-formed and unused, updates `$ScriptVersion` / `SCRIPT_VERSION`, promotes the current `Unreleased` entries into a dated changelog section, runs `bash scripts/verify.sh`, and opens a release PR.
+3. Review and merge the PR manually. The workflow does not merge or tag.
+4. After merge, push the matching tag from `main`: `git tag vX.Y.Z && git push origin vX.Y.Z`.
+5. The CI workflow (`.github/workflows/release.yml`):
+   - Runs verify checks
+   - Runs the real installer scripts on the OS matrix (win-amd64, macos-arm64, linux-x64) with the pinned Langflow version and constraints
+   - Confirms installed version matches the tag and script pin
+   - Packages all 3 platform zips (both versioned and unversioned names)
+   - Generates release notes from `CHANGELOG.md` via `scripts/release-notes.sh`
+   - Creates a GitHub Release with grouped notes (Features, Bug Fixes, Documentation, Maintenance)
+   - Uploads all 6 zips to the release
+   - Tags containing `beta`, `rc`, or `alpha` are automatically marked as pre-release
+
+The preparation workflow must be run from `main`; it requires at least one conventional-commit entry under `## Unreleased`. It uses `GITHUB_TOKEN` and runs verification before opening the PR. The PR itself may not trigger other workflows because GitHub suppresses workflow events caused by `GITHUB_TOKEN`; the tag-triggered release workflow still runs when the maintainer pushes the tag manually.
 
 **Do not delete and re-push the same tag name** — the CI workflow will create a new release or fail. If you need to fix a release, bump the version.
 
