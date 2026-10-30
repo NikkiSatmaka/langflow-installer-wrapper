@@ -18,7 +18,7 @@
 param()
 
 $ScriptVersion    = "1.11.1"
-$LangflowVersion  = "1.12.2"
+$LangflowVersion  = "1.13.0"
 $PythonVersion    = "3.12"
 $LangflowDir      = "$env:USERPROFILE\langflow"
 $UvBinDir         = "$env:USERPROFILE\.local\bin"
