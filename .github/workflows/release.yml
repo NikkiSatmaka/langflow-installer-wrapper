@@ -4,12 +4,25 @@ on:
   push:
     tags: "v*"
 
+permissions:
+  contents: read
+
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: jdx/mise-action@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Validate release tag
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Release tag must be vMAJOR.MINOR.PATCH with an optional prerelease suffix"
+            exit 1
+          fi
+      - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2
       - name: Install PSScriptAnalyzer
         run: mise exec -- pwsh -NoProfile -Command "Install-Module PSScriptAnalyzer -Scope CurrentUser -Force"
       - run: bash scripts/verify.sh
@@ -24,9 +37,14 @@ jobs:
     needs: [verify, install-test]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: bash scripts/package.sh "${{ github.ref_name }}"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Package release
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: bash scripts/package.sh "$RELEASE_TAG"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: zips
           path: dist/*.zip
@@ -37,25 +55,29 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
-      - uses: actions/download-artifact@v4
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: zips
           path: dist
       - name: Generate release notes
-        run: bash scripts/release-notes.sh "${{ github.ref_name }}" CHANGELOG.md > release-notes.md
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: bash scripts/release-notes.sh "$RELEASE_TAG" CHANGELOG.md > release-notes.md
       - name: Create Release
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
         run: |
           PRERELEASE=""
-          if [[ "${{ github.ref_name }}" =~ (beta|rc|alpha) ]]; then
+          if [[ "$RELEASE_TAG" =~ (beta|rc|alpha) ]]; then
             PRERELEASE="--prerelease"
           fi
-          gh release create "${{ github.ref_name }}" \
-            --title "${{ github.ref_name }}" \
+          gh release create "$RELEASE_TAG" \
+            --title "$RELEASE_TAG" \
             --notes-file release-notes.md \
             $PRERELEASE \
             dist/*.zip

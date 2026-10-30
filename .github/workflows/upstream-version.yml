@@ -6,9 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
-  issues: write
+  contents: read
 
 concurrency:
   group: upstream-langflow-version
@@ -22,7 +20,9 @@ jobs:
       current: ${{ steps.detect.outputs.current }}
       error: ${{ steps.detect.outputs.error }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - name: Read upstream stable version
         id: detect
         shell: bash
@@ -54,6 +54,8 @@ jobs:
   compatibility:
     needs: detect
     if: needs.detect.outputs.candidate != ''
+    permissions:
+      contents: read
     uses: ./.github/workflows/install-test.yml
     with:
       langflow_version: ${{ needs.detect.outputs.candidate }}
@@ -62,20 +64,29 @@ jobs:
     needs: [detect, compatibility]
     if: needs.detect.outputs.candidate != '' && needs.compatibility.result == 'success'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: jdx/mise-action@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2
       - name: Install PSScriptAnalyzer
         run: mise exec -- pwsh -NoProfile -Command "Install-Module PSScriptAnalyzer -Scope CurrentUser -Force"
       - name: Update version references
+        env:
+          CURRENT_VERSION: ${{ needs.detect.outputs.current }}
+          CANDIDATE_VERSION: ${{ needs.detect.outputs.candidate }}
         run: |
-          python scripts/upstream-version.py update "${{ needs.detect.outputs.candidate }}"
-          python scripts/upstream-version.py update-docs "${{ needs.detect.outputs.current }}" "${{ needs.detect.outputs.candidate }}"
+          python scripts/upstream-version.py update "$CANDIDATE_VERSION"
+          python scripts/upstream-version.py update-docs "$CURRENT_VERSION" "$CANDIDATE_VERSION"
       - name: Run consistency checks
         run: bash scripts/verify.sh
       - name: Open version update pull request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7
         with:
+          token: ${{ github.token }}
           branch: automation/langflow-${{ needs.detect.outputs.candidate }}
           delete-branch: true
           title: "feat: upgrade Langflow to ${{ needs.detect.outputs.candidate }}"
@@ -90,6 +101,8 @@ jobs:
     needs: [detect, compatibility, propose-update]
     if: always() && (needs.detect.outputs.error != '' || (needs.detect.outputs.candidate != '' && (needs.compatibility.result == 'failure' || needs.propose-update.result == 'failure')))
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - name: Create or update maintainer issue
         env:
