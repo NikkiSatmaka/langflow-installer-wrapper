@@ -60,7 +60,7 @@ def update_version(version):
         raise ValueError("Expected exactly one PowerShell Langflow version pin")
 
     bash = ROOT / "src/install-langflow.sh"
-    shell_content = bash.read_text()
+    shell_content = bash.read_text(encoding="utf-8")
     shell_content, sh_count = re.subn(
         r'(^LANGFLOW_VERSION=")[0-9.]+("\s*$)',
         rf"\g<1>{version}\2",
@@ -72,7 +72,7 @@ def update_version(version):
         raise ValueError("Expected exactly one bash Langflow version pin")
 
     requirements = ROOT / "src/requirements.txt"
-    requirements_content = requirements.read_text()
+    requirements_content = requirements.read_text(encoding="utf-8")
     requirements_content, req_count = re.subn(
         r"^langflow\[bundles,postgresql\]==[0-9.]+$",
         f"langflow[bundles,postgresql]=={version}",
@@ -83,19 +83,19 @@ def update_version(version):
     if req_count != 1:
         raise ValueError("Expected exactly one requirements Langflow version pin")
     powershell.write_text("\ufeff" + content, encoding="utf-8")
-    bash.write_text(shell_content)
-    requirements.write_text(requirements_content)
+    bash.write_text(shell_content, encoding="utf-8")
+    requirements.write_text(requirements_content, encoding="utf-8")
 
 
 def update_docs(old_version, version):
     for name in ("README.md", "CONTRACT.md", "AGENTS.md", "docs/index.html"):
         path = ROOT / name
-        content = path.read_text()
+        content = path.read_text(encoding="utf-8")
         if old_version not in content:
             raise ValueError(f"Expected current version {old_version} in {name}")
-        path.write_text(content.replace(old_version, version))
+        path.write_text(content.replace(old_version, version), encoding="utf-8")
     changelog = ROOT / "CHANGELOG.md"
-    content = changelog.read_text()
+    content = changelog.read_text(encoding="utf-8")
     if not content.startswith("# Changelog\n\n"):
         raise ValueError("Could not add version entry to CHANGELOG.md")
     if "## Unreleased\n" not in content:
@@ -109,14 +109,14 @@ def update_docs(old_version, version):
         f"## Unreleased\n\n- feat: upgrade Langflow to {version} after all supported platform install checks pass\n\n",
         1,
     )
-    changelog.write_text(content)
+    changelog.write_text(content, encoding="utf-8")
 
 
 def main():
     if len(sys.argv) == 2 and sys.argv[1] == "current":
         print(current_version())
     elif len(sys.argv) == 3 and sys.argv[1] == "latest":
-        print(latest_stable(json.loads(Path(sys.argv[2]).read_text())))
+        print(latest_stable(json.loads(Path(sys.argv[2]).read_text(encoding="utf-8"))))
     elif len(sys.argv) == 3 and sys.argv[1] == "update":
         update_version(sys.argv[2])
     elif len(sys.argv) == 4 and sys.argv[1] == "update-docs":

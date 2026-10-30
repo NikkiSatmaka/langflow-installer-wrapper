@@ -34,7 +34,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `mise.toml` | Dev tooling: pins shellcheck, shfmt, powershell and defines lint/fmt tasks |
 | `.shellcheckrc` | shellcheck config (disables SC2059 for intentional ANSI colour output) |
 | `PSScriptAnalyzerSettings.psd1` | PSScriptAnalyzer config (excludes rules that conflict with conventions) |
-| `scripts/verify.sh` | Pre-commit verification checks (12 checks, POSIX-safe for CI) |
+| `scripts/verify.sh` | Pre-commit verification checks (13 checks, POSIX-safe for CI) |
 | `scripts/package.sh` | Cross-platform zip packaging (bash) |
 | `scripts/package.ps1` | Cross-platform zip packaging (PowerShell) |
 | `.github/workflows/verify.yml` | CI: PR verification (runs `scripts/verify.sh`) |
@@ -300,7 +300,7 @@ Before committing (or before merging a PR), run `bash scripts/verify.sh` — it 
 - **requirements.txt + constraints.txt exist**: the files must be present alongside installer scripts
 - **Lint**: `mise run lint` (shellcheck + shfmt + PSScriptAnalyzer) passes
 
-`mise` is a required contributor prerequisite. `scripts/verify.sh` runs `mise run lint` as check 12 and fails if mise is not installed. Install it with `mise install` (reads `mise.toml`), then run `mise run lint` locally or `mise run fmt` to reformat bash scripts in place. The lint gate is enforced in CI via `jdx/mise-action@v2` on every PR to `main`.
+`mise` is a required contributor prerequisite. `scripts/verify.sh` runs the upstream-version updater regression tests as check 12 and `mise run lint` as check 13; it fails if mise is not installed. Install it with `mise install` (reads `mise.toml`), then run `mise run lint` locally or `mise run fmt` to reformat bash scripts in place. The lint gate is enforced in CI via `jdx/mise-action@v2` on every PR to `main`.
 
 Lint config rationale:
 

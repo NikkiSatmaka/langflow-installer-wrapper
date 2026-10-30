@@ -139,7 +139,14 @@ for f in "Install Langflow.bat" "Stop Langflow.bat" \
 done
 pass "zip spec files exist"
 
-# ── 12. Lint (shellcheck + shfmt + PSScriptAnalyzer via mise) ──────────────
+# ── 12. Upstream version updater regression tests ───────────────────────────
+
+if ! python -m unittest discover -s tests; then
+    fail "upstream version updater tests failed"
+fi
+pass "upstream version updater tests"
+
+# ── 13. Lint (shellcheck + shfmt + PSScriptAnalyzer via mise) ──────────────
 
 if ! command -v mise >/dev/null 2>&1; then
     fail "mise not found -- install it (https://mise.jdx.dev) then run 'mise install'"
