@@ -18,6 +18,9 @@ on:
     - cron: "0 6 * * 1"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   install-test:
     strategy:
@@ -26,8 +29,10 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: jdx/mise-action@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2
 
       - name: Pin global uv version for mise shims
         shell: bash
@@ -39,8 +44,10 @@ jobs:
         run: uv python install 3.12
       - name: Apply candidate Langflow version
         if: ${{ inputs.langflow_version != '' }}
+        env:
+          LANGFLOW_VERSION: ${{ inputs.langflow_version }}
         shell: bash
-        run: python scripts/upstream-version.py update "${{ inputs.langflow_version }}"
+        run: python scripts/upstream-version.py update "$LANGFLOW_VERSION"
       - name: Remove build tools (Linux)
         if: matrix.os == 'ubuntu-latest'
         run: |
