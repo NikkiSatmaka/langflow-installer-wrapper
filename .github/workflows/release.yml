@@ -4,24 +4,67 @@ on:
   push:
     tags: "v*"
 
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Installer release tag, for example v1.11.2"
+        required: true
+        type: string
+
 permissions:
   contents: read
 
 jobs:
   verify:
     runs-on: ubuntu-latest
+    outputs:
+      release_tag: ${{ steps.validate-release.outputs.release_tag }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
-      - name: Validate release tag
+      - name: Validate release request
+        id: validate-release
         env:
-          RELEASE_TAG: ${{ github.ref_name }}
+          EVENT_NAME: ${{ github.event_name }}
+          WORKFLOW_REF: ${{ github.ref }}
+          REF_NAME: ${{ github.ref_name }}
+          REQUESTED_TAG: ${{ inputs.release_tag }}
+        shell: bash
         run: |
-          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            if [[ "$WORKFLOW_REF" != "refs/heads/main" ]]; then
+              echo "::error::Manual releases must be dispatched from main"
+              exit 1
+            fi
+            release_tag="$REQUESTED_TAG"
+          else
+            release_tag="$REF_NAME"
+          fi
+
+          if [[ ! "$release_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
             echo "::error::Release tag must be vMAJOR.MINOR.PATCH with an optional prerelease suffix"
             exit 1
           fi
+
+          version="${release_tag#v}"
+          bash_version=$(awk -F '"' '/^SCRIPT_VERSION=/{print $2; exit}' src/install-langflow.sh)
+          powershell_version=$(awk -F '"' '/^\$ScriptVersion[[:space:]]*=/{print $2; exit}' src/install-langflow-script.ps1)
+          if [[ "$version" != "$bash_version" ]]; then
+            echo "::error::Release $release_tag does not match bash installer version $bash_version"
+            exit 1
+          fi
+          if [[ "$version" != "$powershell_version" ]]; then
+            echo "::error::Release $release_tag does not match PowerShell installer version $powershell_version"
+            exit 1
+          fi
+
+          if ! grep -Fq "## ${release_tag} (" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md must contain a dated heading for $release_tag"
+            exit 1
+          fi
+          bash scripts/release-notes.sh "$release_tag" CHANGELOG.md >/dev/null
+          echo "release_tag=$release_tag" >> "$GITHUB_OUTPUT"
       - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2
       - name: Install PSScriptAnalyzer
         run: mise exec -- pwsh -NoProfile -Command "Install-Module PSScriptAnalyzer -Scope CurrentUser -Force"
@@ -35,6 +78,8 @@ jobs:
 
   package:
     needs: [verify, install-test]
+    outputs:
+      release_tag: ${{ needs.verify.outputs.release_tag }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -42,7 +87,7 @@ jobs:
           persist-credentials: false
       - name: Package release
         env:
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ needs.verify.outputs.release_tag }}
         run: bash scripts/package.sh "$RELEASE_TAG"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
@@ -65,18 +110,19 @@ jobs:
           path: dist
       - name: Generate release notes
         env:
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ needs.package.outputs.release_tag }}
         run: bash scripts/release-notes.sh "$RELEASE_TAG" CHANGELOG.md > release-notes.md
       - name: Create Release
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ needs.package.outputs.release_tag }}
         run: |
           PRERELEASE=""
           if [[ "$RELEASE_TAG" =~ (beta|rc|alpha) ]]; then
             PRERELEASE="--prerelease"
           fi
           gh release create "$RELEASE_TAG" \
+            --target "$GITHUB_SHA" \
             --title "$RELEASE_TAG" \
             --notes-file release-notes.md \
             $PRERELEASE \
