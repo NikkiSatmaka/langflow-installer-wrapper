@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- feat: upgrade Langflow to 1.13.0 after all supported platform install checks pass
+
 - feat: check upstream stable Langflow releases weekly, validate candidate installs on Windows/macOS/Linux, and open a reviewed version-update PR or maintainer issue
 - fix: use explicit UTF-8 when reading and writing updater files so Windows code pages cannot block candidate version tests
 - docs: configure GitHub issue, triage label, and glossary guidance for agent skills
