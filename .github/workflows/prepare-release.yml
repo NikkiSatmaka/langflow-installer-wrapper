@@ -1,0 +1,75 @@
+name: Prepare Release PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release tag to prepare (for example v1.11.2)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prepare-release-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Require main branch
+        run: |
+          if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then
+            echo "::error::Run this workflow from the main branch"
+            exit 1
+          fi
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate release tag
+        env:
+          RELEASE_TAG: ${{ inputs.version }}
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Version must be vMAJOR.MINOR.PATCH with an optional prerelease suffix"
+            exit 1
+          fi
+          if git rev-parse --quiet --verify "refs/tags/$RELEASE_TAG" >/dev/null; then
+            echo "::error::Tag $RELEASE_TAG already exists"
+            exit 1
+          fi
+      - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2
+      - name: Install PSScriptAnalyzer
+        run: mise exec -- pwsh -NoProfile -Command "Install-Module PSScriptAnalyzer -Scope CurrentUser -Force"
+      - name: Prepare release files
+        env:
+          RELEASE_TAG: ${{ inputs.version }}
+        run: python scripts/prepare-release.py "$RELEASE_TAG"
+      - name: Run consistency checks
+        run: bash scripts/verify.sh
+      - name: Open release pull request
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7
+        with:
+          token: ${{ github.token }}
+          branch: automation/release-${{ inputs.version }}
+          delete-branch: true
+          title: "chore: prepare release ${{ inputs.version }}"
+          commit-message: "chore: prepare release ${{ inputs.version }}"
+          body: |
+            Prepare the installer release ${{ inputs.version }}.
+
+            This PR updates both installer script-version constants and promotes the current `Unreleased` changelog entries into a dated release section. Repository consistency checks passed in the workflow before the PR was opened.
+
+            Review and merge this PR manually. After it lands on `main`, push the matching tag to trigger the release workflow:
+
+            ```bash
+            git tag ${{ inputs.version }}
+            git push origin ${{ inputs.version }}
+            ```
