@@ -39,7 +39,7 @@ This repository provides single-click installers for Langflow on Windows, macOS,
 | `scripts/package.ps1` | Cross-platform zip packaging (PowerShell) |
 | `.github/workflows/verify.yml` | CI: PR verification (runs `scripts/verify.sh`) |
 | `.github/workflows/install-test.yml` | CI: OS-matrix install test (win/mac/linux) — runs the real installer scripts end-to-end without build tools, validating binary wheels and the installer code paths before release; a shared reusable workflow (`workflow_call`) consumed by `release.yml` |
-| `.github/workflows/release.yml` | CI: release on tag push or validated manual dispatch from GitHub Actions; verifies, tests, packages, and publishes |
+| `.github/workflows/release.yml` | CI: Automated release on tag push (verify + install test + package + publish) — calls `install-test.yml` as a reusable workflow |
 | `.github/workflows/upstream-version.yml` | Weekly/manual stable PyPI check; validates candidate installs on all supported platforms before opening a pull request, or reports failures in an issue |
 | `scripts/upstream-version.py` | Selects stable Langflow releases and updates source/documentation pins for the automated update flow |
 | `docs/adr/0007-upstream-version-automation.md` | Upstream version automation specification |
@@ -156,28 +156,28 @@ Commit prefixes (`fix:`, `feat:`, etc.) do not determine the version automatical
 
 ### Automated (CI/CD)
 
-The release workflow accepts either a matching tag push or a manual dispatch from GitHub Actions:
+Tagging triggers the release workflow automatically:
 
 1. Create a `release/vX.Y.Z` branch from `main`.
-2. Set `$ScriptVersion` / `SCRIPT_VERSION` in both install scripts to the installer release version.
-3. Move the `Unreleased` entries into one `## vX.Y.Z (YYYY-MM-DD)` heading in `CHANGELOG.md`.
+2. Update `$ScriptVersion` / `SCRIPT_VERSION` in the install scripts if they changed.
+3. Update `CHANGELOG.md` with the new version, date, and entries.
 4. Update `README.md` and `docs/index.html` if the hero message or version number changed.
 5. Run `bash scripts/verify.sh` to confirm everything passes.
-6. Commit the release prep and open a PR against `main`.
-7. User reviews, approves, and **squash merges** the PR.
-8. For terminal-free publishing, open **Actions → Release → Run workflow**, select `main`, and enter the full installer tag (for example, `v1.11.2`) as `release_tag`.
-9. The release workflow validates the tag against both installer script versions and the dated changelog heading, then:
-   - Runs verify checks
-   - Runs the real installer scripts on the OS matrix (win-amd64, macos-arm64, linux-x64) with the pinned Langflow version and constraints
-   - Packages all 3 platform zips (both versioned and unversioned names)
-   - Generates release notes from `CHANGELOG.md` via `scripts/release-notes.sh`
-   - Creates the tag and GitHub Release
-   - Uploads all 6 zips to the release
-   - Marks tags containing `beta`, `rc`, or `alpha` as pre-releases
+6. Commit with message: `docs: update changelog for vX.Y.Z`.
+7. Push branch and open a draft PR against `main`.
+8. User reviews, approves, and **squash merges** the PR.
+9. After merge, push the tag from `main`: `git tag vX.Y.Z && git push origin vX.Y.Z`.
+10. The CI workflow (`.github/workflows/release.yml`):
+    - Runs verify checks
+    - Runs the real installer scripts on the OS matrix (win-amd64, macos-arm64, linux-x64) with the pinned Langflow version and constraints
+    - Confirms installed version matches the tag and script pin
+    - Packages all 3 platform zips (both versioned and unversioned names)
+    - Generates release notes from `CHANGELOG.md` via `scripts/release-notes.sh`
+    - Creates a GitHub Release with grouped notes (Features, Bug Fixes, Documentation, Maintenance)
+    - Uploads all 6 zips to the release
+    - Tags containing `beta`, `rc`, or `alpha` are automatically marked as pre-release
 
-A maintainer can also push the matching `vX.Y.Z` tag directly; both entry points run the same validation and release jobs.
-
-**Do not reuse or delete and re-push a published tag** — the workflow creates a release for the tag. Bump the installer version to correct a release.
+**Do not delete and re-push the same tag name** — the CI workflow will create a new release or fail. If you need to fix a release, bump the version.
 
 ### Release Notes Standard
 
