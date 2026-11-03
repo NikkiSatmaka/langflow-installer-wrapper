@@ -237,6 +237,12 @@ echo  +  browser will no longer work.                    +
 echo  +==================================================+
 echo.
 echo Starting Langflow server...
+rem Langflow 1.13 disabled auto-login by default and refuses to start without a
+rem superuser. This is a local single-user desktop install, so re-enable auto-login
+rem and provide a default superuser to preserve the click-and-go experience.
+set "LANGFLOW_AUTO_LOGIN=true"
+set "LANGFLOW_SUPERUSER=langflow"
+set "LANGFLOW_SUPERUSER_PASSWORD=langflow"
 start /MIN "Langflow Server - KEEP OPEN" "$uvPath" run langflow run
 echo.
 echo  +==================================================+

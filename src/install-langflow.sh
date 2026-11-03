@@ -196,6 +196,12 @@ echo " +  LinkedIn: https://linkedin.com/in/nikkisatmaka/ +"
 echo " +==================================================+"
 echo ""
 echo "Starting Langflow server..."
+# Langflow 1.13 disabled auto-login by default and refuses to start without a
+# superuser. This is a local single-user desktop install, so re-enable auto-login
+# and provide a default superuser to preserve the click-and-go experience.
+export LANGFLOW_AUTO_LOGIN=true
+export LANGFLOW_SUPERUSER=langflow
+export LANGFLOW_SUPERUSER_PASSWORD=langflow
 nohup uv run langflow run > /tmp/langflow-server.log 2>&1 &
 L_PID=$!
 echo "Server PID: $L_PID"
