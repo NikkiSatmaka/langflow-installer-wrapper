@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v1.11.3 (2026-11-03)
+
 - fix: set `LANGFLOW_AUTO_LOGIN`, `LANGFLOW_SUPERUSER`, and `LANGFLOW_SUPERUSER_PASSWORD` in the generated server launchers so Langflow 1.13 (auto-login now off by default) starts without raising a missing-superuser error
 
 ## v1.11.2 (2026-10-30)
