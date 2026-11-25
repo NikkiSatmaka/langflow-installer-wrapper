@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v1.11.4 (2026-11-25)
+
 - feat: upgrade Langflow to 1.13.4 after all supported platform install checks pass
 
 - feat: upgrade Langflow to 1.13.2 after all supported platform install checks pass
